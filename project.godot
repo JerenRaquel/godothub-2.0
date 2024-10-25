@@ -13,8 +13,22 @@ config_version=5
 config/name="GodotHUB-2.0"
 run/main_scene="res://master.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
+run/low_processor_mode=true
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/resizable=false
+window/stretch/mode="canvas_items"
+window/stretch/scale_mode="integer"
 
 [dotnet]
 
 project/assembly_name="GodotHUB-2.0"
+
+[file_customization]
+
+folder_colors={
+"res://core/": "blue",
+"res://data_structs/": "purple"
+}
