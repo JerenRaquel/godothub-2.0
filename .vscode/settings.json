@@ -1,0 +1,7 @@
+{
+  "godotTools.editorPath.godot4": "c:\\Program Files\\Godot-v4.3\\CSharp-Stable\\Godot_v4.3-stable_mono_win64.exe",
+  "files.exclude": {
+    ".godot": true,
+    "**/*.import": true
+  }
+}
