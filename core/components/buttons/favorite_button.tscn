@@ -1,0 +1,25 @@
+[gd_scene load_steps=7 format=3 uid="uid://ccwjp2a0pkr43"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_8v14x"]
+[ext_resource type="Texture2D" uid="uid://nnk46dnpibrv" path="res://assets/art/star.svg" id="1_65hkd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_idihm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5pudb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_liee2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k3f85"]
+
+[node name="FavoriteButton" type="Button"]
+theme = ExtResource("1_8v14x")
+theme_override_colors/icon_normal_color = Color(0.533333, 0.533333, 0.533333, 1)
+theme_override_colors/icon_focus_color = Color(0.533333, 0.533333, 0.533333, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 0, 1)
+theme_override_colors/icon_hover_color = Color(0.533333, 0.533333, 0.533333, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.639216, 0.639216, 0, 1)
+theme_override_styles/focus = SubResource("StyleBoxEmpty_idihm")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_5pudb")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_liee2")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_k3f85")
+icon = ExtResource("1_65hkd")
