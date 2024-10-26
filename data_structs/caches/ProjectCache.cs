@@ -6,11 +6,16 @@ using System.Linq;
 
 public partial class ProjectCache : Cache
 {
-    private readonly string SAVE_LOCATION = "user://ProjectCache.gdhub";
+    private readonly string SAVE_LOCATION;
     private readonly int[] READABLE_CONFIG_VERSIONS = { 5 };
 
     private Dictionary<string, ProjectDataState> _projects
         = new Dictionary<string, ProjectDataState>();
+
+    public ProjectCache(string userDirectory)
+    {
+        SAVE_LOCATION = userDirectory + "/ProjectCache.gdhub";
+    }
 
     public void ScanProjects(string[] paths)
     {
@@ -47,11 +52,13 @@ public partial class ProjectCache : Cache
     public override void ForceWrite()
     {
         // If there's no projects, no point to write
-        if (this._projects.Count == 0) return;
+        if (_projects.Count == 0) return;
 
-        foreach (KeyValuePair<string, ProjectDataState> entry in this._projects)
+        using StreamWriter file = new(SAVE_LOCATION);
+        foreach (KeyValuePair<string, ProjectDataState> entry in _projects)
         {
-            entry.Value.Write(SAVE_LOCATION);
+            string jsonStr = entry.Value.Write();
+            file.WriteLine(jsonStr);
         }
     }
 
@@ -67,7 +74,10 @@ public partial class ProjectCache : Cache
 
         // Create a project object
         ProjectDataState project = new ProjectDataState();
-        project.LoadUncached(ref configLoadData, ref directoryPath);
+        if (!project.LoadUncached(ref configLoadData, ref directoryPath)) return;
+        if (_projects.ContainsKey(project.projectName)) return;
+
+        _projects.Add(project.projectName, project);
     }
 
     private Tuple<ConfigFile, string> LoadProjectConfig(string folderPath)

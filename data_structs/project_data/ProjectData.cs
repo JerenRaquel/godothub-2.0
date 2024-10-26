@@ -30,7 +30,7 @@ public partial class ProjectData
         public override string ToString()
         {
             if (!isValid) return "Unknown";
-            return $"{Major}, {Minor}";
+            return $"{Major}.{Minor}";
         }
     }
 
@@ -45,6 +45,8 @@ public partial class ProjectData
     public Version version;
     public Renderer renderer;
 
+    public string RootPath => _path;
+    public string ProjectPathAddtion => _projectPath;
     public string FullPath
     {
         get
@@ -54,6 +56,14 @@ public partial class ProjectData
         }
     }
     public string ProjectGodotPath => FullPath + "/project.godot";
+    public bool IsFavorited => _favorited;
+    public string RendererString => renderer switch
+    {
+        Renderer.COMPAT => "GL Compatibility",
+        Renderer.MOBILE => "Mobile",
+        Renderer.FORWARD => "Forward Plus",
+        _ => "Unknown"
+    };
 
     public ProjectData(string version, string renderer, string path, string gdextPathExtra,
         bool isFavorited, string[] projectTags, string[] softwareTags)
