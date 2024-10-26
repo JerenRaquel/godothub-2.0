@@ -23,6 +23,7 @@ public partial class ProjectDataState
     public bool HasTags { get => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0; }
     public bool IsDotNet { get => _usingDotNet; }
     public bool IsGDExt { get => _RAM.ProjectPathAddtion?.Length > 0; }
+    public DateTime LastEdited { get => _lastEdited; }
 
     public string GetFullPath(bool prettify = false)
     {
@@ -89,15 +90,12 @@ public partial class ProjectDataState
             _usingDotNet = features[1] == "C#";
         }
 
-        _ROM = new ProjectData(
-            versionStr, renderer, folderPath, configLoadData.Item2, false, projectTags,
-            Array.Empty<string>()
-        );
-        _RAM = new ProjectData(
-            versionStr, renderer, folderPath, configLoadData.Item2, false, projectTags,
-            Array.Empty<string>()
-        );
-        _lastEdited = File.GetLastAccessTime(_ROM.ProjectGodotPath);
+        _ROM = new ProjectData(versionStr, renderer, folderPath,
+            configLoadData.Item2, false, projectTags, []);
+        _RAM = new ProjectData(versionStr, renderer, folderPath,
+            configLoadData.Item2, false, projectTags, []);
+
+        _lastEdited = File.GetLastWriteTime(_ROM.ProjectGodotPath);
         SetProjectIcon(configLoadData.Item1);
 
         _isDirty = true;

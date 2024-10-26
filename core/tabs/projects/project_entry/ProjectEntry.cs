@@ -25,6 +25,7 @@ public partial class ProjectEntry : PanelContainer
         _projectName = projectName;
         UpdateProjectLabel();
         _pathLabel.Text = "Path: " + ProjectCache.Instance.GetProjectPath(_projectName, true);
+        _dateTimeLabel.Text = ProjectCache.Instance.GetLocalTime(_projectName);
     }
 
     private void UpdateProjectLabel()

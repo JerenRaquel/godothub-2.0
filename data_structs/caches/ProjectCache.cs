@@ -79,6 +79,8 @@ public partial class ProjectCache : Cache
 
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
+    public string GetLocalTime(string projectName) => GetProject(projectName)?.LastEdited.ToLocalTime().ToString() ?? "Unknown";
+
     public string GetProjectPath(string projectName, bool prettify = false)
     {
         ProjectDataState data = GetProject(projectName);
