@@ -75,14 +75,14 @@ public partial class ProjectData
         this.softwareTags = new List<string>(softwareTags);
 
         string[] parts = version.Split(".");
-        int major, minor;
         try
         {
-            major = Int32.Parse(parts[0]);
-            minor = Int32.Parse(parts[1]);
+            this.version = new Version(Int32.Parse(parts[0]), Int32.Parse(parts[1]));
         }
-        catch (System.Exception) { throw; }
-        this.version = new Version(major, minor);
+        catch (System.Exception)
+        {
+            this.version = new Version();
+        }
 
         this.renderer = renderer switch
         {

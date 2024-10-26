@@ -82,5 +82,20 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_17xyk")
 
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer2/PanelContainer" index="0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="ProjectEntryContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="ProjectSidePanel" parent="VBoxContainer/HBoxContainer2" index="1" instance=ExtResource("3_176p4")]
 layout_mode = 2

@@ -7,15 +7,30 @@ using System.Linq;
 public partial class ProjectCache : Cache
 {
     private readonly string SAVE_LOCATION;
-    private readonly int[] READABLE_CONFIG_VERSIONS = { 5 };
+    private readonly int[] READABLE_CONFIG_VERSIONS = [5];
 
-    private Dictionary<string, ProjectDataState> _projects
-        = new Dictionary<string, ProjectDataState>();
+    private Dictionary<string, ProjectDataState> _projects = [];
 
-    public ProjectCache(string userDirectory)
+    public string[] ProjectNames => [.. _projects.Keys];
+    public int ProjectCount => _projects.Count;
+
+    #region Singleton Instance
+    private static ProjectCache _instance;
+    private static readonly object padlock = new();
+
+    public static ProjectCache Instance => _instance;
+
+    private ProjectCache(string userDirectory) { SAVE_LOCATION = userDirectory + "/ProjectCache.gdhub"; }
+
+    public static ProjectCache Initialize(string userDirectory)
     {
-        SAVE_LOCATION = userDirectory + "/ProjectCache.gdhub";
+        lock (padlock)
+        {
+            _instance ??= new ProjectCache(userDirectory);
+            return _instance;
+        }
     }
+    #endregion
 
     public void ScanProjects(string[] paths)
     {
@@ -62,12 +77,44 @@ public partial class ProjectCache : Cache
         }
     }
 
+    public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
+
+    public string GetRenderer(string projectName)
+    {
+        ProjectData.Renderer renderer = GetProject(projectName)?.Renderer ?? ProjectData.Renderer.INVALID;
+        return renderer switch
+        {
+            ProjectData.Renderer.COMPAT => "Compatibility",
+            ProjectData.Renderer.MOBILE => "Mobile",
+            ProjectData.Renderer.FORWARD => "Forward+",
+            _ => "Unkwown"
+        };
+    }
+
+    public bool HasTags(string projectName) => GetProject(projectName)?.HasTags ?? false;
+
+    public bool UsesDotNet(string projectName) => GetProject(projectName)?.IsDotNet ?? false;
+
+    public bool UsesGDExt(string projectName) => GetProject(projectName)?.IsGDExt ?? false;
+
+    private ProjectDataState GetProject(string projectName)
+    {
+        if (projectName == null || projectName.Length == 0) return null;
+        if (!_projects.TryGetValue(projectName, out ProjectDataState value)) return null;
+
+        return value;
+    }
+
     private void CreateProjectFromConfig(string directoryPath)
     {
         // Load config file
         Tuple<ConfigFile, string> configLoadData = LoadProjectConfig(directoryPath);
         // Check if failed to load
-        if (configLoadData == null) return;
+        if (configLoadData == null)
+        {
+            GD.PushError("Failed to load ", directoryPath);
+            return;
+        }
         // Check if valid config
         int configVersion = (int)configLoadData.Item1.GetValue("", "config_version", -1);
         if (!READABLE_CONFIG_VERSIONS.Contains<int>(configVersion)) return; // Invalid version
@@ -102,9 +149,13 @@ public partial class ProjectCache : Cache
         sr.Close();
 
         // Check if the relative path is valid
-        if (File.Exists(projectPath + "/" + relativeProjectPath))
-            return new Tuple<ConfigFile, string>(config, relativeProjectPath);
+        projectPath = folderPath + "/" + relativeProjectPath + "/project.godot";
+        if (File.Exists(projectPath))
+            // Check if it loaded
+            if (config.Load(projectPath) == Error.Ok)
+                return new Tuple<ConfigFile, string>(config, relativeProjectPath);
 
+        GD.PushError("Couldn't locate project.godot using path: ", projectPath);
         return null;
     }
 }
