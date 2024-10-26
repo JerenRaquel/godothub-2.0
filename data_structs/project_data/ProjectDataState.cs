@@ -24,6 +24,14 @@ public partial class ProjectDataState
     public bool IsDotNet { get => _usingDotNet; }
     public bool IsGDExt { get => _RAM.ProjectPathAddtion?.Length > 0; }
 
+    public string GetFullPath(bool prettify = false)
+    {
+        if (prettify && IsGDExt)
+            return _RAM.RootPath + $"/[{_RAM.ProjectPathAddtion}]";
+        else
+            return _RAM.FullPath;
+    }
+
     public string Write()
     {
         StringWriter sw = new();
@@ -31,7 +39,7 @@ public partial class ProjectDataState
 
         // {
         writer.WriteStartObject();
-        // Use Flags
+        // Favorited
         WriteEntry(writer, "Favorited", _ROM.IsFavorited);
         WriteEntry(writer, "IsDotNet", _usingDotNet);
         WriteEntry(writer, "IsGDExt", IsGDExt);

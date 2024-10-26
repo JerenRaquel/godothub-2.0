@@ -79,6 +79,14 @@ public partial class ProjectCache : Cache
 
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
+    public string GetProjectPath(string projectName, bool prettify = false)
+    {
+        ProjectDataState data = GetProject(projectName);
+        if (data == null) return "";
+
+        return data.GetFullPath(prettify);
+    }
+
     public string GetRenderer(string projectName)
     {
         ProjectData.Renderer renderer = GetProject(projectName)?.Renderer ?? ProjectData.Renderer.INVALID;

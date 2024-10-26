@@ -80,6 +80,7 @@ mouse_filter = 2
 [node name="ProjectLabel" type="RichTextLabel" parent="MarginContainer/ContentContainer/EntryContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 2
 bbcode_enabled = true
 text = "Project Name [ vX.X | Stable ] [Forward+] [Using GDExtension] [Using .NET] [Missing User Path]"
 fit_content = true
