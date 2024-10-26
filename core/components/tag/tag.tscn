@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://b21kjgs0nm751"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_wicwp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_itdk1"]
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+anti_aliasing = false
+
+[node name="Tag" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 24)
+offset_right = 40.0
+offset_bottom = 24.0
+theme = ExtResource("1_wicwp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_itdk1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Tag"
