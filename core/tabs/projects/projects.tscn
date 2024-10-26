@@ -1,5 +1,86 @@
-[gd_scene load_steps=2 format=3 uid="uid://xmnb7y2krvm4"]
+[gd_scene load_steps=5 format=3 uid="uid://xmnb7y2krvm4"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_pbyxy"]
+[ext_resource type="Script" path="res://core/tabs/projects/Projects.cs" id="2_rwuvn"]
+[ext_resource type="PackedScene" uid="uid://bdi2isgeih4f4" path="res://core/tabs/projects/project_side_panel/project_side_panel.tscn" id="3_176p4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_17xyk"]
+bg_color = Color(0.101961, 0.101961, 0.101961, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+anti_aliasing = false
 
 [node name="Projects" instance=ExtResource("1_pbyxy")]
+script = ExtResource("2_rwuvn")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" index="0"]
+layout_mode = 2
+
+[node name="NewButton" type="Button" parent="VBoxContainer/HBoxContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "New"
+
+[node name="ImportButton" type="Button" parent="VBoxContainer/HBoxContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Import"
+
+[node name="ScanButton" type="Button" parent="VBoxContainer/HBoxContainer" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Scan"
+
+[node name="FilterLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer" index="3"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Filter Projects"
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+clear_button_enabled = true
+
+[node name="VersionLabel" type="Label" parent="VBoxContainer/HBoxContainer" index="4"]
+layout_mode = 2
+text = "Version:"
+
+[node name="VersionOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer" index="5"]
+layout_mode = 2
+
+[node name="SortLabel" type="Label" parent="VBoxContainer/HBoxContainer" index="6"]
+layout_mode = 2
+text = "Sort:"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer" index="7"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Last Edited"
+popup/item_1/text = "Alphabetical"
+popup/item_1/id = 1
+popup/item_2/text = "Version"
+popup/item_2/id = 2
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer" index="8"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Invert"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" index="1"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="Panel" parent="VBoxContainer/HBoxContainer2" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_17xyk")
+
+[node name="ProjectSidePanel" parent="VBoxContainer/HBoxContainer2" index="1" instance=ExtResource("3_176p4")]
+layout_mode = 2

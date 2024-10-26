@@ -1,0 +1,77 @@
+[gd_scene load_steps=5 format=3 uid="uid://bdi2isgeih4f4"]
+
+[ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="1_6acul"]
+[ext_resource type="Script" path="res://core/tabs/projects/project_side_panel/ProjectSidePanel.cs" id="1_ij177"]
+[ext_resource type="PackedScene" uid="uid://caado17xlpf1q" path="res://core/components/quick_tool_panel/quick_tool_root.tscn" id="2_t6rbv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yg2oi"]
+
+[node name="ProjectSidePanel" type="MarginContainer"]
+script = ExtResource("1_ij177")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="OpenButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Open"
+
+[node name="OpenWOToolsButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Open Without Tools"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_yg2oi")
+
+[node name="RunButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Run"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_yg2oi")
+
+[node name="ChangeVerButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Change Version"
+
+[node name="OpenFolderButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Open Folder"
+
+[node name="RenameButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Rename"
+
+[node name="CloneButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Clone"
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_yg2oi")
+
+[node name="DeleteButton" parent="VBoxContainer" instance=ExtResource("1_6acul")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_yg2oi")
+
+[node name="QuickToolRoot" parent="VBoxContainer" instance=ExtResource("2_t6rbv")]
+unique_name_in_owner = true
+layout_mode = 2
