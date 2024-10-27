@@ -5,6 +5,8 @@ using System.Linq;
 
 public partial class Settings : PanelContainer
 {
+    [Signal] public delegate void SettingChangedEventHandler(string group, string section, string settingTag, int type);
+
     private VBoxContainer _sectionContainers;
 
     [Export] public Control[] interfaces;
@@ -49,6 +51,7 @@ public partial class Settings : PanelContainer
 
                 interfaceChild.SetAnchorsPreset(LayoutPreset.FullRect);
                 interfaceChild.Hide();
+                interfaceChild.Initialize(interfaceGroupName, interfaceName, OnSettingChanged);
             }
         }
 
@@ -91,6 +94,11 @@ public partial class Settings : PanelContainer
 
             _sections[headers.Key].ToggleAllSubButtonsOff();
         }
+    }
+
+    private void OnSettingChanged(string group, string section, string settingTag, int type)
+    {
+        EmitSignal(SignalName.SettingChanged, group, section, settingTag, type);
     }
 
 }

@@ -54,20 +54,15 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="AssetLib" type="Control" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer"]
+[node name="Software" type="Control" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
-[node name="Software" type="Control" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 4
-
 [node name="Settings" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("4_qcrru")]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 5
+metadata/_tab_index = 4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/CoreContent/VBoxContainer"]
 layout_mode = 2
