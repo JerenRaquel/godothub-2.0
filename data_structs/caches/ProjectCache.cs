@@ -6,7 +6,6 @@ using System.Linq;
 
 public partial class ProjectCache : Cache
 {
-    private readonly string SAVE_LOCATION;
     private readonly int[] READABLE_CONFIG_VERSIONS = [5];
 
     private Dictionary<string, ProjectDataState> _projects = [];
@@ -16,13 +15,11 @@ public partial class ProjectCache : Cache
 
     #region Singleton Instance
     private static ProjectCache _instance;
-    private static readonly object padlock = new();
 
     public static ProjectCache Instance => _instance;
 
-    private ProjectCache(string userDirectory)
+    private ProjectCache(string userDirectory) : base(userDirectory + "/ProjectCache.gdhub")
     {
-        SAVE_LOCATION = userDirectory + "/ProjectCache.gdhub";
         LoadData();
     }
 
