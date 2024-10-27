@@ -25,9 +25,23 @@ public partial class SubTreeButton : MarginContainer
         _button.Toggled += OnButtonToggled;
     }
 
-    public void ToggleOff() => _button.SetPressedNoSignal(false);
+    public void ToggleOff()
+    {
+        _button.SetPressedNoSignal(false);
+        SetColor(false);
+    }
 
-    public void ToggleOn() => _button.ButtonPressed = true;
+    public void ToggleOn()
+    {
+        _button.ButtonPressed = true;
+        SetColor(true);
+    }
+
+    public void KeepOn()
+    {
+        _button.SetPressedNoSignal(true);
+        SetColor(true);
+    }
 
     private void OnButtonToggled(bool toggled)
     {
@@ -36,6 +50,16 @@ public partial class SubTreeButton : MarginContainer
             _button.SetPressedNoSignal(true);
             return;
         }
+        else
+            SetColor(true);
         EmitSignal(SignalName.Toggled, _label.Text, toggled);
+    }
+
+    private void SetColor(bool on)
+    {
+        if (on)
+            _label.AddThemeColorOverride("font_color", new Color(1, 1, 1, 1));
+        else
+            _label.AddThemeColorOverride("font_color", new Color("888888"));
     }
 }
