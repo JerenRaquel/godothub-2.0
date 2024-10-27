@@ -20,7 +20,11 @@ public partial class ProjectCache : Cache
 
     public static ProjectCache Instance => _instance;
 
-    private ProjectCache(string userDirectory) { SAVE_LOCATION = userDirectory + "/ProjectCache.gdhub"; }
+    private ProjectCache(string userDirectory)
+    {
+        SAVE_LOCATION = userDirectory + "/ProjectCache.gdhub";
+        LoadData();
+    }
 
     public static ProjectCache Initialize(string userDirectory)
     {
@@ -53,7 +57,18 @@ public partial class ProjectCache : Cache
 
     public override bool LoadData()
     {
-        return false;
+        if (!File.Exists(SAVE_LOCATION)) return false;
+
+        // Load
+        using StreamReader file = new(SAVE_LOCATION);
+        string line = file.ReadLine();
+        while (line != null)
+        {
+            CreateProjectFromFileEntry(line);
+            line = file.ReadLine();
+        }
+
+        return true;
     }
 
     public override void WriteData()
@@ -80,6 +95,8 @@ public partial class ProjectCache : Cache
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
     public string GetLocalTime(string projectName) => GetProject(projectName)?.LastEdited.ToLocalTime().ToString() ?? "Unknown";
+
+    public Texture2D GetIcon(string projectName) => GetProject(projectName)?.Icon ?? null;
 
     public string GetProjectPath(string projectName, bool prettify = false)
     {
@@ -137,9 +154,18 @@ public partial class ProjectCache : Cache
         _projects.Add(project.projectName, project);
     }
 
-    private Tuple<ConfigFile, string> LoadProjectConfig(string folderPath)
+    private void CreateProjectFromFileEntry(string cachedData)
     {
-        ConfigFile config = new ConfigFile();
+        ProjectDataState project = new();
+        if (!project.LoadCached(ref cachedData)) return;
+        if (_projects.ContainsKey(project.projectName)) return;
+
+        _projects.Add(project.projectName, project);
+    }
+
+    private static Tuple<ConfigFile, string> LoadProjectConfig(string folderPath)
+    {
+        ConfigFile config = new();
 
         // First Attempt
         string projectPath = folderPath + "/project.godot";

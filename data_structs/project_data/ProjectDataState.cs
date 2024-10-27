@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 public partial class ProjectDataState
 {
-    private static readonly Texture GODOT_ICON = GD.Load<Texture>("res://icon.svg");
+    private static readonly Texture2D GODOT_ICON = GD.Load<Texture2D>("res://icon.svg");
 
     private ProjectData _RAM;
     private ProjectData _ROM;
@@ -14,7 +14,8 @@ public partial class ProjectDataState
     private bool _isConfigDirty = false;
     private bool _usingDotNet = false;
     private DateTime _lastEdited;
-    private Texture _icon = null;
+    private Texture2D _icon = null;
+    private string _iconPath;
 
     public string projectName;
 
@@ -24,6 +25,7 @@ public partial class ProjectDataState
     public bool IsDotNet { get => _usingDotNet; }
     public bool IsGDExt { get => _RAM.ProjectPathAddtion?.Length > 0; }
     public DateTime LastEdited { get => _lastEdited; }
+    public Texture2D Icon { get => _icon; }
 
     public string GetFullPath(bool prettify = false)
     {
@@ -40,14 +42,17 @@ public partial class ProjectDataState
 
         // {
         writer.WriteStartObject();
-        // Favorited
+        // Flags
         WriteEntry(writer, "Favorited", _ROM.IsFavorited);
         WriteEntry(writer, "IsDotNet", _usingDotNet);
-        WriteEntry(writer, "IsGDExt", IsGDExt);
         // Version
         WriteEntry(writer, "Version", _ROM.version.ToString());
         // Renderer
         WriteEntry(writer, "Renderer", _ROM.RendererString);
+        // Project Name
+        WriteEntry(writer, "Name", projectName);
+        // Icon Path
+        WriteEntry(writer, "IconPath", _iconPath);
         // Root Path
         WriteEntry(writer, "RootPath", _ROM.RootPath);
         // project.godot folder path additions
@@ -102,24 +107,69 @@ public partial class ProjectDataState
         return true;
     }
 
-    public void LoadCached()
+    public bool LoadCached(ref string cachedData)
     {
+        StringReader sr = new(cachedData);
+        JsonTextReader reader = new(sr);
 
+        // {
+        reader.Read();
+        // Flags
+        bool favorited = ReadEntry(reader, false);
+        _usingDotNet = ReadEntry(reader, false);
+        // Version
+        string versionStr = ReadEntry(reader, "Unknown");
+        // Renderer
+        string renderer = ReadEntry(reader, "Unknown");
+        // Project Name
+        projectName = ReadEntry(reader, "Unknown");
+        // Icon Path
+        _iconPath = ReadEntry(reader, "res://icon.svg");
+        // Root Path
+        string rootPath = ReadEntry(reader, "");
+        // project.godot folder path additions
+        string pathAdditions = ReadEntry(reader, "");
+        // [Project Tags]
+        List<string> projectTags = ReadEntries<string>(reader);
+        // [Tool Tags]
+        List<string> softwareTags = ReadEntries<string>(reader);
+        // }
+        reader.Read();
+
+
+        _ROM = new ProjectData(versionStr, renderer, rootPath,
+            pathAdditions, favorited, [.. projectTags], [.. softwareTags]);
+        _RAM = new ProjectData(versionStr, renderer, rootPath,
+            pathAdditions, favorited, [.. projectTags], [.. softwareTags]);
+
+        _lastEdited = File.GetLastWriteTime(_ROM.ProjectGodotPath);
+        SetProjectIcon(_iconPath);
+
+        return true;
     }
 
     private void SetProjectIcon(ConfigFile config)
     {
         string iconPath = config.GetValue("application", "config/icon", "").AsString();
+        SetProjectIcon(iconPath);
+    }
+
+    private void SetProjectIcon(string iconPath)
+    {
         if (iconPath.Length == 0) return;
-        if (!File.Exists(iconPath)) return;
 
         if (iconPath == "res://icon.svg")
         {
             _icon = GODOT_ICON;
+            _iconPath = "res://icon.svg";
             return;
         }
 
-        Image image = Image.LoadFromFile(iconPath);
+        string santizedPath = iconPath.Replace("res:/", _ROM.FullPath);
+        if (!File.Exists(santizedPath)) return;
+
+        _iconPath = santizedPath;
+        Image image = Image.LoadFromFile(santizedPath);
         if (image == null)
         {
             _icon = GODOT_ICON;
@@ -153,6 +203,46 @@ public partial class ProjectDataState
         }
         // ]
         writer.WriteEndArray();
+    }
+
+    private static T ReadEntry<T>(JsonTextReader reader, T defaultValue)
+    {
+        if (!reader.Read()) return defaultValue;
+        if (reader.TokenType == JsonToken.PropertyName) reader.Read();
+
+        return reader.TokenType switch
+        {
+            JsonToken.StartObject => defaultValue,
+            JsonToken.StartArray => defaultValue,
+            _ => (T)reader.Value,
+        };
+    }
+
+    private static List<T> ReadEntries<T>(JsonTextReader reader)
+    {
+        List<T> data = [];
+
+        reader.Read();
+        if (reader.TokenType == JsonToken.PropertyName) reader.Read();
+        if (reader.TokenType != JsonToken.StartArray) return data;
+
+        while (reader.Read())
+        {
+            switch (reader.TokenType)
+            {
+                case JsonToken.StartObject:
+                case JsonToken.StartArray:
+                case JsonToken.PropertyName:
+                    continue;
+                case JsonToken.EndObject:
+                case JsonToken.EndArray:
+                    return data;
+                default:
+                    data.Add((T)reader.Value);
+                    break;
+            }
+        }
+        return data;
     }
 }
 

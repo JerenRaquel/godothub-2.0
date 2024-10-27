@@ -8,8 +8,10 @@ public partial class ProjectEntry : PanelContainer
     private Label _pathLabel;
     private Label _dateTimeLabel;
     private Button _tagButton;
+    private TextureRect _projectIcon;
 
     private string _projectName;
+    private string _cachedProjectMETAText;
 
     public override void _Ready()
     {
@@ -17,6 +19,7 @@ public partial class ProjectEntry : PanelContainer
         _pathLabel = GetNode<Label>("%PathLabel");
         _dateTimeLabel = GetNode<Label>("%DateTimeLabel");
         _tagButton = GetNode<Button>("%TagButton");
+        _projectIcon = GetNode<TextureRect>("%ProjectIcon");
         _tagButton.Hide();
     }
 
@@ -26,6 +29,19 @@ public partial class ProjectEntry : PanelContainer
         UpdateProjectLabel();
         _pathLabel.Text = "Path: " + ProjectCache.Instance.GetProjectPath(_projectName, true);
         _dateTimeLabel.Text = ProjectCache.Instance.GetLocalTime(_projectName);
+        Texture2D texture = ProjectCache.Instance.GetIcon(_projectName);
+        if (texture != null) _projectIcon.Texture = texture;
+    }
+
+    public bool Contains(string filter)
+    {
+        string sanitizedFilter = filter.ToLower();
+
+        if (_cachedProjectMETAText.Contains(sanitizedFilter)) return true;
+
+        // TODO: Add tag filtering
+
+        return false;
     }
 
     private void UpdateProjectLabel()
@@ -54,6 +70,7 @@ public partial class ProjectEntry : PanelContainer
             mainTextMETA += " [Uses .NET]".BBCodeColor(ColorTheme.HighlightBlue);
 
         _projectLabel.Text = mainTextMETA;
+        _cachedProjectMETAText = mainTextMETA.ToLower();
 
         if (ProjectCache.Instance.HasTags(_projectName))
         {
