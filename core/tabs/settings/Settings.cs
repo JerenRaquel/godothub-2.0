@@ -9,20 +9,22 @@ public partial class Settings : PanelContainer
 
     [Export] public Control[] interfaces;
 
-    private Dictionary<string, Dictionary<string, Control>> _interfaces = [];
+    private Dictionary<string, Dictionary<string, InterfaceBase>> _interfaces = [];
 
     public override void _ExitTree()
     {
-        foreach (TreeSection section in _sectionContainers.GetChildren().Cast<TreeSection>())
-            section.InterfaceRequested -= OnInterfaceRequested;
+        foreach (Control section in _sectionContainers.GetChildren().Cast<Control>())
+            if (section is TreeSection section1)
+                section1.InterfaceRequested -= OnInterfaceRequested;
     }
 
     public override void _Ready()
     {
         _sectionContainers = GetNode<VBoxContainer>("%SectionContainers");
 
-        foreach (TreeSection section in _sectionContainers.GetChildren().Cast<TreeSection>())
-            section.InterfaceRequested += OnInterfaceRequested;
+        foreach (Control section in _sectionContainers.GetChildren().Cast<Control>())
+            if (section is TreeSection section1)
+                section1.InterfaceRequested += OnInterfaceRequested;
 
         foreach (Control interfaceControl in interfaces)
         {
@@ -30,12 +32,13 @@ public partial class Settings : PanelContainer
             if (!_interfaces.ContainsKey(interfaceGroupName))
                 _interfaces.Add(interfaceGroupName, []);
 
-            foreach (Control interfaceChild in interfaceControl.GetChildren().Cast<Control>())
+            foreach (InterfaceBase interfaceChild in interfaceControl.GetChildren().Cast<InterfaceBase>())
             {
                 string interfaceName = interfaceChild.Name;
                 if (!_interfaces[interfaceGroupName].ContainsKey(interfaceGroupName))
                     _interfaces[interfaceGroupName].Add(interfaceName, interfaceChild);
 
+                interfaceChild.SetAnchorsPreset(LayoutPreset.FullRect);
                 interfaceChild.Hide();
             }
         }
@@ -45,8 +48,12 @@ public partial class Settings : PanelContainer
 
     public bool GetSettingBool(string interfaceGroup, string interfaceName, string settingTag)
     {
-        Control interfaceChild = GetInterface(interfaceGroup, interfaceName);
-        return (interfaceChild as IInterfaceBase)?.GetSettingBool(settingTag) ?? false;
+        return GetInterface(interfaceGroup, interfaceName)?.GetSettingBool(settingTag) ?? false;
+    }
+
+    public int GetSettingOption(string interfaceGroup, string interfaceName, string settingTag)
+    {
+        return GetInterface(interfaceGroup, interfaceName)?.GetSettingOption(settingTag) ?? 0;
     }
 
     private void OnInterfaceRequested(string interfaceGroup, string interfaceName, bool isOpen)
@@ -60,10 +67,10 @@ public partial class Settings : PanelContainer
             interfaceChild.Hide();
     }
 
-    private Control GetInterface(string interfaceGroup, string interfaceName)
+    private InterfaceBase GetInterface(string interfaceGroup, string interfaceName)
     {
-        if (!_interfaces.TryGetValue(interfaceGroup, out Dictionary<string, Control> interfaceGroupDict)) return null;
-        if (!interfaceGroupDict.TryGetValue(interfaceName, out Control interfaceControl)) return null;
+        if (!_interfaces.TryGetValue(interfaceGroup, out Dictionary<string, InterfaceBase> interfaceGroupDict)) return null;
+        if (!interfaceGroupDict.TryGetValue(interfaceName, out InterfaceBase interfaceControl)) return null;
         return interfaceControl;
     }
 

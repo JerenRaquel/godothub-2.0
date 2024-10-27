@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://dsnnuiiwm8vo3"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_stfkm"]
+[ext_resource type="Script" path="res://core/tabs/settings/interfaces/base/InterfaceBase.cs" id="2_gtwxr"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_r7ch3"]
+color = Color(0.145098, 0.145098, 0.145098, 1)
+thickness = 5
+vertical = true
+
+[node name="InterfaceBase" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_stfkm")
+script = ExtResource("2_gtwxr")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="SidePanel" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_r7ch3")
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="MarginContainer2"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ContentPanel" type="VBoxContainer" parent="MarginContainer2/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

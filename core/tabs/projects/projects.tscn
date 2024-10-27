@@ -14,8 +14,6 @@ anti_aliasing = false
 
 [node name="Projects" instance=ExtResource("1_pbyxy")]
 script = ExtResource("2_rwuvn")
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
 layout_mode = 2
