@@ -1,7 +1,13 @@
+using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
+
 public partial class SettingsCache : Cache
 {
     private SettingsData _RAM;
     private SettingsData _ROM;
+
+    public int Count => _RAM.Count;
 
     #region Singleton Instance
     private static SettingsCache _instance;
@@ -26,6 +32,9 @@ public partial class SettingsCache : Cache
     public override bool LoadData()
     {
         // TODO: Read from file
+
+        _ROM = new();
+        _RAM = new();
         return false;
     }
 
@@ -40,8 +49,53 @@ public partial class SettingsCache : Cache
     {
         _ROM.OverwriteWith(_RAM);
 
-        // TODO: Write to file
+        using StreamWriter file = new(SAVE_LOCATION, false);
 
+        // No Data to write -- Wipe file
+        if (_ROM.Count == 0)
+        {
+            file.Close();
+            return;
+        }
+
+        StringWriter sw = new();
+        JsonTextWriter writer = new(sw);
+
+        // {
+        writer.WriteStartObject();
+        using (Dictionary<string, SettingsData.Data>.Enumerator entryEnumerator = _ROM.RawData)
+        {
+            while (entryEnumerator.MoveNext())
+            {
+                KeyValuePair<string, SettingsData.Data> entry = entryEnumerator.Current;
+                switch (entry.Value.DataType)
+                {
+                    case SettingsData.Type.BOOL:
+                        {
+                            WriteEntry<bool>(writer, entry.Key, entry.Value);
+                            break;
+                        }
+                    case SettingsData.Type.INT:
+                        {
+                            WriteEntry<long>(writer, entry.Key, entry.Value);
+                            break;
+                        }
+                    case SettingsData.Type.STRING_LIST:
+                        {
+                            WriterEntries<string>(writer, entry.Key, entry.Value);
+                            break;
+                        }
+                    default: break; // Skip
+                }
+            }
+        }
+        // }
+        writer.WriteEndObject();
+
+        // Write string to file
+        file.WriteLine(sw.ToString());
+
+        file.Close();
         _isDirty = false;
     }
 

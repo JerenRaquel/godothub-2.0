@@ -4,6 +4,9 @@ public partial class SettingsData
 {
     private Dictionary<string, Data> _data = [];
 
+    public int Count => _data.Count;
+    public Dictionary<string, Data>.Enumerator RawData => _data.GetEnumerator();
+
     public void AddOrUpdate(string tag, Data data)
     {
         if (!_data.TryAdd(tag, data)) _data[tag] = data;

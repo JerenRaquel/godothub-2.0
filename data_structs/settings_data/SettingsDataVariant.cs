@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public partial class SettingsData
 {
     public enum Type { NULL, BOOL, INT, STRING_LIST }
@@ -9,6 +11,7 @@ public partial class SettingsData
         private readonly string[] _data = null;
 
         public bool IsNull => _type == Type.NULL;
+        public bool IsArray => _type == Type.STRING_LIST;
         public Type DataType => _type;
 
         #region Constructors
@@ -59,17 +62,18 @@ public partial class SettingsData
         #endregion
 
         #region Implicit/Explicit Castors
-        // Implicit 
+        // Data -> Type 
         public static implicit operator bool(Data data) => data.AsBool();
         public static implicit operator long(Data data) => data.AsInt64();
         public static implicit operator int(Data data) => (int)data.AsInt64();
         public static implicit operator string[](Data data) => data.AsArray();
+        public static implicit operator List<string>(Data data) => [.. data.AsArray()];
 
-        // Explicit
-        public static explicit operator Data(bool data) => new(data);
-        public static explicit operator Data(long data) => new(data);
-        public static explicit operator Data(int data) => new(data);
-        public static explicit operator Data(string[] data) => new(data);
+        // Type -> Data
+        public static implicit operator Data(bool data) => new(data);
+        public static implicit operator Data(long data) => new(data);
+        public static implicit operator Data(int data) => new(data);
+        public static implicit operator Data(string[] data) => new(data);
 
         #endregion
 
