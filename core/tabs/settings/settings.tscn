@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfn5g8ax1ltl5"]
+
+[ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_0lcxs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_akyxs"]
+
+[node name="Settings" instance=ExtResource("1_0lcxs")]
+theme_override_styles/panel = SubResource("StyleBoxEmpty_akyxs")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer" index="0"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HBoxContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
