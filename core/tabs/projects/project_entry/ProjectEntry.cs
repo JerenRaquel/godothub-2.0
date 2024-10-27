@@ -4,6 +4,8 @@ using System;
 public partial class ProjectEntry : PanelContainer
 {
     // Nodes
+    private Timer _timer;
+    private Button _mainButton;
     private RichTextLabel _projectLabel;
     private Label _pathLabel;
     private Label _dateTimeLabel;
@@ -13,8 +15,16 @@ public partial class ProjectEntry : PanelContainer
     private string _projectName;
     private string _cachedProjectMETAText;
 
+    public override void _ExitTree()
+    {
+        _mainButton.Toggled -= OnMainToggled;
+    }
+
     public override void _Ready()
     {
+        _timer = GetNode<Timer>("%Timer");
+        _mainButton = GetNode<Button>("%MainButton");
+        _mainButton.Toggled += OnMainToggled;
         _projectLabel = GetNode<RichTextLabel>("%ProjectLabel");
         _pathLabel = GetNode<Label>("%PathLabel");
         _dateTimeLabel = GetNode<Label>("%DateTimeLabel");
@@ -80,5 +90,17 @@ public partial class ProjectEntry : PanelContainer
         {
             _tagButton.Hide();
         }
+    }
+
+    private void OnMainToggled(bool _toggled_on)
+    {
+        if (_timer.TimeLeft > 0.0)
+        {
+            _timer.Stop();
+            GD.Print("Launching Project...");
+            // TODO: Finish this...
+            return;
+        }
+        _timer.Start();
     }
 }

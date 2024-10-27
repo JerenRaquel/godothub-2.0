@@ -87,9 +87,11 @@ public partial class ProjectCache : Cache
         using StreamWriter file = new(SAVE_LOCATION);
         foreach (KeyValuePair<string, ProjectDataState> entry in _projects)
         {
+            entry.Value.WriteToROM();
             string jsonStr = entry.Value.Write();
             file.WriteLine(jsonStr);
         }
+        file.Close();
     }
 
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";

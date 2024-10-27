@@ -10,7 +10,6 @@ public partial class ProjectDataState
 
     private ProjectData _RAM;
     private ProjectData _ROM;
-    private bool _isDirty = false;
     private bool _isConfigDirty = false;
     private bool _usingDotNet = false;
     private DateTime _lastEdited;
@@ -67,6 +66,25 @@ public partial class ProjectDataState
         return sw.ToString();
     }
 
+    public bool WriteToROM()
+    {
+        if (!_isConfigDirty) return true;
+
+        GD.Print("Writing ", projectName, " to Config file...");
+
+        _isConfigDirty = false;
+        return true;// TEMP
+
+        // ConfigFile config = new();
+        // if (config.Load(_ROM.ProjectGodotPath) != Error.Ok) return false;
+
+        // _ROM = new(_RAM);
+
+        // // TODO: Write ROM to config file
+
+        // return true;
+    }
+
     public bool LoadUncached(ref Tuple<ConfigFile, string> configLoadData, ref string folderPath)
     {
         projectName = configLoadData.Item1.GetValue(
@@ -103,7 +121,6 @@ public partial class ProjectDataState
         _lastEdited = File.GetLastWriteTime(_ROM.ProjectGodotPath);
         SetProjectIcon(configLoadData.Item1);
 
-        _isDirty = true;
         return true;
     }
 
@@ -243,6 +260,17 @@ public partial class ProjectDataState
             }
         }
         return data;
+    }
+
+    private static void UpdateConfig<T>(ConfigFile config, string section, string key, bool remove, T value)
+    {
+        if (remove)
+        {
+            if (config.HasSectionKey(section, key))
+                config.SetValue(section, key, new Variant());
+        }
+        else
+            config.SetValue(section, key, Variant.From(value));
     }
 }
 

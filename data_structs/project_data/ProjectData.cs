@@ -1,39 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Godot;
+using System.Linq;
 
 public partial class ProjectData
 {
-    public struct Version
-    {
-        public Version()
-        {
-            Major = -1;
-            Minor = -1;
-            isValid = false;
-        }
-
-        public Version(int major, int minor)
-        {
-            Major = major;
-            Minor = minor;
-            isValid = true;
-        }
-
-        public readonly int Major { get; }
-        public readonly int Minor { get; }
-        public readonly bool isValid;
-
-        public Vector2I ToGDVector() => new Vector2I(Major, Minor);
-
-        public override string ToString()
-        {
-            if (!isValid) return "Unknown";
-            return $"{Major}.{Minor}";
-        }
-    }
-
     public enum Renderer { INVALID, COMPAT, MOBILE, FORWARD }
 
     private string _path;
@@ -91,6 +61,17 @@ public partial class ProjectData
             "Forward Plus" => Renderer.FORWARD,
             _ => Renderer.INVALID,
         };
+    }
+
+    public ProjectData(ProjectData copy)
+    {
+        _path = copy._path;
+        _projectPath = copy._projectPath;
+        _favorited = copy._favorited;
+        projectTags = [.. copy.projectTags];
+        softwareTags = [.. copy.softwareTags];
+        version = new(copy.version);
+        renderer = copy.renderer;
     }
 
     public override string ToString()
