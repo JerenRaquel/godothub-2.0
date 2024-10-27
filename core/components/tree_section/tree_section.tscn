@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhuwv5aw8o6sg"]
+
+[ext_resource type="Script" path="res://core/components/tree_section/TreeSection.cs" id="1_k0own"]
+[ext_resource type="PackedScene" uid="uid://drnt75rrklefd" path="res://core/components/tree_sub_button/sub_tree_button.tscn" id="2_uq3l1"]
+
+[node name="TreeSection" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+script = ExtResource("1_k0own")
+subTreeButtonPackedScene = ExtResource("2_uq3l1")
+
+[node name="HeaderButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_hover_color = Color(0.239216, 0.741176, 0.878431, 1)
+theme_override_colors/font_pressed_color = Color(0.239216, 0.741176, 0.878431, 1)
+theme_override_colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_color = Color(0.278431, 0.54902, 0.74902, 1)
+toggle_mode = true
+alignment = 0
+
+[node name="SubButtonContainer" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2

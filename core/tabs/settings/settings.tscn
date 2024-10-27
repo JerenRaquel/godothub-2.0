@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cfn5g8ax1ltl5"]
+[gd_scene load_steps=4 format=3 uid="uid://cfn5g8ax1ltl5"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_0lcxs"]
+[ext_resource type="PackedScene" uid="uid://bhuwv5aw8o6sg" path="res://core/components/tree_section/tree_section.tscn" id="2_0r411"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_akyxs"]
 
@@ -13,6 +14,14 @@ theme_override_constants/separation = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="HBoxContainer" index="0"]
 layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer" index="0"]
+layout_mode = 2
+
+[node name="TreeSection" parent="HBoxContainer/PanelContainer/VBoxContainer" index="0" instance=ExtResource("2_0r411")]
+layout_mode = 2
+headerName = "Application"
+subButtons = PackedStringArray("Config", "Cache")
 
 [node name="Panel" type="Panel" parent="HBoxContainer" index="1"]
 layout_mode = 2
