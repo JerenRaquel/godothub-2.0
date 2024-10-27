@@ -23,6 +23,7 @@ public partial class ProjectDataState
     public bool HasTags { get => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0; }
     public bool IsDotNet { get => _usingDotNet; }
     public bool IsGDExt { get => _RAM.ProjectPathAddtion?.Length > 0; }
+    public bool IsFavorited { get => _RAM.IsFavorited; }
     public DateTime LastEdited { get => _lastEdited; }
     public Texture2D Icon { get => _icon; }
 

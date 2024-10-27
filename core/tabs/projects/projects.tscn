@@ -59,20 +59,21 @@ layout_mode = 2
 layout_mode = 2
 text = "Sort:"
 
-[node name="OptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer" index="7"]
+[node name="SortOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer" index="7"]
+unique_name_in_owner = true
 layout_mode = 2
 selected = 0
-item_count = 3
+allow_reselect = true
+item_count = 2
 popup/item_0/text = "Last Edited"
 popup/item_1/text = "Alphabetical"
 popup/item_1/id = 1
-popup/item_2/text = "Version"
-popup/item_2/id = 2
 
 [node name="CheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer" index="8"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Invert"
+text = "Ascending"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" index="1"]
 layout_mode = 2

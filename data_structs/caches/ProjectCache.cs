@@ -11,7 +11,7 @@ public partial class ProjectCache : Cache
 
     private Dictionary<string, ProjectDataState> _projects = [];
 
-    public string[] ProjectNames => [.. _projects.Keys];
+    public List<string> ProjectNames => [.. _projects.Keys];
     public int ProjectCount => _projects.Count;
 
     #region Singleton Instance
@@ -100,6 +100,8 @@ public partial class ProjectCache : Cache
 
     public Texture2D GetIcon(string projectName) => GetProject(projectName)?.Icon ?? null;
 
+    public long GetRawTime(string projectName) => GetProject(projectName)?.LastEdited.Ticks ?? 0;
+
     public string GetProjectPath(string projectName, bool prettify = false)
     {
         ProjectDataState data = GetProject(projectName);
@@ -121,6 +123,8 @@ public partial class ProjectCache : Cache
     }
 
     public bool HasTags(string projectName) => GetProject(projectName)?.HasTags ?? false;
+
+    public bool IsFavorited(string projectName) => GetProject(projectName)?.IsFavorited ?? false;
 
     public bool UsesDotNet(string projectName) => GetProject(projectName)?.IsDotNet ?? false;
 
