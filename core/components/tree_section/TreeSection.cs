@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Linq;
 
 public partial class TreeSection : VBoxContainer
@@ -21,6 +22,8 @@ public partial class TreeSection : VBoxContainer
     {
         _headerButton.Toggled -= OnHeaderButtonPressed;
         Toggled -= OnHeaderButtonToggled;
+        foreach (SubTreeButton buttonInstance in _subButtonContainer.GetChildren().Cast<SubTreeButton>())
+            buttonInstance.Toggled -= OnSubButtonToggled;
     }
 
     public override void _Ready()
@@ -43,8 +46,15 @@ public partial class TreeSection : VBoxContainer
         {
             SubTreeButton buttonInstance = subTreeButtonPackedScene.Instantiate<SubTreeButton>();
             _subButtonContainer.AddChild(buttonInstance);
-            buttonInstance.Initialize(subButtonName, () => OnSubButtonPressed(subButtonName));
+            buttonInstance.Initialize(subButtonName);
+            buttonInstance.Toggled += OnSubButtonToggled;
         }
+    }
+
+    public void ToggleFirstOn()
+    {
+        _headerButton.SetPressedNoSignal(true);
+        _subButtonContainer.GetChild<SubTreeButton>(0).ToggleOn();
     }
 
     private void ToggleAllSubButtonsOff(string buttonName)
@@ -53,8 +63,15 @@ public partial class TreeSection : VBoxContainer
         {
             if (button.ButtonName == buttonName) continue;
             button.ToggleOff();
-            EmitSignal(SignalName.InterfaceRequested, headerName, buttonName, false);
+            EmitSignal(SignalName.InterfaceRequested, headerName, button.ButtonName, false);
         }
+    }
+
+    private bool IsASubButtonOn()
+    {
+        foreach (SubTreeButton button in _subButtonContainer.GetChildren().Cast<SubTreeButton>())
+            if (button.IsActive) return true;
+        return false;
     }
 
     private void OnHeaderButtonToggled(string headerName) => ToggleAllSubButtonsOff("");
@@ -62,19 +79,26 @@ public partial class TreeSection : VBoxContainer
     private void OnHeaderButtonPressed(bool toggled)
     {
         if (toggled)
-            _subButtonContainer.Hide();
-        else
         {
             ToggleAllSubButtonsOff("");
             _subButtonContainer.Show();
         }
+        else
+        {
+            if (IsASubButtonOn())
+            {
+                _headerButton.SetPressedNoSignal(true);
+                return;
+            }
+            _subButtonContainer.Hide();
+        }
         EmitSignal(SignalName.Toggled, headerName);
     }
 
-    private void OnSubButtonPressed(string buttonName)
+    private void OnSubButtonToggled(string buttonName, bool state)
     {
         ToggleAllSubButtonsOff(buttonName);
         EmitSignal(SignalName.Pressed, buttonName);
-        EmitSignal(SignalName.InterfaceRequested, headerName, buttonName, true);
+        EmitSignal(SignalName.InterfaceRequested, headerName, buttonName, state);
     }
 }

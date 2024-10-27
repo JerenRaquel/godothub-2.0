@@ -9,3 +9,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_u57nq")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true

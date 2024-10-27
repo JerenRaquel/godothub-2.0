@@ -1,0 +1,77 @@
+[gd_scene load_steps=5 format=3 uid="uid://c84486oqj2338"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_kct41"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="1_qsuhr"]
+[ext_resource type="Script" path="res://core/tabs/settings/interfaces/config/Config.cs" id="2_01lrs"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_npqv2"]
+color = Color(0.145098, 0.145098, 0.145098, 1)
+thickness = 5
+vertical = true
+
+[node name="Config" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_kct41")
+script = ExtResource("2_01lrs")
+
+[node name="LeftContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LeftContainer/VBoxContainer"]
+layout_mode = 2
+text = "Full Software Executable Path"
+label_settings = ExtResource("1_qsuhr")
+
+[node name="Label2" type="Label" parent="LeftContainer/VBoxContainer"]
+layout_mode = 2
+text = "Display Absolute Project Path"
+label_settings = ExtResource("1_qsuhr")
+
+[node name="Label3" type="Label" parent="LeftContainer/VBoxContainer"]
+layout_mode = 2
+text = "Close HUB On Project Open"
+label_settings = ExtResource("1_qsuhr")
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_npqv2")
+
+[node name="RightContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="RightContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FullExecPathCheckButton" type="CheckButton" parent="RightContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Disabled"
+
+[node name="AbsProjPathCheckButton" type="CheckButton" parent="RightContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Full Path Shown"
+
+[node name="CloseOnOpenCheckButton" type="CheckButton" parent="RightContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Disabled"

@@ -3,17 +3,15 @@ using System;
 
 public partial class SubTreeButton : MarginContainer
 {
+    [Signal] public delegate void ToggledEventHandler(string buttonName, bool state);
+
     private Button _button;
     private Label _label;
 
-    private Action pressedCallback;
-
     public string ButtonName => _label.Text;
+    public bool IsActive => _button.ButtonPressed;
 
-    public override void _ExitTree()
-    {
-        _button.Pressed -= pressedCallback;
-    }
+    public override void _ExitTree() => _button.Toggled -= OnButtonToggled;
 
     public override void _Ready()
     {
@@ -21,15 +19,23 @@ public partial class SubTreeButton : MarginContainer
         _label = GetNode<Label>("%Label");
     }
 
-    public void Initialize(string name, Action onPressedCallback)
+    public void Initialize(string name)
     {
         _label.Text = name;
-        pressedCallback = onPressedCallback;
-        _button.Pressed += pressedCallback;
+        _button.Toggled += OnButtonToggled;
     }
 
-    public void ToggleOff()
+    public void ToggleOff() => _button.SetPressedNoSignal(false);
+
+    public void ToggleOn() => _button.ButtonPressed = true;
+
+    private void OnButtonToggled(bool toggled)
     {
-        _button.SetPressedNoSignal(false);
+        if (!toggled)
+        {
+            _button.SetPressedNoSignal(true);
+            return;
+        }
+        EmitSignal(SignalName.Toggled, _label.Text, toggled);
     }
 }
