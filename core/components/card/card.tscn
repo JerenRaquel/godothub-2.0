@@ -1,0 +1,76 @@
+[gd_scene load_steps=9 format=3 uid="uid://bwe5ywbnqey48"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_u5s4u"]
+[ext_resource type="Script" path="res://core/components/card/Card.cs" id="2_c18ri"]
+[ext_resource type="Texture2D" uid="uid://dse6oyduac3oo" path="res://icon.svg" id="2_farlm"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_hlmle"]
+[ext_resource type="Texture2D" uid="uid://drlcdblhhho52" path="res://assets/modified_godot_icon/icon_csharp.svg" id="4_0cu7f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bulfd"]
+bg_color = Color(0.133333, 0.164706, 0.207843, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_muk46"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fimyw"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="Card" type="MarginContainer"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme = ExtResource("1_u5s4u")
+script = ExtResource("2_c18ri")
+normalIcon = ExtResource("2_farlm")
+csharpIcon = ExtResource("4_0cu7f")
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+
+[node name="Button" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/hover = SubResource("StyleBoxFlat_bulfd")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_muk46")
+theme_override_styles/normal = SubResource("StyleBoxFlat_fimyw")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_farlm")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="Version" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Version X.X"
+label_settings = ExtResource("3_hlmle")
+horizontal_alignment = 1
+
+[node name="Build" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stable"
+label_settings = ExtResource("3_hlmle")
+horizontal_alignment = 1
