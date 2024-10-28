@@ -10,6 +10,7 @@ public partial class Master : Node
         string userDirectory = ProjectSettings.GlobalizePath("user://");
         ProjectCache.Initialize(userDirectory);
         SettingsCache.Initialize(userDirectory);
+        VersionCache.Initialize(userDirectory);
     }
 
     // TEMP: Replace with Normal Write once Done
@@ -17,6 +18,7 @@ public partial class Master : Node
     {
         ProjectCache.Instance.ForceWrite();
         SettingsCache.Instance.ForceWrite();
+        VersionCache.Instance.ForceWrite();
     }
 
     public override void _Ready()
