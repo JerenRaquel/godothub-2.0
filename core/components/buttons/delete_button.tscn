@@ -12,6 +12,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="DeleteButton" type="Button"]
+custom_minimum_size = Vector2(64, 20)
 theme = ExtResource("1_hjwa1")
 theme_override_colors/font_hover_color = Color(0.109804, 0.109804, 0.109804, 1)
 theme_override_styles/hover = SubResource("StyleBoxFlat_dw4uq")
