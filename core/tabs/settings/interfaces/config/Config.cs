@@ -6,6 +6,7 @@ public partial class Config : InterfaceBase
     private CheckButton _fullExecPathCheckButton;
     private CheckButton _absProjPathCheckButton;
     private OptionButton _HUBBehaviorOptionButton;
+    private Button _saveDataButton;
 
     public override void _ExitTree()
     {
@@ -13,6 +14,7 @@ public partial class Config : InterfaceBase
         _fullExecPathCheckButton.Toggled -= FullExecPathNotify;
         _absProjPathCheckButton.Toggled -= AbsProjPathNotify;
         _HUBBehaviorOptionButton.ItemSelected -= HUBBehaviorPathNotify;
+        _saveDataButton.Pressed -= OnSaveDataButtonPressed;
     }
 
     public override void _Ready()
@@ -20,10 +22,12 @@ public partial class Config : InterfaceBase
         _fullExecPathCheckButton = GetNode<CheckButton>("%FullExecPathCheckButton");
         _absProjPathCheckButton = GetNode<CheckButton>("%AbsProjPathCheckButton");
         _HUBBehaviorOptionButton = GetNode<OptionButton>("%HUBBehaviorOptionButton");
+        _saveDataButton = GetNode<Button>("%SaveDataButton");
 
         _fullExecPathCheckButton.Toggled += FullExecPathNotify;
         _absProjPathCheckButton.Toggled += AbsProjPathNotify;
         _HUBBehaviorOptionButton.ItemSelected += HUBBehaviorPathNotify;
+        _saveDataButton.Pressed += OnSaveDataButtonPressed;
 
     }
 
@@ -51,4 +55,10 @@ public partial class Config : InterfaceBase
     private void FullExecPathNotify(bool _) => EmitSignal(SignalName.SettingChanged, "full_exec_path", (int)SettingType.BOOL);
     private void AbsProjPathNotify(bool _) => EmitSignal(SignalName.SettingChanged, "abs_proj_path", (int)SettingType.BOOL);
     private void HUBBehaviorPathNotify(long _) => EmitSignal(SignalName.SettingChanged, "HUB_behavior", (int)SettingType.OPTION);
+
+    private void OnSaveDataButtonPressed()
+    {
+        // TODO: Replace with a call to the file handling system.
+        GD.Print("Open Save Data");
+    }
 }

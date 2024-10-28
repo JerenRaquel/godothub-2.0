@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://ina126gq7w7x"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_q7k6i"]
+
+[node name="Button" type="Button"]
+theme = ExtResource("1_q7k6i")
+theme_override_colors/font_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_hover_color = Color(0.239216, 0.741176, 0.878431, 1)
+theme_override_colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_font_sizes/font_size = 16
+text = "Open Folder"

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddo6x8jho4viw"]
+[gd_scene load_steps=5 format=3 uid="uid://ddo6x8jho4viw"]
 
 [ext_resource type="PackedScene" uid="uid://dsnnuiiwm8vo3" path="res://core/tabs/settings/interfaces/base/interface_base.tscn" id="1_nqwc5"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="1_qsuhr"]
 [ext_resource type="Script" path="res://core/tabs/settings/interfaces/config/Config.cs" id="2_01lrs"]
+[ext_resource type="PackedScene" uid="uid://ina126gq7w7x" path="res://core/components/buttons/settings_button.tscn" id="4_i13io"]
 
 [node name="Config" instance=ExtResource("1_nqwc5")]
 script = ExtResource("2_01lrs")
@@ -20,6 +21,11 @@ label_settings = ExtResource("1_qsuhr")
 [node name="Label3" type="Label" parent="MarginContainer/ScrollContainer/SidePanel" index="2"]
 layout_mode = 2
 text = "HUB Behavior On Project Open"
+label_settings = ExtResource("1_qsuhr")
+
+[node name="Label4" type="Label" parent="MarginContainer/ScrollContainer/SidePanel" index="3"]
+layout_mode = 2
+text = "Save Data"
 label_settings = ExtResource("1_qsuhr")
 
 [node name="FullExecPathCheckButton" type="CheckButton" parent="MarginContainer2/ScrollContainer2/ContentPanel" index="0"]
@@ -42,6 +48,7 @@ theme_override_colors/font_hover_color = Color(0.239216, 0.741176, 0.878431, 1)
 theme_override_colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
 theme_override_colors/font_color = Color(0.278431, 0.54902, 0.74902, 1)
 theme_override_font_sizes/font_size = 16
+alignment = 1
 selected = 0
 allow_reselect = true
 item_count = 3
@@ -50,3 +57,7 @@ popup/item_1/text = "Close"
 popup/item_1/id = 1
 popup/item_2/text = "Minimize"
 popup/item_2/id = 2
+
+[node name="SaveDataButton" parent="MarginContainer2/ScrollContainer2/ContentPanel" index="3" instance=ExtResource("4_i13io")]
+unique_name_in_owner = true
+layout_mode = 2
