@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxhuuu006jdni"]
+
+[ext_resource type="Script" path="res://core/components/control_shield/ControlShield.cs" id="1_n5qgp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yplyb"]
+bg_color = Color(0, 0, 0, 0.713726)
+
+[node name="ControlShield" type="Panel"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_yplyb")
+script = ExtResource("1_n5qgp")
