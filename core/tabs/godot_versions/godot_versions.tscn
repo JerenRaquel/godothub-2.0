@@ -1,0 +1,150 @@
+[gd_scene load_steps=6 format=3 uid="uid://drrdbffd8u2ph"]
+
+[ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_imrn2"]
+[ext_resource type="Script" path="res://core/tabs/godot_versions/GodotVersions.cs" id="2_6f2n1"]
+[ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="2_sj8r8"]
+[ext_resource type="PackedScene" uid="uid://bwe5ywbnqey48" path="res://core/components/card/card.tscn" id="3_2c4kg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i60je"]
+
+[node name="Godot Versions" instance=ExtResource("1_imrn2")]
+script = ExtResource("2_6f2n1")
+card = ExtResource("3_2c4kg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" index="0"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer" index="0"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer" index="0"]
+layout_mode = 2
+text = "Locate"
+
+[node name="Button2" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer" index="1"]
+layout_mode = 2
+text = "Install"
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/MarginContainer/HBoxContainer" index="2"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i60je")
+
+[node name="Button3" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer" index="3"]
+layout_mode = 2
+text = "Edit"
+
+[node name="Button4" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer" index="4"]
+layout_mode = 2
+text = "Open Location"
+
+[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/MarginContainer/HBoxContainer" index="5"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i60je")
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer" index="6"]
+layout_mode = 2
+text = "Language Support: "
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/MarginContainer/HBoxContainer" index="7"]
+layout_mode = 2
+selected = 0
+allow_reselect = true
+item_count = 3
+popup/item_0/text = "Show All"
+popup/item_1/text = "Only GDScript"
+popup/item_1/id = 1
+popup/item_2/text = "GDScript + .Net"
+popup/item_2/id = 2
+
+[node name="VSeparator4" type="VSeparator" parent="VBoxContainer/MarginContainer/HBoxContainer" index="8"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i60je")
+
+[node name="Label2" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer" index="9"]
+layout_mode = 2
+text = "Release Type:"
+
+[node name="OptionButton2" type="OptionButton" parent="VBoxContainer/MarginContainer/HBoxContainer" index="10"]
+layout_mode = 2
+selected = 0
+allow_reselect = true
+item_count = 5
+popup/item_0/text = "Show All"
+popup/item_1/text = "Dev"
+popup/item_1/id = 1
+popup/item_2/text = "Beta"
+popup/item_2/id = 2
+popup/item_3/text = "Release Candidate"
+popup/item_3/id = 3
+popup/item_4/text = "Stable"
+popup/item_4/id = 4
+
+[node name="VSeparator3" type="VSeparator" parent="VBoxContainer/MarginContainer/HBoxContainer" index="11"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i60je")
+
+[node name="DeleteButton" parent="VBoxContainer/MarginContainer/HBoxContainer" index="12" instance=ExtResource("2_sj8r8")]
+layout_mode = 2
+
+[node name="Installed" type="MarginContainer" parent="VBoxContainer" index="1"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Panel" type="Panel" parent="VBoxContainer/Installed" index="0"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ListView" type="ScrollContainer" parent="VBoxContainer/Installed" index="1"]
+layout_mode = 2
+mouse_filter = 2
+horizontal_scroll_mode = 0
+
+[node name="ListViewContainer" type="VBoxContainer" parent="VBoxContainer/Installed/ListView" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="CardView" type="ScrollContainer" parent="VBoxContainer/Installed" index="2"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Installed/CardView" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/Installed/CardView/MarginContainer" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="CardViewContainer" type="GridContainer" parent="VBoxContainer/Installed/CardView/MarginContainer/CenterContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+columns = 5

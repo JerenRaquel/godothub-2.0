@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0ba1xq2k0h15"]
+[gd_scene load_steps=7 format=3 uid="uid://c0ba1xq2k0h15"]
 
 [ext_resource type="Script" path="res://Master.cs" id="1_ogyj1"]
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="2_4tg3t"]
 [ext_resource type="PackedScene" uid="uid://xmnb7y2krvm4" path="res://core/tabs/projects/projects.tscn" id="3_6fgpm"]
+[ext_resource type="PackedScene" uid="uid://drrdbffd8u2ph" path="res://core/tabs/godot_versions/godot_versions.tscn" id="4_1loeo"]
 [ext_resource type="PackedScene" uid="uid://cfn5g8ax1ltl5" path="res://core/tabs/settings/settings.tscn" id="4_qcrru"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xmrie"]
@@ -49,7 +50,7 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="Godot Versions" type="Control" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer"]
+[node name="Godot Versions" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("4_1loeo")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
