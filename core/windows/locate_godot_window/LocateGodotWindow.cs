@@ -3,8 +3,6 @@ using System;
 
 public partial class LocateGodotWindow : WindowBase
 {
-    [Export] private FileDialog _fileDialog;
-
     private LineEdit _pathLineEdit;
     private Button _chooseLocationButton;
 
@@ -12,16 +10,12 @@ public partial class LocateGodotWindow : WindowBase
     {
         base._ExitTree();
         _chooseLocationButton.Pressed -= OnChooseLocationPressed;
-        _fileDialog.VisibilityChanged -= OnFileDialogVisibilityChanged;
-        _fileDialog.FileSelected -= OnFileDialogFileSelected;
     }
 
     public override void _Ready()
     {
         base._Ready();
 
-        _fileDialog.VisibilityChanged += OnFileDialogVisibilityChanged;
-        _fileDialog.FileSelected += OnFileDialogFileSelected;
         _pathLineEdit = GetNode<LineEdit>("%PathLineEdit");
         _chooseLocationButton = GetNode<Button>("%ChooseLocationButton");
         _chooseLocationButton.Pressed += OnChooseLocationPressed;
@@ -31,19 +25,14 @@ public partial class LocateGodotWindow : WindowBase
 
     private void OnChooseLocationPressed()
     {
-        ControlShield.Instance.Show();
-        _fileDialog.Show();
-    }
-
-    private void OnFileDialogVisibilityChanged()
-    {
-        if (_fileDialog.Visible || ControlShield.Instance == null) return;
-
-        ControlShield.Instance.Hide();
+        FileDialogManager.Instance.DataCompiled += OnFileDialogFileSelected;
+        FileDialogManager.Instance.Open("Locate Godot.Exe", FileDialog.FileModeEnum.OpenFile, "*.exe");
     }
 
     private void OnFileDialogFileSelected(string path)
     {
-        _pathLineEdit.Text = path;
+        if (path.Length > 0)
+            _pathLineEdit.Text = path;
+        FileDialogManager.Instance.DataCompiled -= OnFileDialogFileSelected;
     }
 }

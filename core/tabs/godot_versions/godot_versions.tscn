@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://drrdbffd8u2ph"]
+[gd_scene load_steps=7 format=3 uid="uid://drrdbffd8u2ph"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_imrn2"]
 [ext_resource type="Script" path="res://core/tabs/godot_versions/GodotVersions.cs" id="2_6f2n1"]
 [ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="2_sj8r8"]
 [ext_resource type="PackedScene" uid="uid://bwe5ywbnqey48" path="res://core/components/card/card.tscn" id="3_2c4kg"]
-[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="5_3dyrf"]
 [ext_resource type="PackedScene" uid="uid://dxspjvt4dym1w" path="res://core/windows/locate_godot_window/locate_godot_window.tscn" id="5_chr7d"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i60je"]
@@ -161,22 +160,5 @@ layout_mode = 2
 [node name="CanvasLayer2" type="CanvasLayer" parent="." index="1"]
 layer = 3
 
-[node name="LocateGodotWindow" parent="CanvasLayer2" index="0" node_paths=PackedStringArray("_fileDialog") instance=ExtResource("5_chr7d")]
+[node name="LocateGodotWindow" parent="CanvasLayer2" index="0" instance=ExtResource("5_chr7d")]
 unique_name_in_owner = true
-_fileDialog = NodePath("../../CanvasLayer/FileDialog")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." index="2"]
-layer = 5
-
-[node name="FileDialog" type="FileDialog" parent="CanvasLayer" index="0"]
-unique_name_in_owner = true
-title = "Select Godot Install"
-initial_position = 2
-size = Vector2i(768, 384)
-visible = true
-theme = ExtResource("5_3dyrf")
-ok_button_text = "Open"
-mode_overrides_title = false
-file_mode = 0
-access = 2
-filters = PackedStringArray("*.exe")

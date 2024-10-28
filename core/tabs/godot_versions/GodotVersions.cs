@@ -8,7 +8,6 @@ public partial class GodotVersions : PanelContainer
     private Button _locateButton;
     private GridContainer _cardGrid;
     private LocateGodotWindow _locateWindow;
-    private FileDialog _fileDialog;
 
     public override void _ExitTree()
     {
@@ -21,9 +20,6 @@ public partial class GodotVersions : PanelContainer
         _locateButton.Pressed += OnLocatePressed;
         _cardGrid = GetNode<GridContainer>("%CardViewContainer");
         _locateWindow = GetNode<LocateGodotWindow>("%LocateGodotWindow");
-        _fileDialog = GetNode<FileDialog>("%FileDialog");
-
-        _fileDialog.Hide();
     }
 
     private void AddCard(string version, string build, bool isCSharp)
