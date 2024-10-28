@@ -7,12 +7,12 @@ public partial class GodotVersions : PanelContainer
 
     private Button _locateButton;
     private GridContainer _cardGrid;
+    private LocateGodotWindow _locateWindow;
     private FileDialog _fileDialog;
 
     public override void _ExitTree()
     {
         _locateButton.Pressed -= OnLocatePressed;
-        _fileDialog.VisibilityChanged -= OnFileDialogVisibiltyChanged;
     }
 
     public override void _Ready()
@@ -20,8 +20,8 @@ public partial class GodotVersions : PanelContainer
         _locateButton = GetNode<Button>("%LocateButton");
         _locateButton.Pressed += OnLocatePressed;
         _cardGrid = GetNode<GridContainer>("%CardViewContainer");
+        _locateWindow = GetNode<LocateGodotWindow>("%LocateGodotWindow");
         _fileDialog = GetNode<FileDialog>("%FileDialog");
-        _fileDialog.VisibilityChanged += OnFileDialogVisibiltyChanged;
 
         _fileDialog.Hide();
     }
@@ -33,15 +33,5 @@ public partial class GodotVersions : PanelContainer
         cardInstance.SetData(version, build, isCSharp);
     }
 
-    private void OnLocatePressed() => _fileDialog.Show();
-
-    private void OnFileDialogVisibiltyChanged()
-    {
-        if (ControlShield.Instance == null) return;
-
-        if (_fileDialog.Visible)
-            ControlShield.Instance.Show();
-        else
-            ControlShield.Instance.Hide();
-    }
+    private void OnLocatePressed() => _locateWindow.Show();
 }

@@ -1,0 +1,160 @@
+[gd_scene load_steps=11 format=3 uid="uid://b6h8vrtke4bck"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_fwxbr"]
+[ext_resource type="Script" path="res://core/windows/base/WindowBase.cs" id="2_r54tg"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_p08fv"]
+[ext_resource type="Texture2D" uid="uid://cr0rkjah0myld" path="res://assets/art/Error.svg" id="4_sjwtw"]
+[ext_resource type="Texture2D" uid="uid://dl08ln612563l" path="res://assets/art/Smiley.svg" id="4_w035c"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1b72f"]
+bg_color = Color(0, 0, 0, 0.12549)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f43fu"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_size = 16
+anti_aliasing = false
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_bhsvl"]
+color = Color(0.145098, 0.145098, 0.145098, 1)
+thickness = 3
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o6u7d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_em1uu"]
+
+[node name="WindowBase" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_fwxbr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1b72f")
+script = ExtResource("2_r54tg")
+errorIcon = ExtResource("4_sjwtw")
+passIcon = ExtResource("4_w035c")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 50
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f43fu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Window"
+label_settings = ExtResource("3_p08fv")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Panel" type="Panel" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="NotificationBox" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/NotificationBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/NotificationBox/MarginContainer"]
+layout_mode = 2
+
+[node name="NotificationIcon" type="TextureRect" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/NotificationBox/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("4_sjwtw")
+expand_mode = 3
+
+[node name="NotificationLabel" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/NotificationBox/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Message"
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/NotificationBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_bhsvl")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ContentContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_bhsvl")
+
+[node name="WindowButtons" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/WindowButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_o6u7d")
+
+[node name="ConfirmButton" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/WindowButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Confirm"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/WindowButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_o6u7d")
+
+[node name="CancelButton" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/WindowButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cancel"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/WindowButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_o6u7d")
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_em1uu")
