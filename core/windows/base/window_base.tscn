@@ -136,6 +136,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_o6u7d")
 
 [node name="ConfirmButton" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/WindowButtons"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 text = "Confirm"
 
@@ -146,6 +147,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_o6u7d")
 
 [node name="CancelButton" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/WindowButtons"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 text = "Cancel"
 

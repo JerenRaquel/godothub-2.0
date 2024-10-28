@@ -243,6 +243,7 @@ CheckButton/styles/normal = SubResource("StyleBoxEmpty_ig1t6")
 CheckButton/styles/pressed = SubResource("StyleBoxEmpty_4jsor")
 FileDialog/colors/folder_icon_color = Color(0.239216, 0.741176, 0.878431, 1)
 FileDialog/colors/title_color = Color(0.278431, 0.54902, 0.74902, 1)
+FileDialog/constants/buttons_min_width = 65
 FileDialog/styles/embedded_border = SubResource("StyleBoxFlat_0f2bm")
 FileDialog/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_7s80j")
 FileDialog/styles/panel = SubResource("StyleBoxFlat_2fqun")

@@ -158,26 +158,25 @@ layout_mode = 2
 [node name="InstallContainer" type="VBoxContainer" parent="VBoxContainer/Content/InstallView" index="0"]
 layout_mode = 2
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." index="1"]
+[node name="CanvasLayer2" type="CanvasLayer" parent="." index="1"]
+layer = 3
+
+[node name="LocateGodotWindow" parent="CanvasLayer2" index="0" node_paths=PackedStringArray("_fileDialog") instance=ExtResource("5_chr7d")]
+unique_name_in_owner = true
+_fileDialog = NodePath("../../CanvasLayer/FileDialog")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." index="2"]
 layer = 5
 
-[node name="LocateGodotWindow" parent="CanvasLayer" index="0" node_paths=PackedStringArray("_fileDialog") instance=ExtResource("5_chr7d")]
-unique_name_in_owner = true
-_fileDialog = NodePath("../FileDialog")
-
-[node name="FileDialog" type="FileDialog" parent="CanvasLayer" index="1"]
+[node name="FileDialog" type="FileDialog" parent="CanvasLayer" index="0"]
 unique_name_in_owner = true
 title = "Select Godot Install"
 initial_position = 2
 size = Vector2i(768, 384)
+visible = true
 theme = ExtResource("5_3dyrf")
 ok_button_text = "Open"
 mode_overrides_title = false
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.exe")
-option_count = 2
-option_0/name = "Language Support"
-option_0/values = PackedStringArray("Only GDScript", "GDScript + .NET")
-option_1/name = "Release Type"
-option_1/values = PackedStringArray("Stable", "Release Candidate", "Beta", "Dev")
