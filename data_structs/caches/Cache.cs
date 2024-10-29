@@ -13,14 +13,14 @@ public abstract class Cache(string saveLocation)
     public abstract void ForceWrite();
 
     #region JsonText Helper Functions
-    protected static void WriteEntry<T>(JsonTextWriter writer, string propName, T value)
+    public static void WriteEntry<T>(JsonTextWriter writer, string propName, T value)
     {
         // Prop : value
         writer.WritePropertyName(propName);
         writer.WriteValue(value);
     }
 
-    protected static void WriterEntries<T>(JsonTextWriter writer, string propName, List<T> values)
+    public static void WriterEntries<T>(JsonTextWriter writer, string propName, List<T> values)
     {
         writer.WritePropertyName(propName);
         // [
@@ -33,7 +33,7 @@ public abstract class Cache(string saveLocation)
         writer.WriteEndArray();
     }
 
-    protected static T ReadEntry<T>(JsonTextReader reader, T defaultValue)
+    public static T ReadEntry<T>(JsonTextReader reader, T defaultValue)
     {
         if (!reader.Read()) return defaultValue;
         if (reader.TokenType == JsonToken.PropertyName) reader.Read();
@@ -46,7 +46,7 @@ public abstract class Cache(string saveLocation)
         };
     }
 
-    protected static List<T> ReadEntries<T>(JsonTextReader reader)
+    public static List<T> ReadEntries<T>(JsonTextReader reader)
     {
         List<T> data = [];
 

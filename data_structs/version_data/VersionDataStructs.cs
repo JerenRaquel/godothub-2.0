@@ -29,21 +29,6 @@ public partial class VersionData
         }
     }
 
-    // public readonly struct PathQuery
-    // {
-    //     private readonly BuildType _type;
-    //     private readonly string _path;
-    //     private readonly string _key;
-    //     private 
-
-    //     public PathQuery(BuildType type, string path, string key)
-    //     {
-    //         _type = type;
-    //         _path = path;
-    //         _key = key;
-    //     }
-    // }
-
     public static string GenerateKey(Version version, bool isCSharp, BuildType type)
         => GenerateKeys(version, isCSharp, type).Item1;
 

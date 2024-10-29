@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 
 public partial class VersionData
 {
@@ -78,4 +81,59 @@ public partial class VersionData
         return [.. value];
     }
 
+    public void OverwriteWith(VersionData other)
+    {
+        if (Equals(other)) return;
+
+        _keyToPath = [];
+        _partialKeyToBuilds = [];
+
+        foreach (KeyValuePair<string, string> entry in other._keyToPath)
+            _keyToPath.Add(entry.Key, entry.Value);
+
+        foreach (KeyValuePair<string, HashSet<BuildType>> entry in other._partialKeyToBuilds)
+        {
+            _partialKeyToBuilds.Add(entry.Key, []);
+            foreach (BuildType type in entry.Value)
+                _partialKeyToBuilds[entry.Key].Add(type);
+        }
+    }
+
+    public string StringifyFullKeys()
+    {
+        StringWriter sw = new();
+        JsonTextWriter writer = new(sw);
+
+        // {
+        writer.WriteStartObject();
+        // FullKey : Path
+        foreach (KeyValuePair<string, string> entry in _keyToPath)
+        {
+            Cache.WriteEntry(writer, entry.Key, entry.Value);
+        }
+        // }
+        writer.WriteEndObject();
+
+        return sw.ToString();
+    }
+
+    public string StringifyPartialKeys()
+    {
+        StringWriter sw = new();
+        JsonTextWriter writer = new(sw);
+
+        // {
+        writer.WriteStartObject();
+        // FullKey : Path
+        foreach (KeyValuePair<string, HashSet<BuildType>> entry in _partialKeyToBuilds)
+        {
+            // PartialKey : [ Builds ]
+            List<int> builds = (List<int>)entry.Value.ToList().Cast<int>();
+            Cache.WriterEntries(writer, entry.Key, builds);
+        }
+        // }
+        writer.WriteEndObject();
+
+        return sw.ToString();
+    }
 }

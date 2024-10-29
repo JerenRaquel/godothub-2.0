@@ -1,3 +1,5 @@
+using System.IO;
+
 public partial class VersionCache : Cache
 {
     private VersionData _RAM;
@@ -40,7 +42,15 @@ public partial class VersionCache : Cache
 
     public override void ForceWrite()
     {
-        // TODO: Finish
+        _ROM.OverwriteWith(_RAM);
+
+        using StreamWriter file = new(SAVE_LOCATION);
+        string keyPaths = _ROM.StringifyFullKeys();
+        file.WriteLine(keyPaths);
+
+        string builds = _ROM.StringifyPartialKeys();
+        file.WriteLine(builds);
+        file.Close();
     }
 
     public string AddVersion(Version version, bool isCSharp,
