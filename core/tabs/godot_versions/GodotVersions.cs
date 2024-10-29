@@ -25,7 +25,7 @@ public partial class GodotVersions : PanelContainer
         _locateWindow = GetNode<LocateGodotWindow>("%LocateGodotWindow");
         _locateWindow.VersionLocated += OnVersionLocated;
 
-        foreach (string key in VersionCache.Instance.Keys)
+        foreach (string key in VersionCache.Instance.SortedKeys)
             OnVersionLocated(key);
     }
 
