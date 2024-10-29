@@ -41,6 +41,7 @@ public partial class WindowBase : PanelContainer
         _notificationIcon.Texture = errorIcon;
         _notificationLabel.Text = message;
         _notificationContainer.Show();
+        _confirmButton.Disabled = true;
     }
 
     protected void DisplayMessage(string message)
@@ -48,6 +49,7 @@ public partial class WindowBase : PanelContainer
         _notificationIcon.Texture = passIcon;
         _notificationLabel.Text = message;
         _notificationContainer.Show();
+        _confirmButton.Disabled = false;
     }
 
     protected void ClearMessage()

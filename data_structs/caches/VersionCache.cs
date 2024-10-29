@@ -44,13 +44,13 @@ public partial class VersionCache : Cache
     {
         _ROM.OverwriteWith(_RAM);
 
-        using StreamWriter file = new(SAVE_LOCATION);
-        string keyPaths = _ROM.StringifyFullKeys();
-        file.WriteLine(keyPaths);
-
-        string builds = _ROM.StringifyPartialKeys();
-        file.WriteLine(builds);
-        file.Close();
+        using (StreamWriter file = new(SAVE_LOCATION))
+        {
+            string keyPaths = _ROM.StringifyFullKeys();
+            file.WriteLine(keyPaths);
+            string builds = _ROM.StringifyPartialKeys();
+            file.WriteLine(builds);
+        }
     }
 
     public string AddVersion(Version version, bool isCSharp,
@@ -87,4 +87,6 @@ public partial class VersionCache : Cache
 
     public VersionData.BuildType[] GetAvailableBuilds(string partialKey)
         => _RAM.GetAvailableBuilds(partialKey);
+
+    public bool HasKey(string key) => _RAM.HasKey(key);
 }

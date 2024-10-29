@@ -81,6 +81,8 @@ public partial class VersionData
         return [.. value];
     }
 
+    public bool HasKey(string key) => _keyToPath.ContainsKey(key);
+
     public void OverwriteWith(VersionData other)
     {
         if (Equals(other)) return;
@@ -127,8 +129,11 @@ public partial class VersionData
         // FullKey : Path
         foreach (KeyValuePair<string, HashSet<BuildType>> entry in _partialKeyToBuilds)
         {
+            List<int> builds = [];
+            foreach (BuildType type in entry.Value)
+                builds.Add((int)type);
+
             // PartialKey : [ Builds ]
-            List<int> builds = (List<int>)entry.Value.ToList().Cast<int>();
             Cache.WriterEntries(writer, entry.Key, builds);
         }
         // }

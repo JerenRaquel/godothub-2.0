@@ -20,21 +20,21 @@ layout_mode = 2
 text = "Godot Path"
 label_settings = ExtResource("3_hkqww")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="1"]
+[node name="PathContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="1"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer" index="0"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/PathContainer" index="0"]
 custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_yeyqt")
 
-[node name="PathLineEdit" type="LineEdit" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer" index="1"]
+[node name="PathLineEdit" type="LineEdit" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/PathContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Godot.Exe Path"
 
-[node name="ChooseLocationButton" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer" index="2"]
+[node name="ChooseLocationButton" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/PathContainer" index="2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Choose Location"
@@ -52,47 +52,40 @@ label_settings = ExtResource("3_hkqww")
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="4"]
 layout_mode = 2
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="5"]
-layout_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3" index="0"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2" index="0"]
 custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_yeyqt")
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="6"]
+[node name="Labels" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2" index="1"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4" index="0"]
-custom_minimum_size = Vector2(8, 0)
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxEmpty_yeyqt")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4" index="1"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4/VBoxContainer" index="0"]
+[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/Labels" index="0"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "Godot Version"
 label_settings = ExtResource("4_iuw32")
 
-[node name="Label2" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4/VBoxContainer" index="1"]
+[node name="Label2" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/Labels" index="1"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "Build Type"
 label_settings = ExtResource("4_iuw32")
 
-[node name="Label3" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4/VBoxContainer" index="2"]
+[node name="Label3" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/Labels" index="2"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = ".Net Support"
 label_settings = ExtResource("4_iuw32")
 
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4" index="2"]
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2" index="2"]
 layout_mode = 2
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4" index="3"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2" index="3"]
 layout_mode = 2
 
-[node name="OptionButton" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4/VBoxContainer2" index="0"]
+[node name="VersionOptionButton" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/VBoxContainer2" index="0"]
+unique_name_in_owner = true
 layout_mode = 2
 selected = 1
 allow_reselect = true
@@ -107,7 +100,8 @@ popup/item_3/id = 3
 popup/item_4/text = "4.0"
 popup/item_4/id = 4
 
-[node name="OptionButton2" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4/VBoxContainer2" index="1"]
+[node name="BuildOptionButton" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/VBoxContainer2" index="1"]
+unique_name_in_owner = true
 layout_mode = 2
 selected = 0
 allow_reselect = true
@@ -120,5 +114,6 @@ popup/item_2/id = 2
 popup/item_3/text = "Dev"
 popup/item_3/id = 3
 
-[node name="CheckButton" type="CheckButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4/VBoxContainer2" index="2"]
+[node name="NetCheckButton" type="CheckButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/VBoxContainer2" index="2"]
+unique_name_in_owner = true
 layout_mode = 2
