@@ -37,15 +37,13 @@ mouse_filter = 2
 theme = ExtResource("1_u5s4u")
 script = ExtResource("2_c18ri")
 
-[node name="Timer" type="Timer" parent="."]
-unique_name_in_owner = true
-
 [node name="Button" type="Button" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/hover = SubResource("StyleBoxFlat_bulfd")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_muk46")
 theme_override_styles/normal = SubResource("StyleBoxFlat_fimyw")
+toggle_mode = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

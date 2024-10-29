@@ -1,11 +1,10 @@
 using Godot;
 using System;
 
-public partial class Card : MarginContainer
+public partial class Card : MarginContainer, IGodotVersionEntryInterface
 {
-    [Signal] public delegate void DoubledClickedEventHandler();
+    [Signal] public delegate void ToggledEventHandler(bool state);
 
-    private Timer _timer;
     private Button _button;
     private Label _cSharpLabel;
     private Label _version;
@@ -23,7 +22,6 @@ public partial class Card : MarginContainer
 
     public override void _Ready()
     {
-        _timer = GetNode<Timer>("%Timer");
         _button = GetNode<Button>("%Button");
         _button.Toggled += OnToggled;
         _cSharpLabel = GetNode<Label>("%CSharpLabel");
@@ -48,14 +46,11 @@ public partial class Card : MarginContainer
         _build.AddThemeColorOverride("font_color", new Color(ColorTheme.GetColorFromBuild(build)));
     }
 
-    private void OnToggled(bool _toggled)
-    {
-        if (_timer.TimeLeft > 0)
-        {
-            _timer.Stop();
-            EmitSignal(SignalName.DoubledClicked);
-            return;
-        }
-        _timer.Start();
-    }
+    public bool HasCSharp() => _cSharpLabel.Visible;
+
+    public bool HasBuild(VersionData.BuildType type) => type == VersionData.StringToBuildEnum(_buildStr);
+
+    public void ToggleOff() => _button.SetPressedNoSignal(false);
+
+    private void OnToggled(bool toggled) => EmitSignal(SignalName.Toggled, toggled);
 }
