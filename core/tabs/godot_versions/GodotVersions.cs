@@ -17,6 +17,7 @@ public partial class GodotVersions : PanelContainer
 
     private Timer _doubleClickTimer;
     private Button _locateButton;
+    private Button _openFolderButton;
     private Button _runButton;
     private OptionButton _languageOptionButton;
     private OptionButton _buildOptionButton;
@@ -32,6 +33,8 @@ public partial class GodotVersions : PanelContainer
         _doubleClickTimer = GetNode<Timer>("%DoubleClickTimer");
         _locateButton = GetNode<Button>("%LocateButton");
         _locateButton.Pressed += OnLocatePressed;
+        _openFolderButton = GetNode<Button>("%OpenLocationButton");
+        _openFolderButton.Pressed += OnFolderOpenPressed;
         _runButton = GetNode<Button>("%RunButton");
         _runButton.Pressed += OnLaunchPressed;
         _languageOptionButton = GetNode<OptionButton>("%LangOptionButton");
@@ -104,12 +107,13 @@ public partial class GodotVersions : PanelContainer
         if (_doubleClickTimer.TimeLeft > 0)
         {
             _doubleClickTimer.Stop();
-            OnLaunchPressed();
+            OnFolderOpenPressed();
         }
     }
 
     private void ToggleEntryButtons(bool disabled)
     {
+        _openFolderButton.Disabled = disabled;
         _runButton.Disabled = disabled;
         _deleteButton.Disabled = disabled;
     }
@@ -156,6 +160,12 @@ public partial class GodotVersions : PanelContainer
     private void OnLaunchPressed()
     {
         GD.Print("Version Launch");
+        // TODO: Finish -- Connect with OS System
+    }
+
+    private void OnFolderOpenPressed()
+    {
+        GD.Print("Version Directory Open");
         // TODO: Finish -- Connect with OS System
     }
 }

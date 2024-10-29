@@ -46,19 +46,21 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_i60je")
 
 [node name="EditButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="3"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 disabled = true
 text = "Edit"
 
 [node name="OpenLocationButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="4"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
-disabled = true
 text = "Open Location"
 
 [node name="RunButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="5"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-disabled = true
 text = "Run"
 
 [node name="VSeparator2" type="VSeparator" parent="VBoxContainer/ToolBar/HBoxContainer" index="6"]
