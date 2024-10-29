@@ -8,15 +8,6 @@ public partial class Config : InterfaceBase
     private OptionButton _HUBBehaviorOptionButton;
     private Button _saveDataButton;
 
-    public override void _ExitTree()
-    {
-        base._ExitTree();
-        _fullExecPathCheckButton.Toggled -= FullExecPathNotify;
-        _absProjPathCheckButton.Toggled -= AbsProjPathNotify;
-        _HUBBehaviorOptionButton.ItemSelected -= HUBBehaviorPathNotify;
-        _saveDataButton.Pressed -= OnSaveDataButtonPressed;
-    }
-
     public override void _Ready()
     {
         _fullExecPathCheckButton = GetNode<CheckButton>("%FullExecPathCheckButton");
@@ -24,41 +15,34 @@ public partial class Config : InterfaceBase
         _HUBBehaviorOptionButton = GetNode<OptionButton>("%HUBBehaviorOptionButton");
         _saveDataButton = GetNode<Button>("%SaveDataButton");
 
-        _fullExecPathCheckButton.Toggled += FullExecPathNotify;
-        _absProjPathCheckButton.Toggled += AbsProjPathNotify;
-        _HUBBehaviorOptionButton.ItemSelected += HUBBehaviorPathNotify;
-        _saveDataButton.Pressed += OnSaveDataButtonPressed;
+        _fullExecPathCheckButton.Toggled += _ => EmitSignal(SignalName.SettingChanged, "full_exec_path");
+        _absProjPathCheckButton.Toggled += _ => EmitSignal(SignalName.SettingChanged, "abs_proj_path");
+        _HUBBehaviorOptionButton.ItemSelected += _ => EmitSignal(SignalName.SettingChanged, "HUB_behavior");
+        _saveDataButton.Pressed += () => OSAPI.OpenFolder(ProjectSettings.GlobalizePath("user://"));
 
     }
 
     public override string[] GetAllSettingTags() => ["full_exec_path", "abs_proj_path", "HUB_behavior"];
 
-    public override bool GetSettingBool(string settingTag)
+    public override SettingsData.Data GetData(string settingTag)
     {
         return settingTag switch
         {
             "full_exec_path" => _fullExecPathCheckButton.ButtonPressed,
             "abs_proj_path" => _absProjPathCheckButton.ButtonPressed,
-            _ => false
-        };
-    }
-
-    public override int GetSettingOption(string settingTag)
-    {
-        return settingTag switch
-        {
             "HUB_behavior" => _HUBBehaviorOptionButton.Selected,
-            _ => 0
+            _ => new()
         };
     }
 
-    private void FullExecPathNotify(bool _) => EmitSignal(SignalName.SettingChanged, "full_exec_path", (int)SettingType.BOOL);
-    private void AbsProjPathNotify(bool _) => EmitSignal(SignalName.SettingChanged, "abs_proj_path", (int)SettingType.BOOL);
-    private void HUBBehaviorPathNotify(long _) => EmitSignal(SignalName.SettingChanged, "HUB_behavior", (int)SettingType.OPTION);
-
-    private void OnSaveDataButtonPressed()
+    public override void SetData(string settingTag, SettingsData.Data data)
     {
-        // TODO: Replace with a call to the file handling system.
-        GD.Print("Open Save Data");
+        switch (settingTag)
+        {
+            case "full_exec_path": _fullExecPathCheckButton.SetPressedNoSignal(data); break;
+            case "abs_proj_path": _absProjPathCheckButton.SetPressedNoSignal(data); break;
+            case "HUB_behavior": _HUBBehaviorOptionButton.Select(data); break;
+            default: break;
+        }
     }
 }

@@ -5,8 +5,6 @@ using System.Linq;
 
 public partial class Settings : PanelContainer
 {
-    [Signal] public delegate void SettingChangedEventHandler(string group, string section, string settingTag, int type);
-
     private VBoxContainer _sectionContainers;
 
     [Export] public Control[] interfaces;
@@ -16,6 +14,8 @@ public partial class Settings : PanelContainer
 
     public override void _ExitTree()
     {
+        SaveSettings();
+
         foreach (Control section in _sectionContainers.GetChildren().Cast<Control>())
             if (section is TreeSection section1)
             {
@@ -51,21 +51,28 @@ public partial class Settings : PanelContainer
 
                 interfaceChild.SetAnchorsPreset(LayoutPreset.FullRect);
                 interfaceChild.Hide();
-                interfaceChild.Initialize(interfaceGroupName, interfaceName, OnSettingChanged);
+                interfaceChild.SettingChanged += (string settingTag) => OnSettingChanged(interfaceGroupName, interfaceName, settingTag);
             }
         }
 
         _sectionContainers.GetChild<TreeSection>(0).ToggleFirstOn();
+
+        if (SettingsCache.Instance.LoadData())
+        {
+            foreach (string key in SettingsCache.Instance.Keys)
+            {
+                SettingsData.ParsedKeyData data = SettingsData.ParseKey(key);
+                GetInterface(data.group, data.name)?.SetData(data.tag, SettingsCache.Instance.GetData(key));
+            }
+        }
     }
 
-    public bool GetSettingBool(string interfaceGroup, string interfaceName, string settingTag)
+    private void SaveSettings()
     {
-        return GetInterface(interfaceGroup, interfaceName)?.GetSettingBool(settingTag) ?? false;
-    }
-
-    public int GetSettingOption(string interfaceGroup, string interfaceName, string settingTag)
-    {
-        return GetInterface(interfaceGroup, interfaceName)?.GetSettingOption(settingTag) ?? 0;
+        foreach (KeyValuePair<string, Dictionary<string, InterfaceBase>> groupEntry in _interfaces)
+            foreach (KeyValuePair<string, InterfaceBase> entry in groupEntry.Value)
+                foreach (string tag in entry.Value.GetAllSettingTags())
+                    OnSettingChanged(groupEntry.Key, entry.Key, tag);
     }
 
     private InterfaceBase GetInterface(string interfaceGroup, string interfaceName)
@@ -96,9 +103,14 @@ public partial class Settings : PanelContainer
         }
     }
 
-    private void OnSettingChanged(string group, string section, string settingTag, int type)
+    private void OnSettingChanged(string group, string section, string settingTag)
     {
-        EmitSignal(SignalName.SettingChanged, group, section, settingTag, type);
+        InterfaceBase interfaceControl = GetInterface(group, section);
+        SettingsData.Data data = interfaceControl.GetData(settingTag);
+        SettingsCache.Instance.AddOrUpdate(
+            SettingsData.GenerateKey(group, section, settingTag, data.DataType),
+            data
+        );
     }
 
 }

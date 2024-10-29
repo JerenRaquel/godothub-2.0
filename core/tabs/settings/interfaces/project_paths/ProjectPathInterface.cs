@@ -25,13 +25,18 @@ public partial class ProjectPathInterface : InterfaceBase
         // TODO: Fetch all loaded paths
     }
 
-    public override string[] GetSettingTagEntries(string settingTag = "")
+    public override string[] GetAllSettingTags() => ["project_paths"];
+
+    public override SettingsData.Data GetData(string settingTag)
     {
+        if (settingTag != "project_paths") return new();
+
+
         if (_count == 1)
         {
             ProjectPath projPath = LastPathEntry();
-            if (projPath.IsValid) return [projPath.Path];
-            return [];
+            if (projPath.IsValid) return new([projPath.Path]);
+            return new();
         }
 
         List<string> data = [];
@@ -41,8 +46,17 @@ public partial class ProjectPathInterface : InterfaceBase
             data.Add(projectPath.Path.Replace("\\", "/"));
         }
 
-        return [.. data];
+        return new([.. data]);
     }
+
+    public override void SetData(string settingTag, SettingsData.Data data)
+    {
+        if (settingTag != "project_paths") return;
+
+        foreach (string path in (string[])data)
+            LoadPath(path);
+    }
+
 
     private ProjectPath LastPathEntry() => _contentContainer.GetChild<ProjectPath>(_count - 1);
 

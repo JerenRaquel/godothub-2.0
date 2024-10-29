@@ -2,7 +2,39 @@ using System.Collections.Generic;
 
 public partial class SettingsData
 {
-    public enum Type { NULL, BOOL, INT, STRING_LIST }
+    public enum Type { NULL, BOOL, LONG, STRING_LIST }
+
+    public static string TypeToString(Type type)
+    {
+        return type switch
+        {
+            Type.BOOL => "BOOL",
+            Type.LONG => "LONG",
+            Type.STRING_LIST => "STRING_LIST",
+            _ => "NULL"
+        };
+    }
+
+    public static Type StringToType(string str)
+    {
+        return str switch
+        {
+            "BOOL" => Type.BOOL,
+            "LONG" => Type.LONG,
+            "STRING_LIST" => Type.STRING_LIST,
+            _ => Type.NULL
+        };
+    }
+
+    public readonly struct ParsedKeyData
+    {
+        public readonly string group;
+        public readonly string name;
+        public readonly string tag;
+
+        public ParsedKeyData(string group, string name, string tag)
+        { this.group = group; this.name = name; this.tag = tag; }
+    }
 
     public readonly struct Data
     {
@@ -25,7 +57,7 @@ public partial class SettingsData
 
         public Data(long value)
         {
-            _type = Type.INT;
+            _type = Type.LONG;
             _value = value;
         }
 
@@ -45,9 +77,9 @@ public partial class SettingsData
             return _value != 0;
         }
 
-        private readonly long AsInt64()
+        private readonly long AsInt()
         {
-            if (_type != Type.INT) return -1;
+            if (_type != Type.LONG) return -1;
 
             return _value;
         }
@@ -64,8 +96,8 @@ public partial class SettingsData
         #region Implicit/Explicit Castors
         // Data -> Type 
         public static implicit operator bool(Data data) => data.AsBool();
-        public static implicit operator long(Data data) => data.AsInt64();
-        public static implicit operator int(Data data) => (int)data.AsInt64();
+        public static implicit operator long(Data data) => data.AsInt();
+        public static implicit operator int(Data data) => (int)data.AsInt();
         public static implicit operator string[](Data data) => data.AsArray();
         public static implicit operator List<string>(Data data) => [.. data.AsArray()];
 
@@ -85,7 +117,7 @@ public partial class SettingsData
             return x._type switch
             {
                 Type.BOOL => x._value == y._value,
-                Type.INT => x._value == y._value,
+                Type.LONG => x._value == y._value,
                 Type.STRING_LIST => x._data == y._data,
                 _ => false
             };
@@ -103,13 +135,35 @@ public partial class SettingsData
             return _type switch
             {
                 Type.BOOL => _value == ((Data)obj)._value,
-                Type.INT => _value == ((Data)obj)._value,
+                Type.LONG => _value == ((Data)obj)._value,
                 Type.STRING_LIST => _data == ((Data)obj)._data,
                 _ => false
             };
         }
 
         public override readonly int GetHashCode() => base.GetHashCode();
+
+        public override string ToString()
+        {
+            return _type switch
+            {
+                Type.BOOL => _value != 0 ? "TRUE" : "FALSE",
+                Type.LONG => _value.ToString(),
+                Type.STRING_LIST => ListDataToString(),
+                _ => ""
+            };
+        }
+
+        private string ListDataToString()
+        {
+            string result = "[";
+            for (int i = 0; i < _data.Length; i++)
+            {
+                result += _data[i];
+                if (i < _data.Length - 1) result += ",";
+            }
+            return result += "]";
+        }
 
         #endregion
     }

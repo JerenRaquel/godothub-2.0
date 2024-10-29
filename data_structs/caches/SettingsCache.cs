@@ -8,16 +8,14 @@ public partial class SettingsCache : Cache
     private SettingsData _ROM;
 
     public int Count => _RAM.Count;
+    public string[] Keys => _RAM.Keys;
 
     #region Singleton Instance
     private static SettingsCache _instance;
 
     public static SettingsCache Instance => _instance;
 
-    private SettingsCache(string userDirectory) : base(userDirectory + "/SettingsCache.gdhub")
-    {
-        LoadData();
-    }
+    private SettingsCache(string userDirectory) : base(userDirectory + "/SettingsCache.gdhub") => LoadData();
 
     public static SettingsCache Initialize(string userDirectory)
     {
@@ -31,19 +29,34 @@ public partial class SettingsCache : Cache
 
     public override bool LoadData()
     {
-        // TODO: Read from file
-
         _ROM = new();
-        _RAM = new();
-        return false;
+
+        bool fileRead = false;
+        if (File.Exists(SAVE_LOCATION))
+        {
+            if (new FileInfo(SAVE_LOCATION).Length > 0)
+            {
+                using (StreamReader file = new(SAVE_LOCATION))
+                {
+                    string key = file.ReadLine();
+                    string data = file.ReadLine();
+
+                    while (key != null && data != null)
+                    {
+                        _ROM.LoadData(key, data);
+                        key = file.ReadLine();
+                        data = file.ReadLine();
+                    }
+                    fileRead = true;
+                }
+            }
+        }
+
+        _RAM = new(_ROM);
+        return fileRead;
     }
 
-    public override void WriteData()
-    {
-        if (!_isDirty) return;
-
-        ForceWrite();
-    }
+    public override void WriteData() => ForceWrite();
 
     public override void ForceWrite()
     {
@@ -58,51 +71,24 @@ public partial class SettingsCache : Cache
             return;
         }
 
-        StringWriter sw = new();
-        JsonTextWriter writer = new(sw);
-
-        // {
-        writer.WriteStartObject();
-        using (Dictionary<string, SettingsData.Data>.Enumerator entryEnumerator = _ROM.RawData)
+        using (Dictionary<string, SettingsData.Data>.Enumerator romEnumerator = _ROM.RawData)
         {
-            while (entryEnumerator.MoveNext())
+            while (romEnumerator.MoveNext())
             {
-                KeyValuePair<string, SettingsData.Data> entry = entryEnumerator.Current;
-                switch (entry.Value.DataType)
-                {
-                    case SettingsData.Type.BOOL:
-                        {
-                            WriteEntry<bool>(writer, entry.Key, entry.Value);
-                            break;
-                        }
-                    case SettingsData.Type.INT:
-                        {
-                            WriteEntry<long>(writer, entry.Key, entry.Value);
-                            break;
-                        }
-                    case SettingsData.Type.STRING_LIST:
-                        {
-                            WriterEntries<string>(writer, entry.Key, entry.Value);
-                            break;
-                        }
-                    default: break; // Skip
-                }
+                KeyValuePair<string, SettingsData.Data> entry = romEnumerator.Current;
+                if (entry.Value.IsNull) continue;
+
+                file.WriteLine(entry.Key);
+                file.WriteLine(entry.Value.ToString());
             }
         }
-        // }
-        writer.WriteEndObject();
-
-        // Write string to file
-        file.WriteLine(sw.ToString());
-
         file.Close();
-        _isDirty = false;
     }
 
-    public void AddOrUpdate(string tag, SettingsData.Data data) => _RAM.AddOrUpdate(tag, data);
+    public void AddOrUpdate(string key, SettingsData.Data data) => _RAM.AddOrUpdate(key, data);
 
-    public bool Erase(string tag) => _RAM.Erase(tag);
+    public bool Erase(string key) => _RAM.Erase(key);
 
-    public SettingsData.Data GetData(string tag) => _RAM.GetData(tag);
+    public SettingsData.Data GetData(string key) => _RAM.GetData(key);
 
 }
