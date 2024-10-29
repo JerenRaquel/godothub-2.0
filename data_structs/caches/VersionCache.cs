@@ -23,13 +23,21 @@ public partial class VersionCache : Cache
     }
     #endregion
 
+    public string[] Keys => _RAM.Keys;
+
     public override bool LoadData()
     {
-        // TODO: Read from file
-
-        // TEMP: Remove once this function is complete
-        _RAM = new();
         _ROM = new();
+
+        using (StreamReader file = new(SAVE_LOCATION))
+        {
+            string keyPaths = file.ReadLine();
+            _ROM.LoadFullKeys(keyPaths);
+            string builds = file.ReadLine();
+            _ROM.LoadPartialKeys(builds);
+        }
+
+        _RAM = new(_ROM);
         return false;
     }
 
@@ -89,4 +97,6 @@ public partial class VersionCache : Cache
         => _RAM.GetAvailableBuilds(partialKey);
 
     public bool HasKey(string key) => _RAM.HasKey(key);
+
+    public bool HasPath(string path) => _RAM.HasPath(path);
 }

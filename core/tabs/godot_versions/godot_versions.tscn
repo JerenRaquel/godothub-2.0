@@ -151,12 +151,6 @@ size_flags_vertical = 3
 mouse_filter = 2
 columns = 5
 
-[node name="InstallView" type="ScrollContainer" parent="VBoxContainer/Content" index="3"]
-layout_mode = 2
-
-[node name="InstallContainer" type="VBoxContainer" parent="VBoxContainer/Content/InstallView" index="0"]
-layout_mode = 2
-
 [node name="CanvasLayer2" type="CanvasLayer" parent="." index="1"]
 layer = 3
 

@@ -24,6 +24,9 @@ public partial class GodotVersions : PanelContainer
         _cardGrid = GetNode<GridContainer>("%CardViewContainer");
         _locateWindow = GetNode<LocateGodotWindow>("%LocateGodotWindow");
         _locateWindow.VersionLocated += OnVersionLocated;
+
+        foreach (string key in VersionCache.Instance.Keys)
+            OnVersionLocated(key);
     }
 
     private Card AddCard(string version, string build, bool isCSharp)

@@ -40,6 +40,7 @@ public partial class WindowBase : PanelContainer
     {
         _notificationIcon.Texture = errorIcon;
         _notificationLabel.Text = message;
+        _notificationLabel.AddThemeColorOverride("font_color", new Color(ColorTheme.Dev));
         _notificationContainer.Show();
         _confirmButton.Disabled = true;
     }
@@ -48,6 +49,7 @@ public partial class WindowBase : PanelContainer
     {
         _notificationIcon.Texture = passIcon;
         _notificationLabel.Text = message;
+        _notificationLabel.AddThemeColorOverride("font_color", new Color(ColorTheme.Forward));
         _notificationContainer.Show();
         _confirmButton.Disabled = false;
     }
@@ -57,6 +59,7 @@ public partial class WindowBase : PanelContainer
         _notificationContainer.Hide();
         _notificationIcon.Texture = errorIcon;
         _notificationLabel.Text = "Error";
+        _notificationContainer.RemoveThemeColorOverride("font_color");
     }
 
     protected virtual void ClearWindowData()
@@ -64,6 +67,11 @@ public partial class WindowBase : PanelContainer
         ClearMessage();
         _confirmButton.Disabled = true;
     }
+
+    protected virtual bool Validate() => false;
+    protected void OnPathTextUpdated(string _path) => Validate();
+    protected void OnOptionUpdated(long _index) => Validate();
+    protected void OnToggleUpdated(bool _state) => Validate();
 
     protected virtual void OnConfirmPressed() => GD.Print("Window Confirm Pressed");
 

@@ -9,6 +9,12 @@ public partial class VersionData
     private Dictionary<string, string> _keyToPath = [];
     private Dictionary<string, HashSet<BuildType>> _partialKeyToBuilds = [];
 
+    public string[] Keys => [.. _keyToPath.Keys];
+
+    public VersionData() { }
+
+    public VersionData(VersionData other) => OverwriteWith(other);
+
     public string AddVersion(Version version, bool isCSharp, BuildType type, string path)
     {
         // Item1: Full Key | Item2: Partial Key
@@ -83,6 +89,8 @@ public partial class VersionData
 
     public bool HasKey(string key) => _keyToPath.ContainsKey(key);
 
+    public bool HasPath(string path) => _keyToPath.ContainsValue(path);
+
     public void OverwriteWith(VersionData other)
     {
         if (Equals(other)) return;
@@ -99,6 +107,46 @@ public partial class VersionData
             foreach (BuildType type in entry.Value)
                 _partialKeyToBuilds[entry.Key].Add(type);
         }
+    }
+
+    public void LoadFullKeys(string jsonStr)
+    {
+        StringReader sr = new(jsonStr);
+        JsonTextReader reader = new(sr);
+
+        // { 
+        reader.Read();
+        while (true)
+        {
+            // FullKey : Path
+            Tuple<string, string> data = Cache.ReadEntryWithProp(reader, "");
+            if (data == null) break;
+
+            _keyToPath.Add(data.Item1, data.Item2);
+        }
+        // }
+    }
+
+    public void LoadPartialKeys(string jsonStr)
+    {
+        StringReader sr = new(jsonStr);
+        JsonTextReader reader = new(sr);
+
+        // {
+        reader.Read();
+        while (true)
+        {
+            // FullKey : Path
+            Tuple<string, List<long>> data = Cache.ReadEntriesWithProp<long>(reader);
+            if (data == null) break;
+
+            HashSet<BuildType> builds = [];
+            foreach (long buildID in data.Item2)
+                builds.Add((BuildType)buildID);
+
+            _partialKeyToBuilds.Add(data.Item1, builds);
+        }
+        // }
     }
 
     public string StringifyFullKeys()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -46,6 +47,24 @@ public abstract class Cache(string saveLocation)
         };
     }
 
+    public static Tuple<string, T> ReadEntryWithProp<T>(JsonTextReader reader, T defaultValue)
+    {
+        if (!reader.Read()) return null;
+        if (reader.TokenType != JsonToken.PropertyName) return null;
+
+        string propName = (string)reader.Value;
+
+        reader.Read();
+        T value = reader.TokenType switch
+        {
+            JsonToken.StartObject => defaultValue,
+            JsonToken.StartArray => defaultValue,
+            _ => (T)reader.Value,
+        };
+
+        return new Tuple<string, T>(propName, value);
+    }
+
     public static List<T> ReadEntries<T>(JsonTextReader reader)
     {
         List<T> data = [];
@@ -71,6 +90,36 @@ public abstract class Cache(string saveLocation)
             }
         }
         return data;
+    }
+
+    public static Tuple<string, List<T>> ReadEntriesWithProp<T>(JsonTextReader reader)
+    {
+        List<T> data = [];
+        string propName = "";
+
+        reader.Read();
+        if (reader.TokenType == JsonToken.PropertyName) propName = (string)reader.Value;
+
+        reader.Read();
+        if (reader.TokenType != JsonToken.StartArray) return null;
+
+        while (reader.Read())
+        {
+            switch (reader.TokenType)
+            {
+                case JsonToken.StartObject:
+                case JsonToken.StartArray:
+                case JsonToken.PropertyName:
+                    continue;
+                case JsonToken.EndObject:
+                case JsonToken.EndArray:
+                    return new Tuple<string, List<T>>(propName, data);
+                default:
+                    data.Add((T)reader.Value);
+                    break;
+            }
+        }
+        return new Tuple<string, List<T>>(propName, data);
     }
 
     #endregion

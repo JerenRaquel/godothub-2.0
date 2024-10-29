@@ -21,24 +21,32 @@ public partial class LocateGodotWindow : WindowBase
 
     public override void _Ready()
     {
-        base._Ready();
-
         _pathLineEdit = GetNode<LineEdit>("%PathLineEdit");
         _pathLineEdit.TextChanged += OnPathTextUpdated;
         _chooseLocationButton = GetNode<Button>("%ChooseLocationButton");
         _chooseLocationButton.Pressed += OnChooseLocationPressed;
         _versionOptionButton = GetNode<OptionButton>("%VersionOptionButton");
+        _versionOptionButton.ItemSelected += OnOptionUpdated;
         _buildOptionButton = GetNode<OptionButton>("%BuildOptionButton");
+        _buildOptionButton.ItemSelected += OnOptionUpdated;
         _netSupportCheckButton = GetNode<CheckButton>("%NetCheckButton");
+        _netSupportCheckButton.Toggled += OnToggleUpdated;
 
+        base._Ready();
         Validate();
     }
 
-    private bool Validate()
+    protected override bool Validate()
     {
         if (!File.Exists(_pathLineEdit.Text))
         {
             DisplayError("Path is not valid.");
+            return false;
+        }
+
+        if (VersionCache.Instance.HasPath(_pathLineEdit.Text))
+        {
+            DisplayError("Path is being used.");
             return false;
         }
 
@@ -49,12 +57,18 @@ public partial class LocateGodotWindow : WindowBase
         );
         if (VersionCache.Instance.HasKey(key))
         {
-            DisplayError("Version Already Exists.");
+            DisplayError("Version already exists.");
             return false;
         }
 
-        DisplayMessage("Version is Valid.");
+        DisplayMessage("Version is valid.");
         return true;
+    }
+
+    protected override void ClearWindowData()
+    {
+        base.ClearWindowData();
+        _pathLineEdit.Clear();
     }
 
     protected override void OnConfirmPressed()
@@ -89,6 +103,4 @@ public partial class LocateGodotWindow : WindowBase
         }
         FileDialogManager.Instance.DataCompiled -= OnFileDialogFileSelected;
     }
-
-    private void OnPathTextUpdated(string _path) => Validate();
 }
