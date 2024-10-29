@@ -29,7 +29,7 @@ public partial class GodotVersions : PanelContainer
             OnVersionLocated(key);
     }
 
-    private Card AddCard(string version, string build, bool isCSharp)
+    private Card AddCard(string version, VersionData.BuildType build, bool isCSharp)
     {
         Card cardInstance = card.Instantiate<Card>();
         _cardGrid.AddChild(cardInstance);
@@ -45,7 +45,7 @@ public partial class GodotVersions : PanelContainer
 
         // TEMP: Remove once TODO^ is compete
         VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
-        Control card = AddCard(parts.version.ToString(), VersionData.BuildEnumToString(parts.build), parts.isCSharp);
+        Control card = AddCard(parts.version.ToString(), parts.build, parts.isCSharp);
         _versions.Add(card, key);
     }
 }

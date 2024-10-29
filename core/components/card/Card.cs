@@ -31,19 +31,21 @@ public partial class Card : MarginContainer
         _build = GetNode<Label>("%Build");
     }
 
-    public void SetData(string version, string build, bool isCSharp)
+    public void SetData(string version, VersionData.BuildType build, bool isCSharp)
     {
+
+        _isCSharp = isCSharp;
+        _versionStr = version;
+        _buildStr = VersionData.BuildEnumToString(build);
+
         if (isCSharp)
             _cSharpLabel.Show();
         else
             _cSharpLabel.Hide();
 
         _version.Text = $"Version {version}";
-        _build.Text = build;
-
-        _isCSharp = isCSharp;
-        _versionStr = version;
-        _buildStr = build;
+        _build.Text = _buildStr;
+        _build.AddThemeColorOverride("font_color", new Color(ColorTheme.GetColorFromBuild(build)));
     }
 
     private void OnToggled(bool _toggled)

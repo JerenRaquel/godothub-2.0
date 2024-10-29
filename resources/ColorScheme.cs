@@ -12,4 +12,16 @@ public static class ColorTheme
     public static readonly string Forward = "6aff7c";
 
     public static string BBCodeColor(this string str, string colorCode) => $"[color='{colorCode}']{str}[/color]";
+
+    public static string GetColorFromBuild(VersionData.BuildType build)
+    {
+        return build switch
+        {
+            VersionData.BuildType.STABLE => Stable,
+            VersionData.BuildType.RELEASE_CANDIDATE => ReleaseCandidate,
+            VersionData.BuildType.BETA => Beta,
+            VersionData.BuildType.DEV => Dev,
+            _ => Unknown
+        };
+    }
 }
