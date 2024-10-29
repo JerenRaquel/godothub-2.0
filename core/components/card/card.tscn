@@ -4,7 +4,6 @@
 [ext_resource type="Script" path="res://core/components/card/Card.cs" id="2_c18ri"]
 [ext_resource type="Texture2D" uid="uid://dse6oyduac3oo" path="res://icon.svg" id="2_farlm"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_hlmle"]
-[ext_resource type="Texture2D" uid="uid://drlcdblhhho52" path="res://assets/modified_godot_icon/icon_csharp.svg" id="4_0cu7f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bulfd"]
 bg_color = Color(0.133333, 0.164706, 0.207843, 1)
@@ -21,15 +20,22 @@ anti_aliasing = false
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fimyw"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
+[sub_resource type="LabelSettings" id="LabelSettings_os057"]
+font_size = 60
+font_color = Color(0.333333, 0.160784, 0.811765, 1)
+outline_size = 5
+outline_color = Color(0.768627, 0.713726, 0.929412, 1)
+shadow_size = 10
+shadow_color = Color(0.160784, 0.054902, 0.431373, 0.835294)
+shadow_offset = Vector2(5, 5)
+
 [node name="Card" type="MarginContainer"]
-custom_minimum_size = Vector2(150, 150)
+custom_minimum_size = Vector2(164, 208)
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 theme = ExtResource("1_u5s4u")
 script = ExtResource("2_c18ri")
-normalIcon = ExtResource("2_farlm")
-csharpIcon = ExtResource("4_0cu7f")
 
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true
@@ -54,12 +60,28 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="Icon" type="TextureRect" parent="MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("2_farlm")
 expand_mode = 5
 stretch_mode = 5
+
+[node name="CSharpLabel" type="Label" parent="MarginContainer/VBoxContainer/Icon"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -79.0
+offset_right = -11.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "C#"
+label_settings = SubResource("LabelSettings_os057")
 
 [node name="Version" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -71,6 +93,6 @@ horizontal_alignment = 1
 [node name="Build" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Stable"
+text = "Release Candidate"
 label_settings = ExtResource("3_hlmle")
 horizontal_alignment = 1

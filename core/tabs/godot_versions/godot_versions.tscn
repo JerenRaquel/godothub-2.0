@@ -156,3 +156,4 @@ layer = 3
 
 [node name="LocateGodotWindow" parent="CanvasLayer2" index="0" instance=ExtResource("5_chr7d")]
 unique_name_in_owner = true
+visible = false

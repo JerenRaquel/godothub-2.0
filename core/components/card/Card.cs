@@ -5,12 +5,9 @@ public partial class Card : MarginContainer
 {
     [Signal] public delegate void DoubledClickedEventHandler();
 
-    [Export] private Texture2D normalIcon;
-    [Export] private Texture2D csharpIcon;
-
     private Timer _timer;
     private Button _button;
-    private TextureRect _icon;
+    private Label _cSharpLabel;
     private Label _version;
     private Label _build;
 
@@ -29,7 +26,7 @@ public partial class Card : MarginContainer
         _timer = GetNode<Timer>("%Timer");
         _button = GetNode<Button>("%Button");
         _button.Toggled += OnToggled;
-        _icon = GetNode<TextureRect>("%Icon");
+        _cSharpLabel = GetNode<Label>("%CSharpLabel");
         _version = GetNode<Label>("%Version");
         _build = GetNode<Label>("%Build");
     }
@@ -37,9 +34,9 @@ public partial class Card : MarginContainer
     public void SetData(string version, string build, bool isCSharp)
     {
         if (isCSharp)
-            _icon.Texture = csharpIcon;
+            _cSharpLabel.Show();
         else
-            _icon.Texture = normalIcon;
+            _cSharpLabel.Hide();
 
         _version.Text = $"Version {version}";
         _build.Text = build;
