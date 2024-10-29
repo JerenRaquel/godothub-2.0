@@ -98,6 +98,8 @@ public partial class VersionData
 
     public bool HasKey(string key) => _keyToPath.ContainsKey(key);
 
+    public bool HasPartialKey(string partialKey) => _partialKeyToBuilds.ContainsKey(partialKey);
+
     public bool HasPath(string path) => _keyToPath.ContainsValue(path);
 
     public void OverwriteWith(VersionData other)
