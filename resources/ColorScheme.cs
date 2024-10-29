@@ -10,6 +10,7 @@ public static class ColorTheme
     public static readonly string Compat = "24acf2";
     public static readonly string Mobile = "9d5277";
     public static readonly string Forward = "6aff7c";
+    public static readonly string CSharp = "5529cf";
 
     public static string BBCodeColor(this string str, string colorCode) => $"[color='{colorCode}']{str}[/color]";
 
