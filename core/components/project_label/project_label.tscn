@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bmwtlbhmxv28n"]
+
+[node name="ProjectLabel" type="RichTextLabel"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "Project Name [ vX.X | Stable ] [Forward+] [Using GDExtension] [Using .NET]"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
