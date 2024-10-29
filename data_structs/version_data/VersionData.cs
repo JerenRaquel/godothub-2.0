@@ -10,6 +10,15 @@ public partial class VersionData
     private Dictionary<string, HashSet<BuildType>> _partialKeyToBuilds = [];
 
     public string[] Keys => [.. _keyToPath.Keys];
+    public string[] SortedKeys
+    {
+        get
+        {
+            string[] data = [.. _keyToPath.Keys];
+            Array.Sort(data);
+            return data;
+        }
+    }
 
     public VersionData() { }
 
@@ -109,84 +118,4 @@ public partial class VersionData
         }
     }
 
-    public void LoadFullKeys(string jsonStr)
-    {
-        StringReader sr = new(jsonStr);
-        JsonTextReader reader = new(sr);
-
-        // { 
-        reader.Read();
-        while (true)
-        {
-            // FullKey : Path
-            Tuple<string, string> data = Cache.ReadEntryWithProp(reader, "");
-            if (data == null) break;
-
-            _keyToPath.Add(data.Item1, data.Item2);
-        }
-        // }
-    }
-
-    public void LoadPartialKeys(string jsonStr)
-    {
-        StringReader sr = new(jsonStr);
-        JsonTextReader reader = new(sr);
-
-        // {
-        reader.Read();
-        while (true)
-        {
-            // FullKey : Path
-            Tuple<string, List<long>> data = Cache.ReadEntriesWithProp<long>(reader);
-            if (data == null) break;
-
-            HashSet<BuildType> builds = [];
-            foreach (long buildID in data.Item2)
-                builds.Add((BuildType)buildID);
-
-            _partialKeyToBuilds.Add(data.Item1, builds);
-        }
-        // }
-    }
-
-    public string StringifyFullKeys()
-    {
-        StringWriter sw = new();
-        JsonTextWriter writer = new(sw);
-
-        // {
-        writer.WriteStartObject();
-        // FullKey : Path
-        foreach (KeyValuePair<string, string> entry in _keyToPath)
-        {
-            Cache.WriteEntry(writer, entry.Key, entry.Value);
-        }
-        // }
-        writer.WriteEndObject();
-
-        return sw.ToString();
-    }
-
-    public string StringifyPartialKeys()
-    {
-        StringWriter sw = new();
-        JsonTextWriter writer = new(sw);
-
-        // {
-        writer.WriteStartObject();
-        // FullKey : Path
-        foreach (KeyValuePair<string, HashSet<BuildType>> entry in _partialKeyToBuilds)
-        {
-            List<int> builds = [];
-            foreach (BuildType type in entry.Value)
-                builds.Add((int)type);
-
-            // PartialKey : [ Builds ]
-            Cache.WriterEntries(writer, entry.Key, builds);
-        }
-        // }
-        writer.WriteEndObject();
-
-        return sw.ToString();
-    }
 }

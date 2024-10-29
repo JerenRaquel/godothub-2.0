@@ -24,6 +24,7 @@ public partial class VersionCache : Cache
     #endregion
 
     public string[] Keys => _RAM.Keys;
+    public string[] SortedKeys => _RAM.SortedKeys;
 
     public override bool LoadData()
     {
@@ -31,10 +32,16 @@ public partial class VersionCache : Cache
 
         using (StreamReader file = new(SAVE_LOCATION))
         {
-            string keyPaths = file.ReadLine();
-            _ROM.LoadFullKeys(keyPaths);
-            string builds = file.ReadLine();
-            _ROM.LoadPartialKeys(builds);
+            string key = file.ReadLine();
+            string path = file.ReadLine();
+            while (key != null && path != null)
+            {
+                VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
+                _ROM.AddVersion(parts.version, parts.isCSharp, parts.build, path);
+
+                key = file.ReadLine();
+                path = file.ReadLine();
+            }
         }
 
         _RAM = new(_ROM);
@@ -54,10 +61,11 @@ public partial class VersionCache : Cache
 
         using (StreamWriter file = new(SAVE_LOCATION))
         {
-            string keyPaths = _ROM.StringifyFullKeys();
-            file.WriteLine(keyPaths);
-            string builds = _ROM.StringifyPartialKeys();
-            file.WriteLine(builds);
+            foreach (string key in _ROM.Keys)
+            {
+                file.WriteLine(key);
+                file.WriteLine(_ROM.GetPath(key));
+            }
         }
     }
 
