@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0ba1xq2k0h15"]
+[gd_scene load_steps=10 format=3 uid="uid://c0ba1xq2k0h15"]
 
 [ext_resource type="Script" path="res://Master.cs" id="1_ogyj1"]
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="2_4tg3t"]
 [ext_resource type="PackedScene" uid="uid://xmnb7y2krvm4" path="res://core/tabs/projects/projects.tscn" id="3_6fgpm"]
+[ext_resource type="Script" path="res://core/general_scripts/TabManager.cs" id="3_fr8ku"]
 [ext_resource type="PackedScene" uid="uid://drrdbffd8u2ph" path="res://core/tabs/godot_versions/godot_versions.tscn" id="4_1loeo"]
 [ext_resource type="PackedScene" uid="uid://cfn5g8ax1ltl5" path="res://core/tabs/settings/settings.tscn" id="4_qcrru"]
 [ext_resource type="PackedScene" uid="uid://cxhuuu006jdni" path="res://core/components/control_shield/control_shield.tscn" id="6_2amfe"]
@@ -43,8 +44,10 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
+script = ExtResource("3_fr8ku")
 
 [node name="Projects" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("3_6fgpm")]
+unique_name_in_owner = true
 layout_mode = 2
 theme = null
 metadata/_tab_index = 0
@@ -55,6 +58,7 @@ layout_mode = 2
 metadata/_tab_index = 1
 
 [node name="Godot Versions" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("4_1loeo")]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
@@ -65,34 +69,35 @@ layout_mode = 2
 metadata/_tab_index = 3
 
 [node name="Settings" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("4_qcrru")]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 metadata/_tab_index = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/CoreContent/VBoxContainer"]
+[node name="Footer" type="HBoxContainer" parent="PanelContainer/CoreContent/VBoxContainer"]
 layout_mode = 2
 
-[node name="GodotHUB" type="LinkButton" parent="PanelContainer/CoreContent/VBoxContainer/HBoxContainer"]
+[node name="GodotHUB" type="LinkButton" parent="PanelContainer/CoreContent/VBoxContainer/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "vX.X.X | GodotHUB Github"
 underline = 1
 
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/CoreContent/VBoxContainer/HBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/CoreContent/VBoxContainer/Footer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_xmrie")
 
-[node name="GodotGithub" type="LinkButton" parent="PanelContainer/CoreContent/VBoxContainer/HBoxContainer"]
+[node name="GodotGithub" type="LinkButton" parent="PanelContainer/CoreContent/VBoxContainer/Footer"]
 layout_mode = 2
 text = "Offical Godot Github"
 underline = 1
 
-[node name="HSeparator2" type="HSeparator" parent="PanelContainer/CoreContent/VBoxContainer/HBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/CoreContent/VBoxContainer/Footer"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_xmrie")
 
-[node name="GodotWebsite" type="LinkButton" parent="PanelContainer/CoreContent/VBoxContainer/HBoxContainer"]
+[node name="GodotWebsite" type="LinkButton" parent="PanelContainer/CoreContent/VBoxContainer/Footer"]
 layout_mode = 2
 text = "Official Godot Website"
 underline = 1

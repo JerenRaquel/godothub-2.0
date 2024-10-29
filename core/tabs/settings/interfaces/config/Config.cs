@@ -3,6 +3,10 @@ using System;
 
 public partial class Config : InterfaceBase
 {
+    public const string ABS_PROJ_PATH_TAG = "abs_proj_path";
+    public const string FULL_EXEC_PATH_TAG = "full_exec_path";
+    public const string HUB_BEHAVIOR_TAG = "HUB_behavior";
+
     private CheckButton _fullExecPathCheckButton;
     private CheckButton _absProjPathCheckButton;
     private OptionButton _HUBBehaviorOptionButton;
@@ -16,21 +20,21 @@ public partial class Config : InterfaceBase
         _saveDataButton = GetNode<Button>("%SaveDataButton");
 
         _fullExecPathCheckButton.Toggled += _ => EmitSignal(SignalName.SettingChanged, "full_exec_path");
-        _absProjPathCheckButton.Toggled += _ => EmitSignal(SignalName.SettingChanged, "abs_proj_path");
-        _HUBBehaviorOptionButton.ItemSelected += _ => EmitSignal(SignalName.SettingChanged, "HUB_behavior");
+        _absProjPathCheckButton.Toggled += _ => EmitSignal(SignalName.SettingChanged, ABS_PROJ_PATH_TAG);
+        _HUBBehaviorOptionButton.ItemSelected += _ => EmitSignal(SignalName.SettingChanged, HUB_BEHAVIOR_TAG);
         _saveDataButton.Pressed += () => OSAPI.OpenFolder(ProjectSettings.GlobalizePath("user://"));
 
     }
 
-    public override string[] GetAllSettingTags() => ["full_exec_path", "abs_proj_path", "HUB_behavior"];
+    public override string[] GetAllSettingTags() => [FULL_EXEC_PATH_TAG, ABS_PROJ_PATH_TAG, HUB_BEHAVIOR_TAG];
 
     public override SettingsData.Data GetData(string settingTag)
     {
         return settingTag switch
         {
-            "full_exec_path" => _fullExecPathCheckButton.ButtonPressed,
-            "abs_proj_path" => _absProjPathCheckButton.ButtonPressed,
-            "HUB_behavior" => _HUBBehaviorOptionButton.Selected,
+            FULL_EXEC_PATH_TAG => _fullExecPathCheckButton.ButtonPressed,
+            ABS_PROJ_PATH_TAG => _absProjPathCheckButton.ButtonPressed,
+            HUB_BEHAVIOR_TAG => _HUBBehaviorOptionButton.Selected,
             _ => new()
         };
     }
@@ -39,9 +43,21 @@ public partial class Config : InterfaceBase
     {
         switch (settingTag)
         {
-            case "full_exec_path": _fullExecPathCheckButton.SetPressedNoSignal(data); break;
-            case "abs_proj_path": _absProjPathCheckButton.SetPressedNoSignal(data); break;
-            case "HUB_behavior": _HUBBehaviorOptionButton.Select(data); break;
+            case FULL_EXEC_PATH_TAG:
+                _fullExecPathCheckButton.SetPressedNoSignal(data);
+                if (_fullExecPathCheckButton.ButtonPressed)
+                    _fullExecPathCheckButton.Text = "Full Path Shown";
+                else
+                    _fullExecPathCheckButton.Text = "Full Path Hidden";
+                break;
+            case ABS_PROJ_PATH_TAG:
+                _absProjPathCheckButton.SetPressedNoSignal(data);
+                if (_absProjPathCheckButton.ButtonPressed)
+                    _absProjPathCheckButton.Text = "Enabled";
+                else
+                    _absProjPathCheckButton.Text = "Disabled";
+                break;
+            case HUB_BEHAVIOR_TAG: _HUBBehaviorOptionButton.Select(data); break;
             default: break;
         }
     }

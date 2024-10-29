@@ -37,10 +37,29 @@ public partial class ProjectEntry : PanelContainer
     {
         _projectName = projectName;
         UpdateProjectLabel();
-        _pathLabel.Text = "Path: " + ProjectCache.Instance.GetProjectPath(_projectName, true);
+        UpdatePath();
         _dateTimeLabel.Text = ProjectCache.Instance.GetLocalTime(_projectName);
         Texture2D texture = ProjectCache.Instance.GetIcon(_projectName);
         if (texture != null) _projectIcon.Texture = texture;
+    }
+
+    public void UpdatePath()
+    {
+        string projectPath = ProjectCache.Instance.GetProjectPath(_projectName, true);
+        if (SettingsCache.Instance.GetData("Application/Config/abs_proj_path/BOOL"))
+        {
+            //? Is there a better way than hard coding this?
+            string[] paths = SettingsCache.Instance.GetData("Project Settings/Paths/project_paths/STRING_LIST");
+            foreach (string path in paths)
+            {
+                if (projectPath.Contains(path))
+                {
+                    _pathLabel.Text = "Path: " + projectPath.Replace(path, "[HIDDEN]");
+                    return;
+                }
+            }
+        }
+        _pathLabel.Text = "Path: " + projectPath;
     }
 
     public bool Contains(string filter)

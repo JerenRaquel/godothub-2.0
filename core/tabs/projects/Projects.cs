@@ -41,6 +41,16 @@ public partial class Projects : PanelContainer
         FillProjectContainer();
     }
 
+    public void UpdatePaths()
+    {
+        foreach (ProjectEntry entry in _projectEntryContainer.GetChildren().Cast<ProjectEntry>())
+        {
+            if (entry.IsQueuedForDeletion()) continue;
+
+            entry.UpdatePath();
+        }
+    }
+
     private void FillProjectContainer()
     {
         foreach (ProjectEntry entry in _projectEntryContainer.GetChildren().Cast<ProjectEntry>())
@@ -89,7 +99,8 @@ public partial class Projects : PanelContainer
 
     private void OnScanButtonPressed()
     {
-        ProjectCache.Instance.ScanProjects(["C:/Users/Jeren/Godot Projects"]);
+        string[] paths = SettingsCache.Instance.GetData("Project Settings/Paths/project_paths/STRING_LIST");
+        ProjectCache.Instance.ScanProjects(paths);
         FillProjectContainer();
     }
 

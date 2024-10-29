@@ -5,6 +5,8 @@ using System.Linq;
 
 public partial class ProjectPathInterface : InterfaceBase
 {
+    public const string PATH_TAG = "project_paths";
+
     [Export] private PackedScene _pathEntry;
 
     private CenterContainer _buttonHolder;
@@ -22,14 +24,13 @@ public partial class ProjectPathInterface : InterfaceBase
         _addButton.Pressed += OnAddPressed;
 
         LoadPath("").Disabled = true;
-        // TODO: Fetch all loaded paths
     }
 
-    public override string[] GetAllSettingTags() => ["project_paths"];
+    public override string[] GetAllSettingTags() => [PATH_TAG];
 
     public override SettingsData.Data GetData(string settingTag)
     {
-        if (settingTag != "project_paths") return new();
+        if (settingTag != PATH_TAG) return new();
 
 
         if (_count == 1)
@@ -51,10 +52,12 @@ public partial class ProjectPathInterface : InterfaceBase
 
     public override void SetData(string settingTag, SettingsData.Data data)
     {
-        if (settingTag != "project_paths") return;
+        if (settingTag != PATH_TAG) return;
 
         foreach (string path in (string[])data)
             LoadPath(path);
+
+        _contentContainer.MoveChild(_contentContainer.GetChild<ProjectPath>(0), _count - 1);
     }
 
 

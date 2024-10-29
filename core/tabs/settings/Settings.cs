@@ -1,10 +1,11 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 public partial class Settings : PanelContainer
 {
+    [Signal] public delegate void SettingUpdatedEventHandler(string key);
+
     private VBoxContainer _sectionContainers;
 
     [Export] public Control[] interfaces;
@@ -107,10 +108,9 @@ public partial class Settings : PanelContainer
     {
         InterfaceBase interfaceControl = GetInterface(group, section);
         SettingsData.Data data = interfaceControl.GetData(settingTag);
-        SettingsCache.Instance.AddOrUpdate(
-            SettingsData.GenerateKey(group, section, settingTag, data.DataType),
-            data
-        );
+        string key = SettingsData.GenerateKey(group, section, settingTag, data.DataType);
+        SettingsCache.Instance.AddOrUpdate(key, data);
+        EmitSignal(SignalName.SettingUpdated, key);
     }
 
 }

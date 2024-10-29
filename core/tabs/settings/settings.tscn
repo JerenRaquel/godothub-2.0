@@ -102,6 +102,7 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="Paths" parent="HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Project Settings" index="0" instance=ExtResource("5_waqhd")]
+visible = false
 layout_mode = 1
 
 [node name="Godot Version Settings" type="Control" parent="HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer" index="2"]
