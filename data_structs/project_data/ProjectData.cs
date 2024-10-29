@@ -38,22 +38,12 @@ public partial class ProjectData
     public ProjectData(string version, string renderer, string path, string gdextPathExtra,
         bool isFavorited, string[] projectTags, string[] softwareTags)
     {
-        this._path = path;
-        this._projectPath = gdextPathExtra;
-        this._favorited = isFavorited;
+        _path = path;
+        _projectPath = gdextPathExtra;
+        _favorited = isFavorited;
         this.projectTags = new List<string>(projectTags);
         this.softwareTags = new List<string>(softwareTags);
-
-        string[] parts = version.Split(".");
-        try
-        {
-            this.version = new Version(Int32.Parse(parts[0]), Int32.Parse(parts[1]));
-        }
-        catch (System.Exception)
-        {
-            this.version = new Version();
-        }
-
+        this.version = new(version);
         this.renderer = renderer switch
         {
             "GL Compatibility" => Renderer.COMPAT,

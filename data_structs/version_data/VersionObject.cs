@@ -1,75 +1,91 @@
+using System;
+
 public partial class VersionData
 {
-    public enum BuildType { STABLE, RELEASE_CANDIDATE, BETA, DEV }
-
-    public readonly struct VersionObject
-    {
-        private readonly Version _version = new();
-        private readonly bool _isCSharp = false;
-        private readonly BuildType _buildType;
-        private readonly string _path;
-        private readonly string _key;
-
-        public string Key => _key;
-        public string Path => _path;
-        public readonly string Version => _version.ToString();
-        public readonly bool IsCSharp => _isCSharp;
-        public readonly string Build => BuildEnumToString();
-
-        public VersionObject(VersionObject verObj)
-        {
-            this = new VersionObject(
-                verObj._version,
-                verObj._isCSharp,
-                verObj._buildType,
-                verObj._path
-            );
-        }
-
-        public VersionObject(Version version, bool isCSharp, BuildType type, string path)
-        {
-            _version = version;
-            _isCSharp = isCSharp;
-            _buildType = type;
-            _path = path;
-            _key = GenerateKey();
-        }
-
-        private string GenerateKey()
-        {
-            string type = "STD";
-            if (_isCSharp) type = "DOTNET";
-
-            return $"{_version.ToString()}_{type}_{BuildEnumToString()}";
-        }
-
-        private string BuildEnumToString()
-        {
-            return _buildType switch
-            {
-                BuildType.STABLE => "Stable",
-                BuildType.RELEASE_CANDIDATE => "Release Candidate",
-                BuildType.BETA => "Beta",
-                BuildType.DEV => "Dev",
-                _ => "Unknown"
-            };
-        }
-    }
+    public enum BuildType { UNKNOWN, STABLE, RELEASE_CANDIDATE, BETA, DEV }
 
     public readonly struct ParsedVersionKey
     {
         public readonly bool isValid;
-        public readonly string version;
+        public readonly Version version;
         public readonly bool isCSharp;
-        public readonly string build;
+        public readonly BuildType build;
 
         public ParsedVersionKey() => isValid = false;
 
-        public ParsedVersionKey(VersionObject obj)
+        public ParsedVersionKey(string key)
         {
-            version = obj.Version;
-            isCSharp = obj.IsCSharp;
-            build = obj.Build;
+            string[] data = key.Split("_", System.StringSplitOptions.RemoveEmptyEntries);
+            if (data.Length != 3)
+            {
+                isValid = false;
+                return;
+            }
+
+            version = new(data[0]);
+            isCSharp = data[1] == "DOTNET";
+            build = StringToBuildEnum(data[2]);
+            isValid = true;
         }
+    }
+
+    // public readonly struct PathQuery
+    // {
+    //     private readonly BuildType _type;
+    //     private readonly string _path;
+    //     private readonly string _key;
+    //     private 
+
+    //     public PathQuery(BuildType type, string path, string key)
+    //     {
+    //         _type = type;
+    //         _path = path;
+    //         _key = key;
+    //     }
+    // }
+
+    public static string GenerateKey(Version version, bool isCSharp, BuildType type)
+        => GenerateKeys(version, isCSharp, type).Item1;
+
+    public static string GeneratePartialKey(Version version, bool isCSharp)
+    {
+        string typeStr = "STD";
+        if (isCSharp) typeStr = "DOTNET";
+        return $"{version}_{typeStr}";
+    }
+
+    public static ParsedVersionKey ParseKey(string key) => new(key);
+
+    public static string BuildEnumToString(BuildType type)
+    {
+        return type switch
+        {
+            BuildType.STABLE => "Stable",
+            BuildType.RELEASE_CANDIDATE => "Release Candidate",
+            BuildType.BETA => "Beta",
+            BuildType.DEV => "Dev",
+            _ => "Unknown"
+        };
+    }
+
+    public static BuildType StringToBuildEnum(string str)
+    {
+        return str switch
+        {
+            "Stable" => BuildType.STABLE,
+            "Release Candidate" => BuildType.RELEASE_CANDIDATE,
+            "Beta" => BuildType.BETA,
+            "Dev" => BuildType.DEV,
+            _ => BuildType.UNKNOWN
+        };
+    }
+
+    private static Tuple<string, string> GenerateKeys(Version version, bool isCSharp, BuildType type)
+    {
+        string partialKey = GeneratePartialKey(version, isCSharp);
+        return new(
+            $"{partialKey}_{BuildEnumToString(type)}",
+            partialKey
+        );
     }
 }

@@ -1,3 +1,5 @@
+using System;
+
 public readonly struct Version
 {
     public Version()
@@ -19,6 +21,27 @@ public readonly struct Version
         Major = copy.Major;
         Minor = copy.Minor;
         isValid = true;
+    }
+
+    public Version(string str)
+    {
+        string[] parts = str.Split(".", System.StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 2)
+        {
+            isValid = false;
+            return;
+        }
+
+        try
+        {
+            Major = Int32.Parse(parts[0]);
+            Minor = Int32.Parse(parts[1]);
+            isValid = true;
+        }
+        catch (System.Exception)
+        {
+            isValid = false;
+        }
     }
 
     public readonly int Major { get; }
