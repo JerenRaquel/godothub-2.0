@@ -47,7 +47,7 @@ public partial class GodotVersions : PanelContainer
         _locateWindow = GetNode<LocateGodotWindow>("%LocateGodotWindow");
         _locateWindow.VersionLocated += OnVersionLocated;
 
-        ToggleEntryButtons(false);
+        ToggleEntryButtons(true);
         RefreshEntries();
     }
 
@@ -159,13 +159,15 @@ public partial class GodotVersions : PanelContainer
 
     private void OnLaunchPressed()
     {
-        GD.Print("Version Launch");
-        // TODO: Finish -- Connect with OS System
+        string key = _versions[_currentlySelected];
+        string path = VersionCache.Instance.GetPath(key);
+        OSAPI.RunGodotExe(path);
     }
 
     private void OnFolderOpenPressed()
     {
-        GD.Print("Version Directory Open");
-        // TODO: Finish -- Connect with OS System
+        string key = _versions[_currentlySelected];
+        string path = VersionCache.Instance.GetPath(key);
+        OSAPI.OpenFolder(path);
     }
 }
