@@ -13,14 +13,7 @@ public partial class Projects : PanelContainer
     private CheckBox _checkBox;
     private LineEdit _filterLineEdit;
     private VBoxContainer _projectEntryContainer;
-
-    public override void _ExitTree()
-    {
-        _scanButton.Pressed -= OnScanButtonPressed;
-        _sortOptionButton.ItemSelected -= OnSortChanged;
-        _checkBox.Toggled -= OnSortToggled;
-        _filterLineEdit.TextChanged -= OnFilterChanged;
-    }
+    private BuildPrompt _buildPrompt;
 
     public override void _Ready()
     {
@@ -37,6 +30,7 @@ public partial class Projects : PanelContainer
         _filterLineEdit = GetNode<LineEdit>("%FilterLineEdit");
         _filterLineEdit.TextChanged += OnFilterChanged;
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
+        _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
 
         FillProjectContainer();
     }
@@ -67,6 +61,7 @@ public partial class Projects : PanelContainer
             ProjectEntry entryInstance = _projectEntryPackedScene.Instantiate<ProjectEntry>();
             _projectEntryContainer.AddChild(entryInstance);
             entryInstance.Initialize(projectName);
+            entryInstance.LaunchRequested += OnLaunchRequested;
         }
     }
 
@@ -125,4 +120,6 @@ public partial class Projects : PanelContainer
             _checkBox.Text = "Ascending";
         FillProjectContainer();
     }
+
+    private void OnLaunchRequested(string projectName) => _buildPrompt.Open(projectName);
 }

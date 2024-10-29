@@ -106,5 +106,8 @@ public partial class VersionCache : Cache
 
     public bool HasKey(string key) => _RAM.HasKey(key);
 
+    public bool HasPartialKey(string partialKey) => _RAM.HasPartialKey(partialKey);
+
     public bool HasPath(string path) => _RAM.HasPath(path);
+
 }

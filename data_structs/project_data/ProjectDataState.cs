@@ -18,6 +18,7 @@ public partial class ProjectDataState
 
     public string projectName;
 
+    public Version VersionData => _RAM.version;
     public string VersionStr { get => _RAM.version.ToString(); }
     public ProjectData.Renderer Renderer { get => _RAM.renderer; }
     public bool HasTags { get => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0; }

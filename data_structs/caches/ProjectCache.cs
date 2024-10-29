@@ -127,6 +127,46 @@ public partial class ProjectCache : Cache
 
     public bool UsesGDExt(string projectName) => GetProject(projectName)?.IsGDExt ?? false;
 
+    public string ProjectNameToPartialKey(string projectName)
+    {
+        ProjectDataState data = GetProject(projectName);
+        return VersionData.GeneratePartialKey(data.VersionData, data.IsDotNet);
+    }
+
+    public string GenerateProjectMetadataString(string projectName, bool center = false)
+    {
+        string versionStr = GetProjectVersion(projectName);
+
+        // TEMP: Requires the godot version cache
+        VersionData.BuildType buildType = VersionData.BuildType.UNKNOWN;
+
+        string buildStr = VersionData.BuildEnumToString(buildType);
+        string renderStr = GetRenderer(projectName);
+        string colorCode = renderStr switch
+        {
+            "Compatibility" => ColorTheme.Compat,
+            "Mobile" => ColorTheme.Mobile,
+            "Forward+" => ColorTheme.Forward,
+            _ => ColorTheme.Unknown
+        };
+
+        string mainTextMETA = projectName.BBCodeColor(ColorTheme.BaseBlue)
+            + $" [ v{versionStr} | ".BBCodeColor(ColorTheme.BaseBlue)
+            + buildStr.BBCodeColor(ColorTheme.GetColorFromBuild(buildType)) + " ] ".BBCodeColor(ColorTheme.BaseBlue)
+            + $"[{renderStr}]".BBCodeColor(colorCode);
+
+        if (UsesGDExt(projectName))
+            mainTextMETA += " [Uses GDExtension]".BBCodeColor(ColorTheme.HighlightBlue);
+
+        if (UsesDotNet(projectName))
+            mainTextMETA += " [Uses .NET]".BBCodeColor(ColorTheme.CSharp);
+
+        if (center)
+            return $"[center]{mainTextMETA}[/center]";
+        else
+            return mainTextMETA;
+    }
+
     private ProjectDataState GetProject(string projectName)
     {
         if (projectName == null || projectName.Length == 0) return null;

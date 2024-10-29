@@ -1,8 +1,9 @@
 using Godot;
-using System;
 
 public partial class ProjectEntry : PanelContainer
 {
+    [Signal] public delegate void LaunchRequestedEventHandler(string projectName);
+
     // Nodes
     private Timer _timer;
     private Button _mainButton;
@@ -14,11 +15,6 @@ public partial class ProjectEntry : PanelContainer
 
     private string _projectName;
     private string _cachedProjectMETAText;
-
-    public override void _ExitTree()
-    {
-        _mainButton.Toggled -= OnMainToggled;
-    }
 
     public override void _Ready()
     {
@@ -75,29 +71,7 @@ public partial class ProjectEntry : PanelContainer
 
     private void UpdateProjectLabel()
     {
-        string versionStr = ProjectCache.Instance.GetProjectVersion(_projectName);
-        // TEMP: Requires the godot version cache
-        string buildStr = "TODO";
-        string renderStr = ProjectCache.Instance.GetRenderer(_projectName);
-        string colorCode = renderStr switch
-        {
-            "Compatibility" => ColorTheme.Compat,
-            "Mobile" => ColorTheme.Mobile,
-            "Forward+" => ColorTheme.Forward,
-            _ => ColorTheme.Unknown
-        };
-
-        string mainTextMETA = _projectName.BBCodeColor(ColorTheme.BaseBlue)
-            + $" [ v{versionStr} | ".BBCodeColor(ColorTheme.BaseBlue)
-            + buildStr.BBCodeColor(ColorTheme.Stable) + " ] ".BBCodeColor(ColorTheme.BaseBlue)
-            + $"[{renderStr}]".BBCodeColor(colorCode);
-
-        if (ProjectCache.Instance.UsesGDExt(_projectName))
-            mainTextMETA += " [Uses GDExtension]".BBCodeColor(ColorTheme.HighlightBlue);
-
-        if (ProjectCache.Instance.UsesDotNet(_projectName))
-            mainTextMETA += " [Uses .NET]".BBCodeColor(ColorTheme.HighlightBlue);
-
+        string mainTextMETA = ProjectCache.Instance.GenerateProjectMetadataString(_projectName);
         _projectLabel.Text = mainTextMETA;
         _cachedProjectMETAText = mainTextMETA.ToLower();
 
@@ -116,8 +90,7 @@ public partial class ProjectEntry : PanelContainer
         if (_timer.TimeLeft > 0.0)
         {
             _timer.Stop();
-            GD.Print("Launching Project...");
-            // TODO: Finish this...
+            EmitSignal(SignalName.LaunchRequested, _projectName);
             return;
         }
         _timer.Start();
