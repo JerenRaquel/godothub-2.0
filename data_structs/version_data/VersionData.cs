@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Newtonsoft.Json;
 
 public partial class VersionData
 {
     private Dictionary<string, string> _keyToPath = [];
     private Dictionary<string, HashSet<BuildType>> _partialKeyToBuilds = [];
+    private Dictionary<string, List<string>> _versions = [];
 
     public string[] Keys => [.. _keyToPath.Keys];
     public string[] SortedKeys
@@ -19,6 +17,7 @@ public partial class VersionData
             return data;
         }
     }
+    public string[] Versions => [.. _versions.Keys];
 
     public VersionData() { }
 
@@ -35,8 +34,12 @@ public partial class VersionData
         if (!_partialKeyToBuilds.ContainsKey(keys.Item2))
             _partialKeyToBuilds.Add(keys.Item2, []);
 
+        if (!_versions.ContainsKey(version.ToString()))
+            _versions.Add(version.ToString(), []);
+
         _keyToPath.Add(keys.Item1, path);
         _partialKeyToBuilds[keys.Item2].Add(type);
+        _versions[version.ToString()].Add(keys.Item1);
         return keys.Item1;
     }
 
@@ -81,6 +84,8 @@ public partial class VersionData
         _keyToPath.Remove(key);
         _partialKeyToBuilds[partialKey].Remove(parts.build);
         if (_partialKeyToBuilds[partialKey].Count == 0) _partialKeyToBuilds.Remove(partialKey);
+        _versions[parts.version.ToString()].Remove(key);
+        if (_versions[parts.version.ToString()].Count == 0) _versions.Remove(parts.version.ToString());
         return true;
     }
 
@@ -108,6 +113,7 @@ public partial class VersionData
 
         _keyToPath = [];
         _partialKeyToBuilds = [];
+        _versions = [];
 
         foreach (KeyValuePair<string, string> entry in other._keyToPath)
             _keyToPath.Add(entry.Key, entry.Value);
@@ -117,6 +123,13 @@ public partial class VersionData
             _partialKeyToBuilds.Add(entry.Key, []);
             foreach (BuildType type in entry.Value)
                 _partialKeyToBuilds[entry.Key].Add(type);
+        }
+
+        foreach (KeyValuePair<string, List<string>> entry in other._versions)
+        {
+            _versions.Add(entry.Key, []);
+            foreach (string item in entry.Value)
+                _versions[entry.Key].Add(item);
         }
     }
 

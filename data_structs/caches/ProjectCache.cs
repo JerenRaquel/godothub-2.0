@@ -127,6 +127,19 @@ public partial class ProjectCache : Cache
 
     public bool UsesGDExt(string projectName) => GetProject(projectName)?.IsGDExt ?? false;
 
+    public string[] GetVersions()
+    {
+        HashSet<string> data = [];
+        foreach (KeyValuePair<string, ProjectDataState> entry in _projects)
+        {
+            string versionStr = entry.Value.VersionStr;
+            if (data.Contains(versionStr)) continue;
+
+            data.Add(versionStr);
+        }
+        return [.. data];
+    }
+
     public string ProjectNameToPartialKey(string projectName)
     {
         ProjectDataState data = GetProject(projectName);

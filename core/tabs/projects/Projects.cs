@@ -1,10 +1,21 @@
 using Godot;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 public partial class Projects : PanelContainer
 {
+    // https://learn.microsoft.com/en-us/dotnet/api/system.array.sort?view=net-8.0
+    public class ReverseComparer : IComparer
+    {
+        // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
+        int IComparer.Compare(object x, object y)
+        {
+            return new CaseInsensitiveComparer().Compare(y, x);
+        }
+    }
+
     private PackedScene _projectEntryPackedScene;
     private Button _newButton;
     private Button _importButton;
@@ -12,6 +23,7 @@ public partial class Projects : PanelContainer
     private OptionButton _sortOptionButton;
     private CheckBox _checkBox;
     private LineEdit _filterLineEdit;
+    private OptionButton _versionOptionButton;
     private VBoxContainer _projectEntryContainer;
     private BuildPrompt _buildPrompt;
 
@@ -29,8 +41,15 @@ public partial class Projects : PanelContainer
         _checkBox.Toggled += OnSortToggled;
         _filterLineEdit = GetNode<LineEdit>("%FilterLineEdit");
         _filterLineEdit.TextChanged += OnFilterChanged;
+        _versionOptionButton = GetNode<OptionButton>("%VersionOptionButton");
+        _versionOptionButton.ItemSelected += OnVersionChanged;
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
+
+        string[] versions = ProjectCache.Instance.GetVersions();
+        Array.Sort(versions, new ReverseComparer());
+        foreach (string version in versions)
+            _versionOptionButton.AddItem(version);
 
         FillProjectContainer();
     }
@@ -62,6 +81,23 @@ public partial class Projects : PanelContainer
             _projectEntryContainer.AddChild(entryInstance);
             entryInstance.Initialize(projectName);
             entryInstance.LaunchRequested += OnLaunchRequested;
+        }
+    }
+
+    private void Filter()
+    {
+        string text = _filterLineEdit.Text;
+        int versionIDX = _versionOptionButton.Selected;
+        string version = _versionOptionButton.GetItemText(versionIDX);
+        foreach (ProjectEntry entry in _projectEntryContainer.GetChildren().Cast<ProjectEntry>())
+        {
+            if (text.Length == 0 || entry.Contains(text))
+                if (versionIDX == 0 || entry.Contains(version))
+                {
+                    entry.Show();
+                    continue;
+                }
+            entry.Hide();
         }
     }
 
@@ -99,16 +135,9 @@ public partial class Projects : PanelContainer
         FillProjectContainer();
     }
 
-    private void OnFilterChanged(string text)
-    {
-        foreach (ProjectEntry entry in _projectEntryContainer.GetChildren().Cast<ProjectEntry>())
-        {
-            if (text.Length == 0 || entry.Contains(text))
-                entry.Show();
-            else
-                entry.Hide();
-        }
-    }
+    private void OnFilterChanged(string text) => Filter();
+
+    private void OnVersionChanged(long index) => Filter();
 
     private void OnSortChanged(long _index) => FillProjectContainer();
 
@@ -122,4 +151,5 @@ public partial class Projects : PanelContainer
     }
 
     private void OnLaunchRequested(string projectName) => _buildPrompt.Open(projectName);
+
 }

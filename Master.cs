@@ -8,9 +8,9 @@ public partial class Master : Node
     public override void _EnterTree()
     {
         string userDirectory = ProjectSettings.GlobalizePath("user://");
-        ProjectCache.Initialize(userDirectory);
         SettingsCache.Initialize(userDirectory);
         VersionCache.Initialize(userDirectory);
+        ProjectCache.Initialize(userDirectory);
     }
 
     // TEMP: Replace with Normal Write once Done
