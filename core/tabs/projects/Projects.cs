@@ -50,13 +50,13 @@ public partial class Projects : PanelContainer
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
         _sidePanel = GetNode<ProjectSidePanel>("%ProjectSidePanel");
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
+        _buildPrompt.BuildUpdated += OnBuildUpdated;
 
         string[] versions = ProjectCache.Instance.GetVersions();
         Array.Sort(versions, new ReverseComparer());
         foreach (string version in versions)
             _versionOptionButton.AddItem(version);
 
-        Name = $"Projects [{ProjectCache.Instance.ProjectCount}]";
         FillProjectContainer();
     }
 
@@ -91,6 +91,7 @@ public partial class Projects : PanelContainer
             entryInstance.LaunchRequested += OnLaunchRequested;
             entryInstance.Toggled += OnToggled;
         }
+        Name = $"Projects [{ProjectCache.Instance.ProjectCount}]";
     }
 
     private void Filter()
@@ -159,7 +160,13 @@ public partial class Projects : PanelContainer
         FillProjectContainer();
     }
 
-    private void OnLaunchRequested(string projectName) => _buildPrompt.Open(projectName);
+    private void OnLaunchRequested(string projectName)
+    {
+        if (ProjectCache.Instance.GetBuild(projectName) == VersionData.BuildType.UNKNOWN)
+            _buildPrompt.Open(projectName);
+        else
+            GD.Print("Launch!");    // TODO: Replace with project launch
+    }
 
     private void OnToggled(string projectName, bool state)
     {
@@ -184,4 +191,6 @@ public partial class Projects : PanelContainer
         GD.Print(path);
         FileDialogManager.Instance.DataCompiled -= OnImportFileLocated;
     }
+
+    private void OnBuildUpdated(string projectName) => _projectEntries[projectName].UpdateProjectLabel();
 }

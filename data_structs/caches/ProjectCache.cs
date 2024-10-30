@@ -91,6 +91,17 @@ public partial class ProjectCache : Cache
         file.Close();
     }
 
+    public bool SetBuild(string projectName, VersionData.BuildType build)
+    {
+        ProjectDataState project = GetProject(projectName);
+        if (project == null) return false;
+
+        project.SetBuild(build);
+        return true;
+    }
+
+    public VersionData.BuildType GetBuild(string projectName) => GetProject(projectName)?.Build ?? VersionData.BuildType.UNKNOWN;
+
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
     public string GetLocalTime(string projectName) => GetProject(projectName)?.LastEdited.ToLocalTime().ToString() ?? "Unknown";
@@ -150,12 +161,12 @@ public partial class ProjectCache : Cache
 
     public string GenerateProjectMetadataString(string projectName, bool center = false)
     {
-        string versionStr = GetProjectVersion(projectName);
+        ProjectDataState data = GetProject(projectName);
+        if (data == null) return "";
 
-        // TEMP: Requires the godot version cache
-        VersionData.BuildType buildType = VersionData.BuildType.UNKNOWN;
-
+        VersionData.BuildType buildType = data.Build;
         string buildStr = VersionData.BuildEnumToString(buildType);
+        string versionStr = data.VersionStr ?? "Unknown";
         string renderStr = GetRenderer(projectName);
         string colorCode = renderStr switch
         {

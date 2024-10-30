@@ -11,6 +11,7 @@ public partial class ProjectDataState
     private ProjectData _RAM;
     private ProjectData _ROM;
     private bool _isConfigDirty = false;
+    private bool _isDirty = false;
     private bool _usingDotNet = false;
     private DateTime _lastEdited;
     private Texture2D _icon = null;
@@ -20,6 +21,7 @@ public partial class ProjectDataState
 
     public Version VersionData => _RAM.version;
     public string VersionStr { get => _RAM.version.ToString(); }
+    public VersionData.BuildType Build => _RAM.Build;
     public ProjectData.Renderer Renderer { get => _RAM.renderer; }
     public bool HasTags { get => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0; }
     public bool IsDotNet { get => _usingDotNet; }
@@ -28,6 +30,12 @@ public partial class ProjectDataState
     public DateTime LastEdited { get => _lastEdited; }
     public Texture2D Icon { get => _icon; }
     public string RootPath => _RAM.RootPath;
+
+    public void SetBuild(VersionData.BuildType build)
+    {
+        _isDirty = true;
+        _RAM.Build = build;
+    }
 
     public string GetFullPath(bool prettify = false)
     {
@@ -49,6 +57,8 @@ public partial class ProjectDataState
         WriteEntry(writer, "IsDotNet", _usingDotNet);
         // Version
         WriteEntry(writer, "Version", _ROM.version.ToString());
+        // Build
+        WriteEntry(writer, "Build", global::VersionData.BuildEnumToString(Build));
         // Renderer
         WriteEntry(writer, "Renderer", _ROM.RendererString);
         // Project Name
@@ -71,21 +81,26 @@ public partial class ProjectDataState
 
     public bool WriteToROM()
     {
-        if (!_isConfigDirty) return true;
+        if (!_isConfigDirty)
+        {
+            if (_isDirty)
+            {
+                _ROM = new(_RAM);
+                _isDirty = false;
+            }
+            return true;
+        }
 
         GD.Print("Writing ", projectName, " to Config file...");
 
         _isConfigDirty = false;
-        return true;// TEMP
 
+        // TODO: Write ROM to config file
         // ConfigFile config = new();
         // if (config.Load(_ROM.ProjectGodotPath) != Error.Ok) return false;
 
-        // _ROM = new(_RAM);
-
-        // // TODO: Write ROM to config file
-
-        // return true;
+        _ROM = new(_RAM);
+        return true;
     }
 
     public bool LoadUncached(ref Tuple<ConfigFile, string> configLoadData, ref string folderPath)
@@ -139,6 +154,8 @@ public partial class ProjectDataState
         _usingDotNet = ReadEntry(reader, false);
         // Version
         string versionStr = ReadEntry(reader, "Unknown");
+        // Build
+        string buildStr = ReadEntry(reader, "Unknown");
         // Renderer
         string renderer = ReadEntry(reader, "Unknown");
         // Project Name
@@ -157,11 +174,10 @@ public partial class ProjectDataState
         reader.Read();
 
 
-        _ROM = new ProjectData(versionStr, renderer, rootPath,
-            pathAdditions, favorited, [.. projectTags], [.. softwareTags]);
-        _RAM = new ProjectData(versionStr, renderer, rootPath,
-            pathAdditions, favorited, [.. projectTags], [.. softwareTags]);
+        _ROM = new(versionStr, renderer, rootPath, pathAdditions, favorited, [.. projectTags], [.. softwareTags])
+        { Build = global::VersionData.StringToBuildEnum(buildStr) };
 
+        _RAM = new(_ROM);
         _lastEdited = File.GetLastWriteTime(_ROM.ProjectGodotPath);
         SetProjectIcon(_iconPath);
 
@@ -265,6 +281,7 @@ public partial class ProjectDataState
         return data;
     }
 
+    // TODO: Integrate this
     private static void UpdateConfig<T>(ConfigFile config, string section, string key, bool remove, T value)
     {
         if (remove)

@@ -76,7 +76,7 @@ public partial class ProjectEntry : PanelContainer
         _mainButton.SetPressedNoSignal(false);
     }
 
-    private void UpdateProjectLabel()
+    public void UpdateProjectLabel()
     {
         string mainTextMETA = ProjectCache.Instance.GenerateProjectMetadataString(_projectName);
         _projectLabel.Text = mainTextMETA;
@@ -90,13 +90,15 @@ public partial class ProjectEntry : PanelContainer
 
     private void OnMainToggled(bool toggled_on)
     {
-        EmitSignal(SignalName.Toggled, _projectName, toggled_on);
         if (_timer.TimeLeft > 0.0)
         {
             _timer.Stop();
             EmitSignal(SignalName.LaunchRequested, _projectName);
+            //* Must come after launch signal -- Hence the two lines of toggle emitting
+            EmitSignal(SignalName.Toggled, _projectName, toggled_on);
             return;
         }
+        EmitSignal(SignalName.Toggled, _projectName, toggled_on);
         _timer.Start();
     }
 }

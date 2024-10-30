@@ -34,6 +34,7 @@ public partial class ProjectData
         Renderer.FORWARD => "Forward Plus",
         _ => "Unknown"
     };
+    public VersionData.BuildType Build { get; set; } = VersionData.BuildType.UNKNOWN;
 
     public ProjectData(string version, string renderer, string path, string gdextPathExtra,
         bool isFavorited, string[] projectTags, string[] softwareTags)
@@ -62,6 +63,7 @@ public partial class ProjectData
         softwareTags = [.. copy.softwareTags];
         version = new(copy.version);
         renderer = copy.renderer;
+        Build = copy.Build;
     }
 
     public override string ToString()

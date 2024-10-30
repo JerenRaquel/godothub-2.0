@@ -10,8 +10,6 @@
 
 [node name="BuildPrompt" instance=ExtResource("1_c3st5")]
 script = ExtResource("2_1lnp4")
-errorIcon = null
-passIcon = null
 
 [node name="TitleLabel" parent="MarginContainer/PanelContainer/VBoxContainer" index="0"]
 text = "Pick a Godot Build"
@@ -56,6 +54,7 @@ layout_mode = 2
 [node name="BuildOptionButton" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/MainContainer/CenterContainer2" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
+allow_reselect = true
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/MainContainer" index="4"]
 custom_minimum_size = Vector2(0, 64)
