@@ -36,6 +36,7 @@ public partial class Projects : PanelContainer
 
         _newButton = GetNode<Button>("%NewButton");
         _importButton = GetNode<Button>("%ImportButton");
+        _importButton.Pressed += OnImportPressed;
         _scanButton = GetNode<Button>("%ScanButton");
         _scanButton.Pressed += OnScanButtonPressed;
         _sortOptionButton = GetNode<OptionButton>("%SortOptionButton");
@@ -171,4 +172,16 @@ public partial class Projects : PanelContainer
             _sidePanel.SetSelected("");
     }
 
+    private void OnImportPressed()
+    {
+        FileDialogManager.Instance.Open("Locate Your Project", FileDialog.FileModeEnum.OpenFile, ["project.godot", ".gdhub"]);
+        FileDialogManager.Instance.DataCompiled += OnImportFileLocated;
+    }
+
+    private void OnImportFileLocated(string path)
+    {
+        // TODO: Verify and add project
+        GD.Print(path);
+        FileDialogManager.Instance.DataCompiled -= OnImportFileLocated;
+    }
 }

@@ -29,8 +29,8 @@ text = "New"
 
 [node name="ImportButton" type="Button" parent="VBoxContainer/HBoxContainer" index="1"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(67, 28)
 layout_mode = 2
-disabled = true
 text = "Import"
 
 [node name="ScanButton" type="Button" parent="VBoxContainer/HBoxContainer" index="2"]

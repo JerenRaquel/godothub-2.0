@@ -91,7 +91,7 @@ public partial class LocateGodotWindow : WindowBase
     private void OnChooseLocationPressed()
     {
         FileDialogManager.Instance.DataCompiled += OnFileDialogFileSelected;
-        FileDialogManager.Instance.Open("Locate Godot.Exe", FileDialog.FileModeEnum.OpenFile, "*.exe");
+        FileDialogManager.Instance.Open("Locate Godot.Exe", FileDialog.FileModeEnum.OpenFile, ["*.exe"]);
     }
 
     private void OnFileDialogFileSelected(string path)

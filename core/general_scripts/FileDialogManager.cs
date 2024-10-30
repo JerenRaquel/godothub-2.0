@@ -28,7 +28,7 @@ public partial class FileDialogManager : FileDialog
         Canceled += OnCancelled;
     }
 
-    public void Open(string title, FileModeEnum mode, string fileExt)
+    public void Open(string title, FileModeEnum mode, string[] fileExt)
     {
         if (mode != FileModeEnum.OpenFile && mode != FileModeEnum.OpenDir) return;
 
@@ -37,7 +37,7 @@ public partial class FileDialogManager : FileDialog
         if (mode == FileModeEnum.OpenDir)
             Filters = ["Folder"];
         else if (fileExt.Length > 0)
-            Filters = [fileExt];
+            Filters = fileExt;
         else
             Filters = [];
 

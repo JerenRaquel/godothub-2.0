@@ -97,7 +97,7 @@ public partial class ProjectPathInterface : InterfaceBase
     {
         _awaitingInstance = instance;
         FileDialogManager.Instance.DataCompiled += OnFileSelected;
-        FileDialogManager.Instance.Open("Locate Projects Directory", FileDialog.FileModeEnum.OpenDir, "");
+        FileDialogManager.Instance.Open("Locate Projects Directory", FileDialog.FileModeEnum.OpenDir, []);
     }
 
     private void OnFileSelected(string path)
