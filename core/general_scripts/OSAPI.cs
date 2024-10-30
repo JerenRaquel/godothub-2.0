@@ -16,7 +16,6 @@ public static partial class OSAPI
         return OpenFolder(GetDefaultUserPath() + projectName);
     }
 
-
     public static long OpenGodotProject(string godotPath, string projectName, bool withVerbose = false)
     {
         string projectPath = ProjectCache.Instance.GetProjectPath(projectName);
@@ -27,13 +26,9 @@ public static partial class OSAPI
             processID = OS.CreateProcess(godotPath, ["--path", projectPath, "-e", "--verbose"]);
         else
             processID = OS.CreateProcess(godotPath, ["--path", projectPath, "-e"]);
-
         if (processID == -1) return -1; // Failed
 
-        // TODO: Update Last Edited
-
-        // TODO: Close HUB is setting is enabled
-
+        ProjectCache.Instance.UpdateTimeAccessed(projectName);
         return processID;
     }
 

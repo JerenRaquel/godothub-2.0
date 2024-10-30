@@ -51,12 +51,10 @@ theme_override_font_sizes/font_size = 16
 alignment = 1
 selected = 0
 allow_reselect = true
-item_count = 3
+item_count = 2
 popup/item_0/text = "Nothing"
 popup/item_1/text = "Close"
 popup/item_1/id = 1
-popup/item_2/text = "Minimize"
-popup/item_2/id = 2
 
 [node name="SaveDataButton" parent="MarginContainer2/ScrollContainer2/ContentPanel" index="3" instance=ExtResource("4_i13io")]
 unique_name_in_owner = true

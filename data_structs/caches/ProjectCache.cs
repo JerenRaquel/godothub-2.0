@@ -153,10 +153,21 @@ public partial class ProjectCache : Cache
         return [.. data];
     }
 
+    public void UpdateTimeAccessed(string projectName) => GetProject(projectName)?.UpdateTimeAccessed();
+
     public string ProjectNameToPartialKey(string projectName)
     {
         ProjectDataState data = GetProject(projectName);
         return VersionData.GeneratePartialKey(data.VersionData, data.IsDotNet);
+    }
+
+    public string ProjectNameToKey(string projectName)
+    {
+        ProjectDataState data = GetProject(projectName);
+        if (data == null) return null;
+        if (data.Build == VersionData.BuildType.UNKNOWN) return null;
+
+        return VersionData.GenerateKey(data.VersionData, data.IsDotNet, data.Build);
     }
 
     public string GenerateProjectMetadataString(string projectName, bool center = false)

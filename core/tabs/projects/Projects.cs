@@ -70,8 +70,9 @@ public partial class Projects : PanelContainer
         }
     }
 
-    private void FillProjectContainer()
+    public void FillProjectContainer()
     {
+        GD.Print("Resorted?");
         foreach (KeyValuePair<string, ProjectEntry> entry in _projectEntries)
         {
             if (entry.Value.IsQueuedForDeletion()) continue;
@@ -165,7 +166,32 @@ public partial class Projects : PanelContainer
         if (ProjectCache.Instance.GetBuild(projectName) == VersionData.BuildType.UNKNOWN)
             _buildPrompt.Open(projectName);
         else
-            GD.Print("Launch!");    // TODO: Replace with project launch
+        {
+            string key = ProjectCache.Instance.ProjectNameToKey(projectName);
+            if (key != null)    // Success
+            {
+                string godotExe = VersionCache.Instance.GetPath(key);
+                if (godotExe.Length > 0 && OSAPI.OpenGodotProject(godotExe, projectName) >= 0)
+                {
+
+                    //? Is there a better way to fetch this key?
+                    if (SettingsCache.Instance.GetData("Application/Config/HUB_behavior/LONG") == 0)
+                    {
+                        CallDeferred("FillProjectContainer");
+                        return; //* Success
+                    }
+                    else
+                    {
+                        GetTree().Quit();
+                        return;
+                    }
+                }
+            }
+
+            // Fail
+            // TODO: Send fail notification
+            GD.PushError("Failed to launch");
+        }
     }
 
     private void OnToggled(string projectName, bool state)

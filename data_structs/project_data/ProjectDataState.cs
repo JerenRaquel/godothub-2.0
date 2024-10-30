@@ -20,15 +20,15 @@ public partial class ProjectDataState
     public string projectName;
 
     public Version VersionData => _RAM.version;
-    public string VersionStr { get => _RAM.version.ToString(); }
+    public string VersionStr => _RAM.version.ToString();
     public VersionData.BuildType Build => _RAM.Build;
-    public ProjectData.Renderer Renderer { get => _RAM.renderer; }
-    public bool HasTags { get => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0; }
-    public bool IsDotNet { get => _usingDotNet; }
-    public bool IsGDExt { get => _RAM.ProjectPathAddtion?.Length > 0; }
-    public bool IsFavorited { get => _RAM.IsFavorited; }
-    public DateTime LastEdited { get => _lastEdited; }
-    public Texture2D Icon { get => _icon; }
+    public ProjectData.Renderer Renderer => _RAM.renderer;
+    public bool HasTags => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0;
+    public bool IsDotNet => _usingDotNet;
+    public bool IsGDExt => _RAM.ProjectPathAddtion?.Length > 0;
+    public bool IsFavorited => _RAM.IsFavorited;
+    public DateTime LastEdited => _lastEdited;
+    public Texture2D Icon => _icon;
     public string RootPath => _RAM.RootPath;
 
     public void SetBuild(VersionData.BuildType build)
@@ -183,6 +183,8 @@ public partial class ProjectDataState
 
         return true;
     }
+
+    public void UpdateTimeAccessed() => _lastEdited = DateTime.Now;
 
     private void SetProjectIcon(ConfigFile config)
     {
