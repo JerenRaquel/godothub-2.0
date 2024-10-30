@@ -25,7 +25,10 @@ public partial class Projects : PanelContainer
     private LineEdit _filterLineEdit;
     private OptionButton _versionOptionButton;
     private VBoxContainer _projectEntryContainer;
+    private ProjectSidePanel _sidePanel;
     private BuildPrompt _buildPrompt;
+
+    private Dictionary<string, ProjectEntry> _projectEntries = [];
 
     public override void _Ready()
     {
@@ -44,6 +47,7 @@ public partial class Projects : PanelContainer
         _versionOptionButton = GetNode<OptionButton>("%VersionOptionButton");
         _versionOptionButton.ItemSelected += OnVersionChanged;
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
+        _sidePanel = GetNode<ProjectSidePanel>("%ProjectSidePanel");
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
 
         string[] versions = ProjectCache.Instance.GetVersions();
@@ -56,21 +60,22 @@ public partial class Projects : PanelContainer
 
     public void UpdatePaths()
     {
-        foreach (ProjectEntry entry in _projectEntryContainer.GetChildren().Cast<ProjectEntry>())
+        foreach (KeyValuePair<string, ProjectEntry> entry in _projectEntries)
         {
-            if (entry.IsQueuedForDeletion()) continue;
+            if (entry.Value.IsQueuedForDeletion()) continue;
 
-            entry.UpdatePath();
+            entry.Value.UpdatePath();
         }
     }
 
     private void FillProjectContainer()
     {
-        foreach (ProjectEntry entry in _projectEntryContainer.GetChildren().Cast<ProjectEntry>())
+        foreach (KeyValuePair<string, ProjectEntry> entry in _projectEntries)
         {
-            if (entry.IsQueuedForDeletion()) continue;
-            entry.QueueFree();
+            if (entry.Value.IsQueuedForDeletion()) continue;
+            entry.Value.QueueFree();
         }
+        _projectEntries.Clear();
 
         List<string> projectNames = ProjectCache.Instance.ProjectNames;
         projectNames.Sort(CompareFunc);
@@ -79,8 +84,10 @@ public partial class Projects : PanelContainer
         {
             ProjectEntry entryInstance = _projectEntryPackedScene.Instantiate<ProjectEntry>();
             _projectEntryContainer.AddChild(entryInstance);
+            _projectEntries.Add(projectName, entryInstance);
             entryInstance.Initialize(projectName);
             entryInstance.LaunchRequested += OnLaunchRequested;
+            entryInstance.Toggled += OnToggled;
         }
     }
 
@@ -89,15 +96,15 @@ public partial class Projects : PanelContainer
         string text = _filterLineEdit.Text;
         int versionIDX = _versionOptionButton.Selected;
         string version = _versionOptionButton.GetItemText(versionIDX);
-        foreach (ProjectEntry entry in _projectEntryContainer.GetChildren().Cast<ProjectEntry>())
+        foreach (KeyValuePair<string, ProjectEntry> entry in _projectEntries)
         {
-            if (text.Length == 0 || entry.Contains(text))
-                if (versionIDX == 0 || entry.Contains(version))
+            if (text.Length == 0 || entry.Value.Contains(text))
+                if (versionIDX == 0 || entry.Value.Contains(version))
                 {
-                    entry.Show();
+                    entry.Value.Show();
                     continue;
                 }
-            entry.Hide();
+            entry.Value.Hide();
         }
     }
 
@@ -151,5 +158,16 @@ public partial class Projects : PanelContainer
     }
 
     private void OnLaunchRequested(string projectName) => _buildPrompt.Open(projectName);
+
+    private void OnToggled(string projectName, bool state)
+    {
+        if (_sidePanel.SelectedProject != null)
+            _projectEntries[_sidePanel.SelectedProject].ToggleOff();
+
+        if (state)
+            _sidePanel.SetSelected(projectName);
+        else
+            _sidePanel.SetSelected("");
+    }
 
 }

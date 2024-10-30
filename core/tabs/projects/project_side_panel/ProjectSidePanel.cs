@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class ProjectSidePanel : MarginContainer
 {
@@ -13,7 +12,15 @@ public partial class ProjectSidePanel : MarginContainer
     private Button _deleteButton;
     private VBoxContainer _quickToolRoot;
 
-    // Called when the node enters the scene tree for the first time.
+    private bool _isDisabled;
+
+    public string SelectedProject { get; private set; } = null;
+    public bool Disabled
+    {
+        get => _isDisabled;
+        set => SetPanelState(value);
+    }
+
     public override void _Ready()
     {
         _openButton = GetNode<Button>("%OpenButton");
@@ -26,19 +33,34 @@ public partial class ProjectSidePanel : MarginContainer
         _deleteButton = GetNode<Button>("%DeleteButton");
         _quickToolRoot = GetNode<VBoxContainer>("%QuickToolRoot");
 
-        _openButton.Disabled = true;
-        _openWithOutToolsButton.Disabled = true;
-        _runButton.Disabled = true;
-        _changeVersionButton.Disabled = true;
-        _openFolderButton.Disabled = true;
-        _renameButton.Disabled = true;
-        _cloneButton.Disabled = true;
-        _deleteButton.Disabled = true;
+        SetPanelState(true);
         _quickToolRoot.Hide();
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
+    public void SetSelected(string projectName)
     {
+        if (projectName.Length == 0)
+        {
+            SelectedProject = null;
+            SetPanelState(true);
+        }
+        else
+        {
+            SelectedProject = projectName;
+            SetPanelState(false);
+        }
+    }
+
+    private void SetPanelState(bool disabled)
+    {
+        _isDisabled = disabled;
+        _openButton.Disabled = disabled;
+        _openWithOutToolsButton.Disabled = disabled;
+        _runButton.Disabled = disabled;
+        _changeVersionButton.Disabled = disabled;
+        _openFolderButton.Disabled = disabled;
+        _renameButton.Disabled = disabled;
+        _cloneButton.Disabled = disabled;
+        _deleteButton.Disabled = disabled;
     }
 }

@@ -3,6 +3,7 @@ using Godot;
 public partial class ProjectEntry : PanelContainer
 {
     [Signal] public delegate void LaunchRequestedEventHandler(string projectName);
+    [Signal] public delegate void ToggledEventHandler(string projectName, bool state);
 
     // Nodes
     private Timer _timer;
@@ -69,6 +70,12 @@ public partial class ProjectEntry : PanelContainer
         return false;
     }
 
+    public void ToggleOff()
+    {
+        _timer.Stop();
+        _mainButton.SetPressedNoSignal(false);
+    }
+
     private void UpdateProjectLabel()
     {
         string mainTextMETA = ProjectCache.Instance.GenerateProjectMetadataString(_projectName);
@@ -76,17 +83,14 @@ public partial class ProjectEntry : PanelContainer
         _cachedProjectMETAText = mainTextMETA.ToLower();
 
         if (ProjectCache.Instance.HasTags(_projectName))
-        {
             _tagButton.Show();
-        }
         else
-        {
             _tagButton.Hide();
-        }
     }
 
-    private void OnMainToggled(bool _toggled_on)
+    private void OnMainToggled(bool toggled_on)
     {
+        EmitSignal(SignalName.Toggled, _projectName, toggled_on);
         if (_timer.TimeLeft > 0.0)
         {
             _timer.Stop();
