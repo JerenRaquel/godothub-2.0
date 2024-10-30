@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c0ba1xq2k0h15"]
+[gd_scene load_steps=12 format=3 uid="uid://c0ba1xq2k0h15"]
 
 [ext_resource type="Script" path="res://Master.cs" id="1_ogyj1"]
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="2_4tg3t"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://cfn5g8ax1ltl5" path="res://core/tabs/settings/settings.tscn" id="4_qcrru"]
 [ext_resource type="PackedScene" uid="uid://cxhuuu006jdni" path="res://core/components/control_shield/control_shield.tscn" id="6_2amfe"]
 [ext_resource type="Script" path="res://core/general_scripts/FileDialogManager.cs" id="7_ip4lf"]
+[ext_resource type="Script" path="res://core/general_scripts/NotifcationManager.cs" id="9_3p1qu"]
+[ext_resource type="PackedScene" uid="uid://q340oq3iudlb" path="res://core/components/notification/notification.tscn" id="10_7wqy2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xmrie"]
 
@@ -125,3 +127,13 @@ file_mode = 0
 access = 2
 filters = PackedStringArray("*.exe")
 script = ExtResource("7_ip4lf")
+
+[node name="NotifcationManager" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_3p1qu")
+_notification = ExtResource("10_7wqy2")

@@ -173,7 +173,7 @@ public partial class Projects : PanelContainer
                 string godotExe = VersionCache.Instance.GetPath(key);
                 if (godotExe.Length > 0 && OSAPI.OpenGodotProject(godotExe, projectName) >= 0)
                 {
-
+                    NotifcationManager.Instance.NotifyValid("ProjectLaunching");
                     //? Is there a better way to fetch this key?
                     if (SettingsCache.Instance.GetData("Application/Config/HUB_behavior/LONG") == 0)
                     {
@@ -189,8 +189,7 @@ public partial class Projects : PanelContainer
             }
 
             // Fail
-            // TODO: Send fail notification
-            GD.PushError("Failed to launch");
+            NotifcationManager.Instance.NotifyError("Failed to launch project.");
         }
     }
 
