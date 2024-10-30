@@ -107,6 +107,8 @@ public partial class ProjectCache : Cache
         return data.GetFullPath(prettify);
     }
 
+    public string GetProjectFolder(string projectName) => GetProject(projectName)?.RootPath;
+
     public string GetRenderer(string projectName)
     {
         ProjectData.Renderer renderer = GetProject(projectName)?.Renderer ?? ProjectData.Renderer.INVALID;

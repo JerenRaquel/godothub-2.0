@@ -27,6 +27,7 @@ public partial class ProjectDataState
     public bool IsFavorited { get => _RAM.IsFavorited; }
     public DateTime LastEdited { get => _lastEdited; }
     public Texture2D Icon { get => _icon; }
+    public string RootPath => _RAM.RootPath;
 
     public string GetFullPath(bool prettify = false)
     {

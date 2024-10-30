@@ -28,6 +28,7 @@ public partial class ProjectSidePanel : MarginContainer
         _runButton = GetNode<Button>("%RunButton");
         _changeVersionButton = GetNode<Button>("%ChangeVerButton");
         _openFolderButton = GetNode<Button>("%OpenFolderButton");
+        _openFolderButton.Pressed += OnFolderOpenPressed;
         _renameButton = GetNode<Button>("%RenameButton");
         _cloneButton = GetNode<Button>("%CloneButton");
         _deleteButton = GetNode<Button>("%DeleteButton");
@@ -63,4 +64,7 @@ public partial class ProjectSidePanel : MarginContainer
         _cloneButton.Disabled = disabled;
         _deleteButton.Disabled = disabled;
     }
+
+    private void OnFolderOpenPressed()
+        => OSAPI.OpenFolder(ProjectCache.Instance.GetProjectFolder(SelectedProject));
 }

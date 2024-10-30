@@ -2,7 +2,11 @@ using Godot;
 
 public static partial class OSAPI
 {
-    public static bool OpenFolder(string path) => OS.ShellShowInFileManager(path) == Error.Ok;
+    public static bool OpenFolder(string path)
+    {
+        if (path == null || path.Length == 0) return false;
+        return OS.ShellShowInFileManager(path) == Error.Ok;
+    }
 
     public static long OpenGodotProject(string godotPath, string projectName, bool withVerbose = false)
     {
