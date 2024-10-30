@@ -2,11 +2,20 @@ using Godot;
 
 public static partial class OSAPI
 {
+    private static string _defaultUserFolderPath = null;
+
     public static bool OpenFolder(string path)
     {
         if (path == null || path.Length == 0) return false;
         return OS.ShellShowInFileManager(path) == Error.Ok;
     }
+
+    public static bool OpenUserFolder(string projectName)
+    {
+        // TODO: Check to see if the project has a different user path
+        return OpenFolder(GetDefaultUserPath() + projectName);
+    }
+
 
     public static long OpenGodotProject(string godotPath, string projectName, bool withVerbose = false)
     {
@@ -38,5 +47,16 @@ public static partial class OSAPI
         if (processID == -1) return -1; // Failed
 
         return processID;
+    }
+
+    private static string GetDefaultUserPath()
+    {
+        if (_defaultUserFolderPath != null) return _defaultUserFolderPath;
+
+        string appUserPath = ProjectSettings.GlobalizePath("user://");
+        appUserPath = appUserPath.Replace((string)ProjectSettings.GetSetting("application/config/name") + "/", "");
+        _defaultUserFolderPath ??= appUserPath;
+
+        return _defaultUserFolderPath;
     }
 }
