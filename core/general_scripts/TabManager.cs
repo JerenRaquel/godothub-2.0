@@ -3,19 +3,14 @@ using System;
 
 public partial class TabManager : TabContainer
 {
-    private Projects _projectTab;
+    [Export] private Projects _projectTab;
     // TODO: Templates
-    private GodotVersions _versionsTab;
+    [Export] private GodotVersions _versionsTab;
     // TODO: Software
-    private Settings _settingsTab;
+    [Export] private Settings _settingsTab;
 
     public override void _Ready()
     {
-        _projectTab = GetNode<Projects>("%Projects");
-
-        _versionsTab = GetNode<GodotVersions>("%Godot Versions");
-
-        _settingsTab = GetNode<Settings>("%Settings");
         _settingsTab.SettingUpdated += OnSettingUpdated;
     }
 

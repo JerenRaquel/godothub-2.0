@@ -55,6 +55,7 @@ public partial class Projects : PanelContainer
         foreach (string version in versions)
             _versionOptionButton.AddItem(version);
 
+        Name = $"Projects [{ProjectCache.Instance.ProjectCount}]";
         FillProjectContainer();
     }
 
