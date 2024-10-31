@@ -41,10 +41,14 @@ public partial class ProjectPathInterface : InterfaceBase
         }
 
         List<string> data = [];
-        foreach (ProjectPath projectPath in _contentContainer.GetChildren().Cast<ProjectPath>())
+        foreach (Control projectPath in _contentContainer.GetChildren())
         {
-            if (!projectPath.IsValid) continue;
-            data.Add(projectPath.Path.Replace("\\", "/"));
+            if (projectPath is ProjectPath)
+            {
+                if (!(projectPath as ProjectPath).IsValid) continue;
+                data.Add((projectPath as ProjectPath).Path.Replace("\\", "/"));
+            }
+
         }
 
         return new([.. data]);

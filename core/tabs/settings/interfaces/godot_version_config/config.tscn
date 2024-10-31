@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxw0qt3ofubhg"]
+
+[ext_resource type="PackedScene" uid="uid://dsnnuiiwm8vo3" path="res://core/tabs/settings/interfaces/base/interface_base.tscn" id="1_42p77"]
+[ext_resource type="Script" path="res://core/tabs/settings/interfaces/godot_version_config/GodotVersionConfig.cs" id="2_m5ioh"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_uvtgo"]
+
+[node name="Config" instance=ExtResource("1_42p77")]
+script = ExtResource("2_m5ioh")
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/SidePanel" index="0"]
+layout_mode = 2
+text = "View Mode"
+label_settings = ExtResource("3_uvtgo")
+
+[node name="ViewModeCheckButton" type="CheckButton" parent="MarginContainer2/ScrollContainer2/ContentPanel" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+button_pressed = true
+text = "Display As Cards"

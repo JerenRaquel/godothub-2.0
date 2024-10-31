@@ -59,8 +59,13 @@ public partial class GodotVersions : PanelContainer
 
     private void Filter()
     {
-        // TODO: Determine if we are in card or list view
-        foreach (IGodotVersionEntryInterface item in _cardGrid.GetChildren().Cast<IGodotVersionEntryInterface>())
+        IGodotVersionEntryInterface[] items;
+        if (SettingsCache.Instance.GetData("Godot Version Settings/Config/view_mode/BOOL"))
+            items = (IGodotVersionEntryInterface[])_cardGrid.GetChildren().Cast<IGodotVersionEntryInterface>();
+        else
+            items = []; // TODO: Fetch List Items
+
+        foreach (IGodotVersionEntryInterface item in items)
         {
             if (_languageOptionButton.Selected == 1)    // Only GDScript
             {
@@ -122,12 +127,19 @@ public partial class GodotVersions : PanelContainer
 
     private void OnVersionLocated(string key)
     {
-        // TODO: Determine which version to spawn based on display
-
-        // TEMP: Remove once TODO^ is compete
-        VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
-        Control card = AddCard(parts.version.ToString(), parts.build, parts.isCSharp);
-        _versions.Add(card, key);
+        //? Is there a better way than hard coding this?
+        if (SettingsCache.Instance.GetData("Godot Version Settings/Config/view_mode/BOOL"))
+        {
+            VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
+            Control card = AddCard(parts.version.ToString(), parts.build, parts.isCSharp);
+            _versions.Add(card, key);
+        }
+        else
+        {
+            // TODO: Replace and implement list entries
+            if (NotifcationManager.Instance == null) return;
+            NotifcationManager.Instance.NotifyWarning("Attempted to add a list item when not being implemented.");
+        }
     }
 
     private void OnOptionChanged(long _index) => Filter();
