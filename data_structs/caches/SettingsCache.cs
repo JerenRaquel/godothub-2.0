@@ -91,4 +91,15 @@ public partial class SettingsCache : Cache
 
     public SettingsData.Data GetData(string key) => _RAM.GetData(key);
 
+    public SettingsData.Data GetDataOrSetDefault(string key, SettingsData.Data defaultValue)
+    {
+        SettingsData.Data data = _RAM.GetData(key);
+        if (data.IsNull)
+        {
+            _RAM.AddOrUpdate(key, defaultValue);
+            return defaultValue;
+        }
+        return data;
+    }
+
 }

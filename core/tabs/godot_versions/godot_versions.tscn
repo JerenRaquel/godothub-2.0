@@ -114,7 +114,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_i60je")
 
-[node name="DeleteButton" parent="VBoxContainer/ToolBar/HBoxContainer" index="13" instance=ExtResource("2_sj8r8")]
+[node name="ViewCheckButton" type="CheckButton" parent="VBoxContainer/ToolBar/HBoxContainer" index="13"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Cards"
+
+[node name="VSeparator5" type="VSeparator" parent="VBoxContainer/ToolBar/HBoxContainer" index="14"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i60je")
+
+[node name="DeleteButton" parent="VBoxContainer/ToolBar/HBoxContainer" index="15" instance=ExtResource("2_sj8r8")]
 unique_name_in_owner = true
 layout_mode = 2
 

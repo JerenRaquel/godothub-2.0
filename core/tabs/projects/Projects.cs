@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class Projects : PanelContainer
+public partial class Projects : TabBase
 {
     // https://learn.microsoft.com/en-us/dotnet/api/system.array.sort?view=net-8.0
     public class ReverseComparer : IComparer

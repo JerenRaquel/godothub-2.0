@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://duq3gfi0ooci4"]
+[gd_scene load_steps=3 format=3 uid="uid://duq3gfi0ooci4"]
 
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_u57nq"]
+[ext_resource type="Script" path="res://core/tabs/base/TabBase.cs" id="2_yrqg5"]
 
 [node name="TabBase" type="PanelContainer"]
 anchors_preset = 15
@@ -9,5 +10,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_u57nq")
+script = ExtResource("2_yrqg5")
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true

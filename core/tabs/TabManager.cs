@@ -12,6 +12,11 @@ public partial class TabManager : TabContainer
     public override void _Ready()
     {
         _settingsTab.SettingUpdated += OnSettingUpdated;
+
+        SettingsCache.Instance.LoadData();
+        _projectTab.LoadData();
+        _versionsTab.LoadData();
+        _settingsTab.LoadData();
     }
 
     private void OnSettingUpdated(string key)

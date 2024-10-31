@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class GodotVersions : PanelContainer
+public partial class GodotVersions : TabBase
 {
+    public const string VIEW_TAG = "GLOBAL/GodotVersion/view_mode/BOOL";
+
     private readonly VersionData.BuildType[] BUILD_MAP = [
         VersionData.BuildType.UNKNOWN,
         VersionData.BuildType.DEV,
@@ -21,12 +23,18 @@ public partial class GodotVersions : PanelContainer
     private Button _runButton;
     private OptionButton _languageOptionButton;
     private OptionButton _buildOptionButton;
+    private CheckButton _viewCheckButton;
     private Button _deleteButton;
     private GridContainer _cardGrid;
     private LocateGodotWindow _locateWindow;
 
     private Dictionary<Control, string> _versions = [];
     private Control _currentlySelected = null;
+
+    public override void _ExitTree()
+    {
+        SettingsCache.Instance.AddOrUpdate(VIEW_TAG, _viewCheckButton.ButtonPressed);
+    }
 
     public override void _Ready()
     {
@@ -41,6 +49,8 @@ public partial class GodotVersions : PanelContainer
         _languageOptionButton.ItemSelected += OnOptionChanged;
         _buildOptionButton = GetNode<OptionButton>("%BuildOptionButton");
         _buildOptionButton.ItemSelected += OnOptionChanged;
+        _viewCheckButton = GetNode<CheckButton>("%ViewCheckButton");
+        _viewCheckButton.Toggled += OnViewToggled;
         _deleteButton = GetNode<Button>("%DeleteButton");
         _deleteButton.Pressed += OnDeletePressed;
         _cardGrid = GetNode<GridContainer>("%CardViewContainer");
@@ -48,11 +58,28 @@ public partial class GodotVersions : PanelContainer
         _locateWindow.VersionLocated += OnVersionLocated;
 
         ToggleEntryButtons(true);
+    }
+
+    public override void LoadData()
+    {
+        _viewCheckButton.SetPressedNoSignal(SettingsCache.Instance.GetDataOrSetDefault(VIEW_TAG, new(true)));
+
         RefreshEntries();
     }
 
     private void RefreshEntries()
     {
+        foreach (KeyValuePair<Control, string> entry in _versions)
+        {
+            if (entry.Key.IsQueuedForDeletion()) continue;
+
+            entry.Key.QueueFree();
+        }
+        _versions = [];
+        (_currentlySelected as IGodotVersionEntryInterface)?.ToggleOff();
+        _currentlySelected = null;
+        _doubleClickTimer.Stop();
+
         foreach (string key in VersionCache.Instance.SortedKeys)
             OnVersionLocated(key);
     }
@@ -60,7 +87,7 @@ public partial class GodotVersions : PanelContainer
     private void Filter()
     {
         IGodotVersionEntryInterface[] items;
-        if (SettingsCache.Instance.GetData("Godot Version Settings/Config/view_mode/BOOL"))
+        if (SettingsCache.Instance.GetData(VIEW_TAG))
             items = (IGodotVersionEntryInterface[])_cardGrid.GetChildren().Cast<IGodotVersionEntryInterface>();
         else
             items = []; // TODO: Fetch List Items
@@ -127,8 +154,7 @@ public partial class GodotVersions : PanelContainer
 
     private void OnVersionLocated(string key)
     {
-        //? Is there a better way than hard coding this?
-        if (SettingsCache.Instance.GetData("Godot Version Settings/Config/view_mode/BOOL"))
+        if (SettingsCache.Instance.GetData(VIEW_TAG))
         {
             VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
             Control card = AddCard(parts.version.ToString(), parts.build, parts.isCSharp);
@@ -181,5 +207,11 @@ public partial class GodotVersions : PanelContainer
         string key = _versions[_currentlySelected];
         string path = VersionCache.Instance.GetPath(key);
         OSAPI.OpenFolder(path);
+    }
+
+    private void OnViewToggled(bool toggled)
+    {
+        SettingsCache.Instance.AddOrUpdate(VIEW_TAG, new(toggled));
+        RefreshEntries();
     }
 }

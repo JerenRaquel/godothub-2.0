@@ -1,11 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://cfn5g8ax1ltl5"]
+[gd_scene load_steps=8 format=3 uid="uid://cfn5g8ax1ltl5"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_0lcxs"]
 [ext_resource type="PackedScene" uid="uid://bhuwv5aw8o6sg" path="res://core/components/tree_section/tree_section.tscn" id="2_0r411"]
 [ext_resource type="Script" path="res://core/tabs/settings/Settings.cs" id="2_ekqul"]
 [ext_resource type="PackedScene" uid="uid://ddo6x8jho4viw" path="res://core/tabs/settings/interfaces/config/config.tscn" id="4_jlup6"]
 [ext_resource type="PackedScene" uid="uid://bi47wwkat4hc3" path="res://core/tabs/settings/interfaces/project_paths/paths.tscn" id="5_waqhd"]
-[ext_resource type="PackedScene" uid="uid://bxw0qt3ofubhg" path="res://core/tabs/settings/interfaces/godot_version_config/config.tscn" id="6_m3yrf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_akyxs"]
 
@@ -15,7 +14,7 @@
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_akyxs")
 script = ExtResource("2_ekqul")
-interfaces = [NodePath("HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Application"), NodePath("HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Project Settings"), NodePath("HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Godot Version Settings")]
+interfaces = [NodePath("HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Application"), NodePath("HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Project Settings")]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
 layout_mode = 2
@@ -52,17 +51,6 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_ndewo")
 layout_mode = 2
 headerName = "Project Settings"
 subButtons = PackedStringArray("Defaults", "Paths")
-
-[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/PanelContainer/ScrollContainer/SectionContainers" index="3"]
-custom_minimum_size = Vector2(0, 16)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/separator = SubResource("StyleBoxEmpty_ndewo")
-
-[node name="GodotVersionSettings" parent="HBoxContainer/PanelContainer/ScrollContainer/SectionContainers" index="4" instance=ExtResource("2_0r411")]
-layout_mode = 2
-headerName = "Godot Version Settings"
-subButtons = PackedStringArray("Config")
 
 [node name="PanelContainer2" type="PanelContainer" parent="HBoxContainer" index="1"]
 layout_mode = 2
@@ -105,11 +93,4 @@ mouse_filter = 2
 
 [node name="Paths" parent="HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Project Settings" index="0" instance=ExtResource("5_waqhd")]
 visible = false
-layout_mode = 1
-
-[node name="Godot Version Settings" type="Control" parent="HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer" index="2"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="Config" parent="HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Godot Version Settings" index="0" instance=ExtResource("6_m3yrf")]
 layout_mode = 1

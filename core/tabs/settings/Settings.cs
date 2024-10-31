@@ -2,10 +2,8 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class Settings : PanelContainer
+public partial class Settings : TabBase
 {
-    [Signal] public delegate void SettingUpdatedEventHandler(string key);
-
     private VBoxContainer _sectionContainers;
 
     [Export] public Control[] interfaces;
@@ -57,14 +55,14 @@ public partial class Settings : PanelContainer
         }
 
         _sectionContainers.GetChild<TreeSection>(0).ToggleFirstOn();
+    }
 
-        if (SettingsCache.Instance.LoadData())
+    public override void LoadData()
+    {
+        foreach (string key in SettingsCache.Instance.Keys)
         {
-            foreach (string key in SettingsCache.Instance.Keys)
-            {
-                SettingsData.ParsedKeyData data = SettingsData.ParseKey(key);
-                GetInterface(data.group, data.name)?.SetData(data.tag, SettingsCache.Instance.GetData(key));
-            }
+            SettingsData.ParsedKeyData data = SettingsData.ParseKey(key);
+            GetInterface(data.group, data.name)?.SetData(data.tag, SettingsCache.Instance.GetData(key));
         }
     }
 
