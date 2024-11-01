@@ -1,16 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://drrdbffd8u2ph"]
+[gd_scene load_steps=8 format=3 uid="uid://drrdbffd8u2ph"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_imrn2"]
 [ext_resource type="Script" path="res://core/tabs/godot_versions/GodotVersions.cs" id="2_6f2n1"]
 [ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="2_sj8r8"]
-[ext_resource type="PackedScene" uid="uid://bwe5ywbnqey48" path="res://core/components/card/card.tscn" id="3_2c4kg"]
+[ext_resource type="PackedScene" uid="uid://bqi2m2i746sf7" path="res://core/components/version_entries/card/card_entry.tscn" id="3_lpsmo"]
+[ext_resource type="PackedScene" uid="uid://3a2q6a20ckmq" path="res://core/components/version_entries/list_entry/list_entry.tscn" id="4_fa531"]
 [ext_resource type="PackedScene" uid="uid://dxspjvt4dym1w" path="res://core/windows/locate_godot_window/locate_godot_window.tscn" id="5_chr7d"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i60je"]
 
 [node name="Godot Versions" instance=ExtResource("1_imrn2")]
 script = ExtResource("2_6f2n1")
-card = ExtResource("3_2c4kg")
+cardEntry = ExtResource("3_lpsmo")
+listEntry = ExtResource("4_fa531")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
 layout_mode = 2
@@ -143,17 +145,19 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="ListView" type="ScrollContainer" parent="VBoxContainer/Content" index="1"]
+unique_name_in_owner = true
 layout_mode = 2
-mouse_filter = 2
 horizontal_scroll_mode = 0
 
 [node name="ListViewContainer" type="VBoxContainer" parent="VBoxContainer/Content/ListView" index="0"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="CardView" type="ScrollContainer" parent="VBoxContainer/Content" index="2"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_scroll_mode = 0

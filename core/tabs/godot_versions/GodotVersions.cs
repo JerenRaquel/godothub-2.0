@@ -15,9 +15,9 @@ public partial class GodotVersions : TabBase
         VersionData.BuildType.STABLE
     ];
 
-    [Export] private PackedScene card;
+    [Export] private PackedScene cardEntry;
+    [Export] private PackedScene listEntry;
 
-    private Timer _doubleClickTimer;
     private Button _locateButton;
     private Button _openFolderButton;
     private Button _runButton;
@@ -25,20 +25,19 @@ public partial class GodotVersions : TabBase
     private OptionButton _buildOptionButton;
     private CheckButton _viewCheckButton;
     private Button _deleteButton;
+    private ScrollContainer _listView;
+    private ScrollContainer _cardView;
+    private VBoxContainer _listContainer;
     private GridContainer _cardGrid;
     private LocateGodotWindow _locateWindow;
 
-    private Dictionary<Control, string> _versions = [];
-    private Control _currentlySelected = null;
+    private Dictionary<VersionEntryBase, string> _versions = [];
+    private VersionEntryBase _currentlySelected = null;
 
-    public override void _ExitTree()
-    {
-        SettingsCache.Instance.AddOrUpdate(VIEW_TAG, _viewCheckButton.ButtonPressed);
-    }
+    public override void _ExitTree() => SettingsCache.Instance.AddOrUpdate(VIEW_TAG, _viewCheckButton.ButtonPressed);
 
     public override void _Ready()
     {
-        _doubleClickTimer = GetNode<Timer>("%DoubleClickTimer");
         _locateButton = GetNode<Button>("%LocateButton");
         _locateButton.Pressed += OnLocatePressed;
         _openFolderButton = GetNode<Button>("%OpenLocationButton");
@@ -53,6 +52,9 @@ public partial class GodotVersions : TabBase
         _viewCheckButton.Toggled += OnViewToggled;
         _deleteButton = GetNode<Button>("%DeleteButton");
         _deleteButton.Pressed += OnDeletePressed;
+        _listView = GetNode<ScrollContainer>("%ListView");
+        _cardView = GetNode<ScrollContainer>("%CardView");
+        _listContainer = GetNode<VBoxContainer>("%ListViewContainer");
         _cardGrid = GetNode<GridContainer>("%CardViewContainer");
         _locateWindow = GetNode<LocateGodotWindow>("%LocateGodotWindow");
         _locateWindow.VersionLocated += OnVersionLocated;
@@ -69,16 +71,26 @@ public partial class GodotVersions : TabBase
 
     private void RefreshEntries()
     {
-        foreach (KeyValuePair<Control, string> entry in _versions)
+        foreach (KeyValuePair<VersionEntryBase, string> entry in _versions)
         {
             if (entry.Key.IsQueuedForDeletion()) continue;
 
             entry.Key.QueueFree();
         }
         _versions = [];
-        (_currentlySelected as IGodotVersionEntryInterface)?.ToggleOff();
+        _currentlySelected?.DoubleClickButton.ToggleOff();
         _currentlySelected = null;
-        _doubleClickTimer.Stop();
+
+        if (SettingsCache.Instance.GetData(VIEW_TAG))
+        {
+            _listView.Hide();
+            _cardView.Show();
+        }
+        else
+        {
+            _listView.Show();
+            _cardView.Hide();
+        }
 
         foreach (string key in VersionCache.Instance.SortedKeys)
             OnVersionLocated(key);
@@ -86,61 +98,50 @@ public partial class GodotVersions : TabBase
 
     private void Filter()
     {
-        IGodotVersionEntryInterface[] items;
-        if (SettingsCache.Instance.GetData(VIEW_TAG))
-            items = (IGodotVersionEntryInterface[])_cardGrid.GetChildren().Cast<IGodotVersionEntryInterface>();
+        foreach (KeyValuePair<VersionEntryBase, string> entry in _versions)
+        {
+            if (_languageOptionButton.Selected == 1 && entry.Key.IsCSharp)    // Only GDScript
+            {
+                entry.Key.Hide();
+                continue;
+            }
+            else if (_languageOptionButton.Selected == 2 && !entry.Key.IsCSharp)   // .Net
+            {
+                entry.Key.Hide();
+                continue;
+            }
+
+            // Is not on any and doesn't have the build
+            if (_buildOptionButton.Selected != 0 && entry.Key.Build != BUILD_MAP[_buildOptionButton.Selected])
+            {
+                entry.Key.Hide();
+                continue;
+            }
+
+            entry.Key.Show();
+        }
+    }
+
+    private VersionEntryBase AddVersionEntry(bool isCard, string version, VersionData.BuildType build, bool isCSharp)
+    {
+        VersionEntryBase entry;
+        if (isCard)
+        {
+            Card card = cardEntry.Instantiate<Card>();
+            _cardGrid.AddChild(card);
+            entry = card;
+        }
         else
-            items = []; // TODO: Fetch List Items
-
-        foreach (IGodotVersionEntryInterface item in items)
         {
-            if (_languageOptionButton.Selected == 1)    // Only GDScript
-            {
-                if (item.HasCSharp())
-                {
-                    ((Control)item).Hide();
-                    continue;
-                }
-            }
-            else if (_languageOptionButton.Selected == 2)   // .Net
-            {
-                if (!item.HasCSharp())
-                {
-                    ((Control)item).Hide();
-                    continue;
-                }
-            }
-
-            if (_buildOptionButton.Selected != 0)   // Is not on any
-            {
-                // Doesn't have the build
-                if (!item.HasBuild(BUILD_MAP[_buildOptionButton.Selected]))
-                {
-                    ((Control)item).Hide();
-                    continue;
-                }
-            }
-
-            ((Control)item).Show();
+            VersionListEntry versionListEntry = listEntry.Instantiate<VersionListEntry>();
+            _listContainer.AddChild(versionListEntry);
+            entry = versionListEntry;
         }
-    }
 
-    private Card AddCard(string version, VersionData.BuildType build, bool isCSharp)
-    {
-        Card cardInstance = card.Instantiate<Card>();
-        _cardGrid.AddChild(cardInstance);
-        cardInstance.SetData(version, build, isCSharp);
-        cardInstance.Toggled += (bool state) => OnEntryToggled(state, cardInstance);
-        return cardInstance;
-    }
-
-    private void EvalDoubleClick()
-    {
-        if (_doubleClickTimer.TimeLeft > 0)
-        {
-            _doubleClickTimer.Stop();
-            OnFolderOpenPressed();
-        }
+        entry.SetData(version, build, isCSharp);
+        entry.DoubleClickButton.StateToggled += (bool state) => OnEntryToggled(state, entry);
+        entry.DoubleClickButton.LaunchRequested += OnFolderOpenPressed;
+        return entry;
     }
 
     private void ToggleEntryButtons(bool disabled)
@@ -154,18 +155,9 @@ public partial class GodotVersions : TabBase
 
     private void OnVersionLocated(string key)
     {
-        if (SettingsCache.Instance.GetData(VIEW_TAG))
-        {
-            VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
-            Control card = AddCard(parts.version.ToString(), parts.build, parts.isCSharp);
-            _versions.Add(card, key);
-        }
-        else
-        {
-            // TODO: Replace and implement list entries
-            if (NotifcationManager.Instance == null) return;
-            NotifcationManager.Instance.NotifyWarning("Attempted to add a list item when not being implemented.");
-        }
+        VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
+        VersionEntryBase entry = AddVersionEntry(SettingsCache.Instance.GetData(VIEW_TAG), parts.version.ToString(), parts.build, parts.isCSharp);
+        _versions.Add(entry, key);
     }
 
     private void OnOptionChanged(long _index) => Filter();
@@ -182,17 +174,16 @@ public partial class GodotVersions : TabBase
         ToggleEntryButtons(true);
     }
 
-    private void OnEntryToggled(bool state, Control entry)
+    private void OnEntryToggled(bool state, VersionEntryBase entry)
     {
-        (_currentlySelected as IGodotVersionEntryInterface)?.ToggleOff();
+        _currentlySelected?.DoubleClickButton.ToggleOff();
 
-        EvalDoubleClick();
         if (state)
             _currentlySelected = entry;
         else
             _currentlySelected = null;
+
         ToggleEntryButtons(!state);
-        _doubleClickTimer.Start();
     }
 
     private void OnLaunchPressed()

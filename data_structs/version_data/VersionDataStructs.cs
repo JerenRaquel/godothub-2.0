@@ -1,8 +1,20 @@
 using System;
+using System.Collections;
 
 public partial class VersionData
 {
     public enum BuildType { UNKNOWN, STABLE, RELEASE_CANDIDATE, BETA, DEV }
+
+    public static readonly ReverseComparer reverseComparer = new();
+    // https://learn.microsoft.com/en-us/dotnet/api/system.array.sort?view=net-8.0
+    public class ReverseComparer : IComparer
+    {
+        // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
+        int IComparer.Compare(object x, object y)
+        {
+            return new CaseInsensitiveComparer().Compare(y, x);
+        }
+    }
 
     public readonly struct ParsedVersionKey
     {
@@ -30,9 +42,19 @@ public partial class VersionData
     }
 
     public static string GenerateKey(Version version, bool isCSharp, BuildType type)
+        => GenerateKeys(version.ToString(), isCSharp, type).Item1;
+
+    public static string GenerateKey(string version, bool isCSharp, BuildType type)
         => GenerateKeys(version, isCSharp, type).Item1;
 
     public static string GeneratePartialKey(Version version, bool isCSharp)
+    {
+        string typeStr = "STD";
+        if (isCSharp) typeStr = "DOTNET";
+        return $"{version}_{typeStr}";
+    }
+
+    public static string GeneratePartialKey(string version, bool isCSharp)
     {
         string typeStr = "STD";
         if (isCSharp) typeStr = "DOTNET";
@@ -65,7 +87,7 @@ public partial class VersionData
         };
     }
 
-    private static Tuple<string, string> GenerateKeys(Version version, bool isCSharp, BuildType type)
+    private static Tuple<string, string> GenerateKeys(string version, bool isCSharp, BuildType type)
     {
         string partialKey = GeneratePartialKey(version, isCSharp);
         return new(

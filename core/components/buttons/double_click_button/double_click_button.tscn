@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://chee4vtrhibsa"]
+
+[ext_resource type="Script" path="res://core/components/buttons/double_click_button/DoubleClickButton.cs" id="1_bo5ef"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4yo4"]
+bg_color = Color(0.133333, 0.164706, 0.207843, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvqe4"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ie1c4"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="DoubleClickButton" type="Button"]
+theme_override_styles/hover = SubResource("StyleBoxFlat_t4yo4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wvqe4")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ie1c4")
+toggle_mode = true
+script = ExtResource("1_bo5ef")
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.25
+one_shot = true

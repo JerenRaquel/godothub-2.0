@@ -1,0 +1,78 @@
+[gd_scene load_steps=7 format=3 uid="uid://3a2q6a20ckmq"]
+
+[ext_resource type="PackedScene" uid="uid://xqittib5imjh" path="res://core/components/version_entries/base/version_entry_base.tscn" id="1_c3nax"]
+[ext_resource type="Texture2D" uid="uid://dse6oyduac3oo" path="res://icon.svg" id="2_68apc"]
+[ext_resource type="Script" path="res://core/components/version_entries/list_entry/VersionListEntry.cs" id="2_f58f4"]
+[ext_resource type="LabelSettings" uid="uid://cx6pgc316ggpk" path="res://resources/CSharpLabelSettings.tres" id="3_ibrhk"]
+[ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_bqcmp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eoxsr"]
+
+[node name="ListEntry" instance=ExtResource("1_c3nax")]
+anchors_preset = 10
+anchor_right = 1.0
+offset_right = 0.0
+offset_bottom = 144.0
+grow_horizontal = 2
+script = ExtResource("2_f58f4")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." index="1"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer" index="0"]
+custom_minimum_size = Vector2(0, 144)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_68apc")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="CSharpLabel" type="Label" parent="HBoxContainer/TextureRect" index="0"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 53.0
+offset_top = 63.0
+offset_right = 130.0
+offset_bottom = 146.0
+text = "C#"
+label_settings = ExtResource("3_ibrhk")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="TitleLabel" type="RichTextLabel" parent="HBoxContainer/MarginContainer/VBoxContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "Version X.X [Release Candidate]"
+fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer" index="1"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_eoxsr")
+
+[node name="PathLabel" type="Label" parent="HBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Path: C:/"
+label_settings = ExtResource("4_bqcmp")

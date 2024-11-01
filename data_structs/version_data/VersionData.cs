@@ -13,7 +13,7 @@ public partial class VersionData
         get
         {
             string[] data = [.. _keyToPath.Keys];
-            Array.Sort(data);
+            Array.Sort(data, reverseComparer);
             return data;
         }
     }
@@ -25,8 +25,10 @@ public partial class VersionData
 
     public string AddVersion(Version version, bool isCSharp, BuildType type, string path)
     {
+        string versionStr = version.ToString();
+
         // Item1: Full Key | Item2: Partial Key
-        Tuple<string, string> keys = GenerateKeys(version, isCSharp, type);
+        Tuple<string, string> keys = GenerateKeys(versionStr, isCSharp, type);
 
         // Check if we have the full key -- the partial will exist if full does
         if (_keyToPath.ContainsKey(keys.Item1)) return "";
@@ -34,12 +36,12 @@ public partial class VersionData
         if (!_partialKeyToBuilds.ContainsKey(keys.Item2))
             _partialKeyToBuilds.Add(keys.Item2, []);
 
-        if (!_versions.ContainsKey(version.ToString()))
-            _versions.Add(version.ToString(), []);
+        if (!_versions.ContainsKey(versionStr))
+            _versions.Add(versionStr, []);
 
         _keyToPath.Add(keys.Item1, path);
         _partialKeyToBuilds[keys.Item2].Add(type);
-        _versions[version.ToString()].Add(keys.Item1);
+        _versions[versionStr].Add(keys.Item1);
         return keys.Item1;
     }
 

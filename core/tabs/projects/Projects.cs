@@ -6,16 +6,6 @@ using System.Linq;
 
 public partial class Projects : TabBase
 {
-    // https://learn.microsoft.com/en-us/dotnet/api/system.array.sort?view=net-8.0
-    public class ReverseComparer : IComparer
-    {
-        // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
-        int IComparer.Compare(object x, object y)
-        {
-            return new CaseInsensitiveComparer().Compare(y, x);
-        }
-    }
-
     private PackedScene _projectEntryPackedScene;
     private Button _newButton;
     private Button _importButton;
@@ -53,7 +43,7 @@ public partial class Projects : TabBase
         _buildPrompt.BuildUpdated += OnBuildUpdated;
 
         string[] versions = ProjectCache.Instance.GetVersions();
-        Array.Sort(versions, new ReverseComparer());
+        Array.Sort(versions, VersionData.reverseComparer);
         foreach (string version in versions)
             _versionOptionButton.AddItem(version);
 
