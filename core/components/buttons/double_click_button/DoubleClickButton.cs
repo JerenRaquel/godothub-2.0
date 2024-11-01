@@ -24,10 +24,10 @@ public partial class DoubleClickButton : Button
             _timer.Stop();
             EmitSignal(SignalName.LaunchRequested);
             //* Must come after launch signal -- Hence the two lines of toggle emitting
-            EmitSignal(SignalName.Toggled, toggled_on);
+            EmitSignal(SignalName.StateToggled, toggled_on);
             return;
         }
-        EmitSignal(SignalName.Toggled, toggled_on);
+        EmitSignal(SignalName.StateToggled, toggled_on);
         _timer.Start();
     }
 }

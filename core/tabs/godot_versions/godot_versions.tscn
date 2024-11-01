@@ -61,7 +61,7 @@ text = "Open Location"
 
 [node name="RunButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="5"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Run"
 
