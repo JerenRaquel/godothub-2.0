@@ -36,7 +36,12 @@ public partial class GodotVersions : TabBase
     private Dictionary<VersionEntryBase, string> _versions = [];
     private VersionEntryBase _currentlySelected = null;
 
-    public override void _ExitTree() => SettingsCache.Instance.AddOrUpdate(VIEW_TAG, _viewCheckButton.ButtonPressed);
+    public override void _ExitTree()
+    {
+        SettingsCache.Instance.AddOrUpdate(VIEW_TAG, _viewCheckButton.ButtonPressed);
+        SettingsCache.Instance.AddOrUpdate(LANGUAGE_TAG, _languageOptionButton.Selected);
+        SettingsCache.Instance.AddOrUpdate(RELEASE_TAG, _buildOptionButton.Selected);
+    }
 
     public override void _Ready()
     {

@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 public partial class Projects : TabBase
 {
+    public const string VERSION_TAG = "GLOBAL/Projects/version_mode/LONG";
+    public const string SORT_TAG = "GLOBAL/Projects/sort_mode/LONG";
+    public const string SORT_MODIFIER_TAG = "GLOBAL/Projects/sort_modifier_mode/BOOL";
+
     private PackedScene _projectEntryPackedScene;
     private Button _newButton;
     private Button _importButton;
@@ -17,6 +21,13 @@ public partial class Projects : TabBase
     private BuildPrompt _buildPrompt;
 
     private Dictionary<string, ProjectEntry> _projectEntries = [];
+
+    public override void _ExitTree()
+    {
+        SettingsCache.Instance.AddOrUpdate(VERSION_TAG, _versionOptionButton.Selected);
+        SettingsCache.Instance.AddOrUpdate(SORT_TAG, _sortOptionButton.Selected);
+        SettingsCache.Instance.AddOrUpdate(SORT_MODIFIER_TAG, _checkBox.ButtonPressed);
+    }
 
     public override void _Ready()
     {
@@ -46,6 +57,13 @@ public partial class Projects : TabBase
             _versionOptionButton.AddItem(version);
 
         FillProjectContainer();
+    }
+
+    public override void LoadData()
+    {
+        _versionOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(VERSION_TAG, new(0));
+        _sortOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(SORT_TAG, new(0));
+        _checkBox.ButtonPressed = SettingsCache.Instance.GetDataOrSetDefault(SORT_MODIFIER_TAG, new(false));
     }
 
     public void UpdatePaths()
@@ -115,10 +133,10 @@ public partial class Projects : TabBase
                 else if (ProjectCache.Instance.GetRawTime(lhs) > ProjectCache.Instance.GetRawTime(rhs))
                     result = 1;
                 else
-                    result = lhs.CompareTo(rhs);
+                    result = lhs.CompareTo(rhs) * -1;
             }
             else    // Alphabetical
-                result = lhs.CompareTo(rhs);
+                result = lhs.CompareTo(rhs) * -1;
         }
 
         if (_checkBox.ButtonPressed) return result;
@@ -134,9 +152,17 @@ public partial class Projects : TabBase
 
     private void OnFilterChanged(string text) => Filter();
 
-    private void OnVersionChanged(long index) => Filter();
+    private void OnVersionChanged(long index)
+    {
+        SettingsCache.Instance.AddOrUpdate(VERSION_TAG, index);
+        Filter();
+    }
 
-    private void OnSortChanged(long _index) => FillProjectContainer();
+    private void OnSortChanged(long index)
+    {
+        SettingsCache.Instance.AddOrUpdate(SORT_TAG, index);
+        FillProjectContainer();
+    }
 
     private void OnSortToggled(bool toggled)
     {
@@ -144,6 +170,7 @@ public partial class Projects : TabBase
             _checkBox.Text = "Descending";
         else
             _checkBox.Text = "Ascending";
+        SettingsCache.Instance.AddOrUpdate(SORT_MODIFIER_TAG, toggled);
         FillProjectContainer();
     }
 

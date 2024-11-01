@@ -24,12 +24,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="DoubleClickTimer" type="Timer" parent="VBoxContainer/ToolBar" index="0"]
-unique_name_in_owner = true
-wait_time = 0.25
-one_shot = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ToolBar" index="1"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ToolBar" index="0"]
 layout_mode = 2
 
 [node name="LocateButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="0"]
