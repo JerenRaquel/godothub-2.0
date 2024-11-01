@@ -1,8 +1,6 @@
 using Godot;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public partial class Projects : TabBase
 {
@@ -62,7 +60,6 @@ public partial class Projects : TabBase
 
     public void FillProjectContainer()
     {
-        GD.Print("Resorted?");
         foreach (KeyValuePair<string, ProjectEntry> entry in _projectEntries)
         {
             if (entry.Value.IsQueuedForDeletion()) continue;
@@ -79,8 +76,8 @@ public partial class Projects : TabBase
             _projectEntryContainer.AddChild(entryInstance);
             _projectEntries.Add(projectName, entryInstance);
             entryInstance.Initialize(projectName);
-            entryInstance.LaunchRequested += OnLaunchRequested;
-            entryInstance.Toggled += OnToggled;
+            entryInstance.DoubleClickButton.LaunchRequested += () => OnLaunchRequested(projectName);
+            entryInstance.DoubleClickButton.StateToggled += (bool state) => OnToggled(projectName, state);
         }
         Name = $"Projects [{ProjectCache.Instance.ProjectCount}]";
     }
@@ -104,8 +101,7 @@ public partial class Projects : TabBase
 
     private int CompareFunc(string lhs, string rhs)
     {
-        int result = 0;
-
+        int result;
         if (ProjectCache.Instance.IsFavorited(lhs) && !ProjectCache.Instance.IsFavorited(rhs))
             result = -1;
         else if (!ProjectCache.Instance.IsFavorited(lhs) && ProjectCache.Instance.IsFavorited(rhs))
@@ -186,7 +182,7 @@ public partial class Projects : TabBase
     private void OnToggled(string projectName, bool state)
     {
         if (_sidePanel.SelectedProject != null)
-            _projectEntries[_sidePanel.SelectedProject].ToggleOff();
+            _projectEntries[_sidePanel.SelectedProject].DoubleClickButton.ToggleOff();
 
         if (state)
             _sidePanel.SetSelected(projectName);
