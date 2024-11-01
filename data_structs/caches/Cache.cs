@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-public abstract class Cache(string saveLocation)
+public abstract class Cache(string userDirectory, string saveFolder)
 {
-    protected readonly string SAVE_LOCATION = saveLocation;
+    protected readonly string SAVE_LOCATION = userDirectory + saveFolder;
+    protected readonly string USER_DIRECTORY = userDirectory;
     protected static readonly object padlock = new();
 
     protected bool _isDirty = false;

@@ -44,6 +44,16 @@ public static partial class OSAPI
         return processID;
     }
 
+    public static long RunTool(string toolName, string projectName = "")
+    {
+        MacroHandler.CommandParts parts = MacroHandler.GenerateCommand(toolName, projectName);
+
+        long processID = OS.CreateProcess(parts.Command, parts.Args);
+        if (processID == -1) return -1; // Failed
+
+        return processID;
+    }
+
     private static string GetDefaultUserPath()
     {
         if (_defaultUserFolderPath != null) return _defaultUserFolderPath;

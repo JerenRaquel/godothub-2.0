@@ -15,7 +15,7 @@ public partial class SettingsCache : Cache
 
     public static SettingsCache Instance => _instance;
 
-    private SettingsCache(string userDirectory) : base(userDirectory + "/SettingsCache.gdhub") => LoadData();
+    private SettingsCache(string userDirectory) : base(userDirectory, "/SettingsCache.gdhub") => LoadData();
 
     public static SettingsCache Initialize(string userDirectory)
     {

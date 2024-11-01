@@ -18,7 +18,7 @@ public partial class ProjectCache : Cache
 
     public static ProjectCache Instance => _instance;
 
-    private ProjectCache(string userDirectory) : base(userDirectory + "/ProjectCache.gdhub")
+    private ProjectCache(string userDirectory) : base(userDirectory, "/ProjectCache.gdhub")
     {
         LoadData();
     }
@@ -71,7 +71,7 @@ public partial class ProjectCache : Cache
     public override void WriteData()
     {
         // Check if dirty, no point to write if not
-        if (!this._isDirty) return;
+        if (!_isDirty) return;
 
         ForceWrite();
     }

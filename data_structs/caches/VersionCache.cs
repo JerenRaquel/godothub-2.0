@@ -10,7 +10,7 @@ public partial class VersionCache : Cache
 
     public static VersionCache Instance => _instance;
 
-    private VersionCache(string userDirectory) : base(userDirectory + "/VersionCache.gdhub")
+    private VersionCache(string userDirectory) : base(userDirectory, "/VersionCache.gdhub")
         => LoadData();
 
     public static VersionCache Initialize(string userDirectory)
