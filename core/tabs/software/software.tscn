@@ -1,0 +1,98 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0gpnlaocc1vu"]
+
+[ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_ddcup"]
+[ext_resource type="Script" path="res://core/tabs/software/Software.cs" id="2_vinc0"]
+[ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="3_fdurq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hewv"]
+
+[node name="Software" instance=ExtResource("1_ddcup")]
+mouse_filter = 2
+script = ExtResource("2_vinc0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ToolBar" type="MarginContainer" parent="VBoxContainer" index="0"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ToolBar" index="0"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LocateButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Locate Software"
+
+[node name="EditButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Edit"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/ToolBar/HBoxContainer" index="2"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_1hewv")
+
+[node name="LaunchButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Launch"
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer/ToolBar/HBoxContainer" index="4"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_1hewv")
+
+[node name="FilterLineEdit" type="LineEdit" parent="VBoxContainer/ToolBar/HBoxContainer" index="5"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Filter Software"
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="OrderCheckBox" type="CheckBox" parent="VBoxContainer/ToolBar/HBoxContainer" index="6"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Ascending"
+
+[node name="HSeparator4" type="HSeparator" parent="VBoxContainer/ToolBar/HBoxContainer" index="7"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_1hewv")
+
+[node name="DeleteButton" parent="VBoxContainer/ToolBar/HBoxContainer" index="8" instance=ExtResource("3_fdurq")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" index="1"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Background" type="Panel" parent="VBoxContainer/MarginContainer" index="0"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/MarginContainer" index="1"]
+layout_mode = 2
+
+[node name="SoftwareContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/ScrollContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2

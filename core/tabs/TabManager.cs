@@ -6,7 +6,7 @@ public partial class TabManager : TabContainer
     [Export] private Projects _projectTab;
     // TODO: Templates
     [Export] private GodotVersions _versionsTab;
-    // TODO: Software
+    [Export] private Software _softwareTab;
     [Export] private Settings _settingsTab;
 
     public override void _Ready()
@@ -16,6 +16,7 @@ public partial class TabManager : TabContainer
         SettingsCache.Instance.LoadData();
         _projectTab.LoadData();
         _versionsTab.LoadData();
+        _softwareTab.LoadData();
         _settingsTab.LoadData();
     }
 
