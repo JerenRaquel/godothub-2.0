@@ -6,6 +6,8 @@ using System.Linq;
 public partial class GodotVersions : TabBase
 {
     public const string VIEW_TAG = "GLOBAL/GodotVersion/view_mode/BOOL";
+    public const string LANGUAGE_TAG = "GLOBAL/GodotVersion/lang_support_mode/LONG";
+    public const string RELEASE_TAG = "GLOBAL/GodotVersion/release_mode/LONG";
 
     private readonly VersionData.BuildType[] BUILD_MAP = [
         VersionData.BuildType.UNKNOWN,
@@ -45,9 +47,9 @@ public partial class GodotVersions : TabBase
         _runButton = GetNode<Button>("%RunButton");
         _runButton.Pressed += OnLaunchPressed;
         _languageOptionButton = GetNode<OptionButton>("%LangOptionButton");
-        _languageOptionButton.ItemSelected += OnOptionChanged;
+        _languageOptionButton.ItemSelected += (long index) => OnOptionChanged(index, LANGUAGE_TAG);
         _buildOptionButton = GetNode<OptionButton>("%BuildOptionButton");
-        _buildOptionButton.ItemSelected += OnOptionChanged;
+        _buildOptionButton.ItemSelected += (long index) => OnOptionChanged(index, RELEASE_TAG);
         _viewCheckButton = GetNode<CheckButton>("%ViewCheckButton");
         _viewCheckButton.Toggled += OnViewToggled;
         _deleteButton = GetNode<Button>("%DeleteButton");
@@ -65,6 +67,8 @@ public partial class GodotVersions : TabBase
     public override void LoadData()
     {
         _viewCheckButton.SetPressedNoSignal(SettingsCache.Instance.GetDataOrSetDefault(VIEW_TAG, new(true)));
+        _languageOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(LANGUAGE_TAG, new(0));
+        _buildOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(RELEASE_TAG, new(0));
 
         RefreshEntries();
     }
@@ -94,6 +98,7 @@ public partial class GodotVersions : TabBase
 
         foreach (string key in VersionCache.Instance.SortedKeys)
             OnVersionLocated(key);
+        Filter();
     }
 
     private void Filter()
@@ -160,7 +165,11 @@ public partial class GodotVersions : TabBase
         _versions.Add(entry, key);
     }
 
-    private void OnOptionChanged(long _index) => Filter();
+    private void OnOptionChanged(long index, string tag)
+    {
+        SettingsCache.Instance.AddOrUpdate(tag, new(index));
+        Filter();
+    }
 
     private void OnDeletePressed()
     {
