@@ -19,8 +19,8 @@ public partial class Config : InterfaceBase
         _HUBBehaviorOptionButton = GetNode<OptionButton>("%HUBBehaviorOptionButton");
         _saveDataButton = GetNode<Button>("%SaveDataButton");
 
-        _fullExecPathCheckButton.Toggled += _ => EmitSignal(SignalName.SettingChanged, "full_exec_path");
-        _absProjPathCheckButton.Toggled += _ => EmitSignal(SignalName.SettingChanged, ABS_PROJ_PATH_TAG);
+        _fullExecPathCheckButton.Toggled += (bool state) => OnToggled(state, _fullExecPathCheckButton, "full_exec_path");
+        _absProjPathCheckButton.Toggled += (bool state) => OnToggled(state, _absProjPathCheckButton, ABS_PROJ_PATH_TAG);
         _HUBBehaviorOptionButton.ItemSelected += _ => EmitSignal(SignalName.SettingChanged, HUB_BEHAVIOR_TAG);
         _saveDataButton.Pressed += () => OSAPI.OpenFolder(ProjectSettings.GlobalizePath("user://"));
 
@@ -53,12 +53,22 @@ public partial class Config : InterfaceBase
             case ABS_PROJ_PATH_TAG:
                 _absProjPathCheckButton.SetPressedNoSignal(data);
                 if (_absProjPathCheckButton.ButtonPressed)
-                    _absProjPathCheckButton.Text = "Enabled";
+                    _absProjPathCheckButton.Text = "Full Path Shown";
                 else
-                    _absProjPathCheckButton.Text = "Disabled";
+                    _absProjPathCheckButton.Text = "Full Path Hidden";
                 break;
             case HUB_BEHAVIOR_TAG: _HUBBehaviorOptionButton.Select(data); break;
             default: break;
         }
+    }
+
+    private void OnToggled(bool state, CheckButton button, string tag)
+    {
+        if (state)
+            button.Text = "Full Path Shown";
+        else
+            button.Text = "Full Path Hidden";
+
+        EmitSignal(SignalName.SettingChanged, tag);
     }
 }
