@@ -32,5 +32,7 @@ public partial class TagCache : Cache
 
     public override void ForceWrite() { }
 
-    public string GetExecutableCommand(string name) => _RAM.GetPath(name, null);
+    public TagData.CommandParts GetExecutableCommand(string softwareTag, string projectName) => _RAM.GetCommandString(softwareTag, projectName);
+
+    public string GetRAWCommand(string softwareTag) => _RAM.GetRawCommand(softwareTag);
 }

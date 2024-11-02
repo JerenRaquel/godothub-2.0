@@ -46,9 +46,9 @@ public static partial class OSAPI
 
     public static long RunTool(string toolName, string projectName = "")
     {
-        MacroHandler.CommandParts parts = MacroHandler.GenerateCommand(toolName, projectName);
+        TagData.CommandParts executableCommand = TagCache.Instance.GetExecutableCommand(toolName, projectName);
 
-        long processID = OS.CreateProcess(parts.Command, parts.Args);
+        long processID = OS.CreateProcess(executableCommand.Command, executableCommand.Args);
         if (processID == -1) return -1; // Failed
 
         return processID;

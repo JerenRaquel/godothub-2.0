@@ -2,37 +2,58 @@ using System.Collections.Generic;
 
 public partial class TagData
 {
-    // { tag : colorCode }  -- Formatted with both
-    private Dictionary<string, Data> _softwareTags = [];
-    private Dictionary<string, Data> _projectTags = [];
+    private Dictionary<string, SoftwareData> _softwareTags = [];
+    // { tag : colorCode }
+    private Dictionary<string, string> _projectTags = [];
 
-    public void AddOrUpdate(bool isSoftware, string name, Data data)
+    public void AddOrUpdateSoftwareTag(string name, SoftwareData data)
     {
-        if (isSoftware)
+        if (_softwareTags.ContainsKey(name))
+        {
             _softwareTags.Add(name, data);
-        else
-            _projectTags.Add(name, data);
+            return;
+        }
+        _softwareTags[name] = data;
+    }
+
+    public void AddOrUpdateProjectTagColor(string name, string colorCode)
+    {
+        if (_projectTags.ContainsKey(name))
+        {
+            _projectTags.Add(name, colorCode);
+            return;
+        }
+        _projectTags[name] = colorCode;
     }
 
     public string GetColor(bool isSoftware, string name, string defaultValue = "000000")
     {
-        Data data = GetData(isSoftware, name);
-        if (data.IsNull) return defaultValue;
-        return data.ColorCode;
+        if (isSoftware)
+        {
+            if (!_softwareTags.TryGetValue(name, out SoftwareData data)) return defaultValue;
+            if (data.IsNull) return defaultValue;
+            return data.ColorCode;
+        }
+        else
+        {
+            if (!_projectTags.TryGetValue(name, out string colorCode)) return defaultValue;
+            return colorCode;
+        }
     }
 
-    public string GetPath(string name, string defaultValue = "")
+    public string GetRawCommand(string softwareTag)
     {
-        if (!_softwareTags.TryGetValue(name, out Data value)) return defaultValue;
-        return value.Path;
-    }
-
-    public string GenerateCommandString(string name)
-    {
-        Data data = GetData(true, name);
+        if (!_softwareTags.TryGetValue(softwareTag, out SoftwareData data)) return null;
         if (data.IsNull) return null;
+        return data.RAWCommand;
+    }
 
-        return data.Command;
+    public CommandParts GetCommandString(string softwareTag, string projectName)
+    {
+        if (!_softwareTags.TryGetValue(softwareTag, out SoftwareData data)) return new();
+        if (data.IsNull) return new();
+
+        return SetMacros(data.CommandData, projectName);
     }
 
     public void Overwrite(TagData other)
@@ -40,24 +61,10 @@ public partial class TagData
         _softwareTags = [];
         _projectTags = [];
 
-        foreach (KeyValuePair<string, Data> entry in other._softwareTags)
+        foreach (KeyValuePair<string, SoftwareData> entry in other._softwareTags)
             _softwareTags.Add(entry.Key, entry.Value);
 
-        foreach (KeyValuePair<string, Data> entry in other._projectTags)
+        foreach (KeyValuePair<string, string> entry in other._projectTags)
             _projectTags.Add(entry.Key, entry.Value);
-    }
-
-    private Data GetData(bool isSoftware, string name)
-    {
-        if (isSoftware)
-        {
-            if (!_softwareTags.TryGetValue(name, out Data value)) return new();
-            return value;
-        }
-        else
-        {
-            if (!_projectTags.TryGetValue(name, out Data value)) return new();
-            return value;
-        }
     }
 }

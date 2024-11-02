@@ -1,25 +1,7 @@
 using System.Collections.Generic;
 
-public partial class MacroHandler
+public partial class TagData
 {
-    #region Singleton Instance
-    private static MacroHandler _instance;
-    private static readonly object padlock = new();
-
-    public static MacroHandler Instance => _instance;
-
-    private MacroHandler() { }
-
-    public static MacroHandler Initialize()
-    {
-        lock (padlock)
-        {
-            _instance ??= new();
-            return _instance;
-        }
-    }
-    #endregion
-
     public static readonly string[] PROJECT_MACROS = [
         "USER_FOLDER",
         "ROOT_FOLDER",
@@ -28,73 +10,48 @@ public partial class MacroHandler
     ];
 
     public static readonly string[] GENERAL_MACROS = [
-
+        "TIME"
     ];
 
-    public struct CommandParts
+    private static CommandParts SetMacros(CommandParts commandData, string projectName)
     {
-        private bool _isNull = true;
+        if (commandData.IsNull) return new();
 
-        public string Command { get; private set; }
-        public string[] Args { get; private set; }
-        public readonly bool IsNull => _isNull;
-
-        public CommandParts() { }
-        public CommandParts(string command, string[] args)
-        {
-            Command = command;
-            Args = args;
-            _isNull = false;
-        }
-    }
-
-    public static CommandParts GenerateCommand(string toolName, string projectName)
-    {
-        string command = TagCache.Instance.GetExecutableCommand(toolName);
-        if (command == null) return new();
-
+        string command = commandData.Command;
         // string userDirectory = 
         string projectDirectory = ProjectCache.Instance.GetProjectPath(projectName);
         string rootDirectory = ProjectCache.Instance.GetProjectFolder(projectName);
 
-        string[] parts = command.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
-        string[] results = new string[parts.Length - 1];
-        for (int i = 1; i < parts.Length; i++)
+        string[] parts = commandData.Args;
+        List<string> results = [];
+        for (int i = 0; i < parts.Length; i++)
         {
             // Not a MACRO
             if (!parts[i].StartsWith('{') && !parts[i].EndsWith('}'))
             {
-                results[i - 1] = parts[i];
+                results.Add(parts[i]);
                 continue;
             }
 
             //* GENERAL MACROS
 
+            // If project name is null, skip project based MACROs
+            if (projectName == null) continue;
 
-            // If project name is null, dont replace any project based MACROS
-            if (projectName == null)
-            {
-                results[i - 1] = parts[i];
-                continue;
-            }
-
-            //* Project Based MACROS
+            //* Project Based MACROs
             if (parts[i] == PROJECT_MACROS[0])
                 // parts[i] = USER_DIRECTORY;
-                parts[i] = "";   // TODO: Plug this in once implemented
+                continue;   // TODO: Plug this in once implemented
             else if (parts[i] == PROJECT_MACROS[1])
-                parts[i] = rootDirectory;
+                results.Add(rootDirectory);
             else if (parts[i] == PROJECT_MACROS[2])
-                parts[i] = projectDirectory;
+                results.Add(projectDirectory);
             else if (parts[i] == PROJECT_MACROS[3])
-                parts[i] = projectName;
+                results.Add(projectName);
             else
-            {
-                results[i - 1] = parts[i];
-                continue;
-            }
+                results.Add(parts[i]);
         }
-        return new(parts[0], results);
+        return new(command, [.. results]);
     }
 
 }
