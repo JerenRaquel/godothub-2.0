@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 public partial class ProjectSidePanel : MarginContainer
@@ -11,7 +12,7 @@ public partial class ProjectSidePanel : MarginContainer
     private Button _renameButton;
     private Button _cloneButton;
     private Button _deleteButton;
-    private VBoxContainer _quickToolRoot;
+    private QuickToolRoot _quickToolRoot;
 
     private bool _isDisabled;
 
@@ -35,10 +36,10 @@ public partial class ProjectSidePanel : MarginContainer
         _renameButton = GetNode<Button>("%RenameButton");
         _cloneButton = GetNode<Button>("%CloneButton");
         _deleteButton = GetNode<Button>("%DeleteButton");
-        _quickToolRoot = GetNode<VBoxContainer>("%QuickToolRoot");
+        _quickToolRoot = GetNode<QuickToolRoot>("%QuickToolRoot");
 
         SetPanelState(true);
-        _quickToolRoot.Hide();
+        _quickToolRoot.SetQuickToolList();
     }
 
     public void SetSelected(string projectName)

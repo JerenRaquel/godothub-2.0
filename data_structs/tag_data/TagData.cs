@@ -101,6 +101,19 @@ public partial class TagData
         return data.CommandData.ArgString;
     }
 
+    public string[] GetAllFavoritedSoftwareTags()
+    {
+        List<string> results = [];
+        foreach (KeyValuePair<string, SoftwareData> entry in _softwareTags)
+        {
+            if (!entry.Value.Favorited) continue;
+
+            results.Add(entry.Key);
+        }
+
+        return [.. results];
+    }
+
     public bool IsFavorited(string softwareTag)
     {
         if (!_softwareTags.TryGetValue(softwareTag, out SoftwareData data)) return false;
