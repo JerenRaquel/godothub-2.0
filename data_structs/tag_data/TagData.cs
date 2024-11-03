@@ -9,8 +9,10 @@ public partial class TagData
 
     public Dictionary<string, SoftwareData>.Enumerator RawSoftwareData => _softwareTags.GetEnumerator();
     public long SoftwareCount => _softwareTags.Count;
+    public string[] SoftwareTabs => [.. _softwareTags.Keys];
     public Dictionary<string, string>.Enumerator RawProjectData => _projectTags.GetEnumerator();
     public long ProjectCount => _projectTags.Count;
+    public string[] ProjectTabs => [.. _projectTags.Keys];
 
     public TagData() { }
     public TagData(TagData other) => OverwriteWith(other);

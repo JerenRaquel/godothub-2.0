@@ -52,11 +52,11 @@ label_settings = ExtResource("4_ubd8o")
 [node name="PathLabel" type="Label" parent="HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "├─> Path: C:/"
+text = "└─> Path: C:/"
 label_settings = ExtResource("5_x2lbi")
 
 [node name="CommandLabel" type="Label" parent="HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "└─> Program.exe Arg1 Arg2 {MACRO}"
+text = "       └─> Program.exe Arg1 Arg2 {MACRO}"
 label_settings = ExtResource("5_x2lbi")

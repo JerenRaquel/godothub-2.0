@@ -30,6 +30,8 @@ public partial class Software : TabBase
         _softwareLocateWindow.SoftwareLocated += AddEntry;
 
         ToggleEntryButtons(true);
+        foreach (string tag in TagCache.Instance.SoftwareTags)
+            AddEntry(tag);
     }
 
     private void ToggleEntryButtons(bool disabled)

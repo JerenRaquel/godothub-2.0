@@ -31,6 +31,7 @@ public partial class TagData
             RAWCommand = path + " " + argString;
             PrettyRawCommand = ParseForExecutable(path) + " " + argString;
             CommandData = new(path, args);
+            _isNull = false;
         }
 
         public bool UpdateCommand(string path, string argStr)
@@ -62,9 +63,11 @@ public partial class TagData
             StringReader sr = new(data);
             JsonTextReader reader = new(sr);
 
+            reader.Read();
             string color = Cache.ReadEntry<string>(reader, null);
             string path = Cache.ReadEntry<string>(reader, null);
             string[] args = [.. Cache.ReadEntries<string>(reader)];
+            reader.Read();
 
             return new SoftwareData(color, path, args);
         }

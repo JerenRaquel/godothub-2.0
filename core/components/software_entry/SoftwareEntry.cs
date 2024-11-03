@@ -28,8 +28,8 @@ public partial class SoftwareEntry : MarginContainer
 
         _nameLabel.Text = name;
         SoftwareTag = name;
-        _pathLabel.Text = $"├─> Path: {path}";
-        _commandLabel.Text = $"└─> {command}";
+        _pathLabel.Text = $"└─> Path: {path}";
+        _commandLabel.Text = $"       └─> CLI: {command}";
         _colorTab.Modulate = new(colorCode);
     }
 }

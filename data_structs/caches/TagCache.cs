@@ -23,6 +23,9 @@ public partial class TagCache : Cache
     private TagData _RAM;
     private TagData _ROM;
 
+    public string[] SoftwareTags => _RAM.SoftwareTabs;
+    public string[] ProjectTags => _RAM.ProjectTabs;
+
     public override bool LoadData()
     {
         _ROM = new();
