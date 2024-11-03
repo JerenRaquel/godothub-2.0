@@ -36,6 +36,7 @@ text = "Locate Software"
 
 [node name="EditButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="1"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Edit"
 
@@ -47,6 +48,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_1hewv")
 
 [node name="LaunchButton" type="Button" parent="VBoxContainer/ToolBar/HBoxContainer" index="3"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Launch"
 

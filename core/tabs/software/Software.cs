@@ -22,6 +22,7 @@ public partial class Software : TabBase
         _locateButton.Pressed += OnSoftwareAddPressed;
         _editButton = GetNode<Button>("%EditButton");
         _launchButton = GetNode<Button>("%LaunchButton");
+        _launchButton.Pressed += OnLaunchRequested;
         _filterLineEdit = GetNode<LineEdit>("%FilterLineEdit");
         _orderCheckBox = GetNode<CheckBox>("%OrderCheckBox");
         _deleteButton = GetNode<Button>("%DeleteButton");
@@ -65,7 +66,9 @@ public partial class Software : TabBase
     private void OnLaunchRequested()
     {
         string key = _currentlySelected.SoftwareTag;
-        OSAPI.RunTool(key);
+        long processID = OSAPI.RunTool(key);
+        if (processID == -1)
+            NotifcationManager.Instance.NotifyError("Could not run software");
     }
 
     private void OnSoftwareAddPressed() => _softwareLocateWindow.Show();
