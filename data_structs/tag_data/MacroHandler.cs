@@ -19,8 +19,14 @@ public partial class TagData
 
         string command = commandData.Command;
         // string userDirectory = 
-        string projectDirectory = ProjectCache.Instance.GetProjectPath(projectName);
-        string rootDirectory = ProjectCache.Instance.GetProjectFolder(projectName);
+        string projectDirectory = "";
+        string rootDirectory = "";
+
+        if (projectName != null)
+        {
+            projectDirectory = ProjectCache.Instance.GetProjectPath(projectName);
+            rootDirectory = ProjectCache.Instance.GetProjectFolder(projectName);
+        }
 
         string[] parts = commandData.Args;
         List<string> results = [];

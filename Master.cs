@@ -10,6 +10,7 @@ public partial class Master : Node
         string userDirectory = ProjectSettings.GlobalizePath("user://");
         SettingsCache.Initialize(userDirectory);
         VersionCache.Initialize(userDirectory);
+        TagCache.Initialize(userDirectory);
         ProjectCache.Initialize(userDirectory);
     }
 

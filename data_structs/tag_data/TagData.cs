@@ -6,6 +6,9 @@ public partial class TagData
     // { tag : colorCode }
     private Dictionary<string, string> _projectTags = [];
 
+    public TagData() { }
+    public TagData(TagData other) => Overwrite(other);
+
     public void AddOrUpdateSoftwareTag(string name, SoftwareData data)
     {
         if (_softwareTags.ContainsKey(name))
@@ -25,6 +28,8 @@ public partial class TagData
         }
         _projectTags[name] = colorCode;
     }
+
+    public bool HasSoftwareTag(string tag) => _softwareTags.ContainsKey(tag);
 
     public string GetColor(bool isSoftware, string name, string defaultValue = "000000")
     {
@@ -52,6 +57,8 @@ public partial class TagData
     {
         if (!_softwareTags.TryGetValue(softwareTag, out SoftwareData data)) return new();
         if (data.IsNull) return new();
+
+        if (projectName != null && projectName.Length == 0) projectName = null;
 
         return SetMacros(data.CommandData, projectName);
     }

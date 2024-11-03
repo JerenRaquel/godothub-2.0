@@ -48,10 +48,13 @@ public static partial class OSAPI
     {
         TagData.CommandParts executableCommand = TagCache.Instance.GetExecutableCommand(toolName, projectName);
 
-        long processID = OS.CreateProcess(executableCommand.Command, executableCommand.Args);
-        if (processID == -1) return -1; // Failed
+        GD.Print(executableCommand.Command, " ", executableCommand.Args);
+        return -1;
 
-        return processID;
+        // long processID = OS.CreateProcess(executableCommand.Command, executableCommand.Args);
+        // if (processID == -1) return -1; // Failed
+
+        // return processID;
     }
 
     private static string GetDefaultUserPath()

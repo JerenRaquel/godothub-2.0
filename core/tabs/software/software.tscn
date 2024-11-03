@@ -1,15 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://d0gpnlaocc1vu"]
+[gd_scene load_steps=7 format=3 uid="uid://d0gpnlaocc1vu"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_ddcup"]
 [ext_resource type="Script" path="res://core/tabs/software/Software.cs" id="2_vinc0"]
 [ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="3_fdurq"]
+[ext_resource type="PackedScene" uid="uid://6cen58del03h" path="res://core/components/software_entry/software_entry.tscn" id="4_towdt"]
+[ext_resource type="PackedScene" uid="uid://beu4lt4ot1j1y" path="res://core/windows/locate_software_window/software_locator.tscn" id="5_k0x3g"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hewv"]
 
 [node name="Software" instance=ExtResource("1_ddcup")]
 mouse_filter = 2
 script = ExtResource("2_vinc0")
-entryScene = null
+entryScene = ExtResource("4_towdt")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." index="0"]
 layout_mode = 2
@@ -96,4 +98,12 @@ layout_mode = 2
 [node name="SoftwareContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/ScrollContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." index="1"]
+layer = 3
+
+[node name="SoftwareLocator" parent="CanvasLayer" index="0" instance=ExtResource("5_k0x3g")]
+unique_name_in_owner = true

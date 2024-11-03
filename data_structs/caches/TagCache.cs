@@ -17,10 +17,19 @@ public partial class TagCache : Cache
     }
     #endregion
 
-    private readonly TagData _RAM;
-    private readonly TagData _ROM;
+    private TagData _RAM;
+    private TagData _ROM;
 
-    public override bool LoadData() { return false; }
+    public override bool LoadData()
+    {
+        _ROM = new();
+
+        // TODO: Read file
+
+
+        _RAM = new(_ROM);
+        return false;
+    }
 
     public override void WriteData()
     {
@@ -35,4 +44,6 @@ public partial class TagCache : Cache
     public TagData.CommandParts GetExecutableCommand(string softwareTag, string projectName) => _RAM.GetCommandString(softwareTag, projectName);
 
     public string GetRAWCommand(string softwareTag) => _RAM.GetRawCommand(softwareTag);
+
+    public bool HasSoftwareTag(string tag) => _RAM.HasSoftwareTag(tag);
 }

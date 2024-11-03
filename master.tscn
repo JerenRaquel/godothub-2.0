@@ -71,7 +71,6 @@ metadata/_tab_index = 2
 [node name="Software" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("6_b8144")]
 visible = false
 layout_mode = 2
-entryScene = null
 metadata/_tab_index = 3
 
 [node name="Settings" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("4_qcrru")]
