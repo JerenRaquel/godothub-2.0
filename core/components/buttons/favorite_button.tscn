@@ -22,4 +22,5 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_idihm")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_5pudb")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_liee2")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_k3f85")
+toggle_mode = true
 icon = ExtResource("1_65hkd")
