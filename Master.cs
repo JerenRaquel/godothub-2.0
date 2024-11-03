@@ -19,6 +19,7 @@ public partial class Master : Node
     {
         ProjectCache.Instance.ForceWrite();
         SettingsCache.Instance.ForceWrite();
+        TagCache.Instance.ForceWrite();
         VersionCache.Instance.ForceWrite();
     }
 

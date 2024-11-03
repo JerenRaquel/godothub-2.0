@@ -20,11 +20,16 @@ public partial class SoftwareEntry : MarginContainer
         _commandLabel = GetNode<Label>("%CommandLabel");
     }
 
-    public void SetData(string name, string path, string command)
+    public void SetData(string name)
     {
+        string path = TagCache.Instance.GetPath(name);
+        string command = TagCache.Instance.GetRAWCommand(name, false);
+        string colorCode = TagCache.Instance.GetColor(true, name);
+
         _nameLabel.Text = name;
         SoftwareTag = name;
         _pathLabel.Text = $"├─> Path: {path}";
         _commandLabel.Text = $"└─> {command}";
+        _colorTab.Modulate = new(colorCode);
     }
 }

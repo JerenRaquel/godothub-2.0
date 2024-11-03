@@ -27,6 +27,7 @@ public partial class Software : TabBase
         _deleteButton = GetNode<Button>("%DeleteButton");
         _container = GetNode<VBoxContainer>("%SoftwareContainer");
         _softwareLocateWindow = GetNode<SoftwareLocator>("%SoftwareLocator");
+        _softwareLocateWindow.SoftwareLocated += AddEntry;
 
         ToggleEntryButtons(true);
     }
@@ -38,11 +39,11 @@ public partial class Software : TabBase
         _deleteButton.Disabled = disabled;
     }
 
-    private void AddEntry(string name, string path, string command)
+    private void AddEntry(string name)
     {
         SoftwareEntry entryInstance = entryScene.Instantiate<SoftwareEntry>();
         _container.AddChild(entryInstance);
-        entryInstance.SetData(name, path, command);
+        entryInstance.SetData(name);
         entryInstance.MainButton.StateToggled += (bool state) => OnStateToggled(state, entryInstance);
         entryInstance.MainButton.LaunchRequested += OnLaunchRequested;
     }
@@ -66,4 +67,5 @@ public partial class Software : TabBase
     }
 
     private void OnSoftwareAddPressed() => _softwareLocateWindow.Show();
+
 }

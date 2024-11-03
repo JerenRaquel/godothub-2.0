@@ -4,6 +4,8 @@ using System.IO;
 
 public partial class SoftwareLocator : WindowBase
 {
+    [Signal] public delegate void SoftwareLocatedEventHandler(string key);
+
     private VBoxContainer _container;
     private LineEdit _tagLineEdit;
     private ColorPickerButton _colorPickerButton;
@@ -78,6 +80,7 @@ public partial class SoftwareLocator : WindowBase
             )
         );
 
+        EmitSignal(SignalName.SoftwareLocated, _tagLineEdit.Text);
         Hide();
     }
 
