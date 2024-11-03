@@ -11,26 +11,29 @@ public partial class TagData
         private bool _isNull = true;
 
         public readonly bool IsNull => _isNull;
+        public bool Favorited { get; set; } = false;
         public string ColorCode { get; set; }
         public CommandParts CommandData { get; private set; }
         public string RAWCommand { get; private set; }
         public string PrettyRawCommand { get; private set; }
 
         public SoftwareData() { }
-        public SoftwareData(string colorCode, string path, string argStr)
+        public SoftwareData(string colorCode, string path, string argStr, bool favorited)
         {
             ColorCode = colorCode;
             RAWCommand = path + " " + argStr;
             PrettyRawCommand = ParseForExecutable(path) + " " + argStr;
+            Favorited = favorited;
             _isNull = !UpdateCommand(path, argStr);
         }
-        public SoftwareData(string colorCode, string path, string[] args)
+        public SoftwareData(string colorCode, string path, string[] args, bool favorited)
         {
             ColorCode = colorCode;
             string argString = args.Join(" ");
             RAWCommand = path + " " + argString;
             PrettyRawCommand = ParseForExecutable(path) + " " + argString;
             CommandData = new(path, args);
+            Favorited = favorited;
             _isNull = false;
         }
 
@@ -51,6 +54,7 @@ public partial class TagData
 
             writer.WriteStartObject();
             Cache.WriteEntry(writer, "color", ColorCode);
+            Cache.WriteEntry(writer, "favorited", Favorited);
             Cache.WriteEntry(writer, "path", CommandData.Command);
             Cache.WriterEntries(writer, "args", [.. CommandData.Args]);
             writer.WriteEndObject();
@@ -65,11 +69,12 @@ public partial class TagData
 
             reader.Read();
             string color = Cache.ReadEntry<string>(reader, null);
+            bool favorited = Cache.ReadEntry(reader, false);
             string path = Cache.ReadEntry<string>(reader, null);
             string[] args = [.. Cache.ReadEntries<string>(reader)];
             reader.Read();
 
-            return new SoftwareData(color, path, args);
+            return new SoftwareData(color, path, args, favorited);
         }
 
         private static CommandParts SplitCommand(string path, string argStr)

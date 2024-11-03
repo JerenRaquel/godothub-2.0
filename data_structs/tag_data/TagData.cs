@@ -19,12 +19,23 @@ public partial class TagData
 
     public void AddOrUpdateSoftwareTag(string name, SoftwareData data)
     {
-        if (_softwareTags.ContainsKey(name))
+        if (!_softwareTags.ContainsKey(name))
         {
             _softwareTags.Add(name, data);
             return;
         }
         _softwareTags[name] = data;
+    }
+
+    public void UpdateFavoriteState(string name, bool state)
+    {
+        if (!_softwareTags.ContainsKey(name)) return;
+        SoftwareData data = _softwareTags[name];
+        data.Favorited = state;
+        AddOrUpdateSoftwareTag(name, data);
+
+        //! Doesn't want to work for some reason
+        // _softwareTags[name].Favorited = state;
     }
 
     public void AddOrUpdateProjectTagColor(string name, string colorCode)
@@ -85,10 +96,16 @@ public partial class TagData
 
     public string GetArgString(string softwareTag)
     {
-
         if (!_softwareTags.TryGetValue(softwareTag, out SoftwareData data)) return null;
         if (data.IsNull) return null;
         return data.CommandData.ArgString;
+    }
+
+    public bool IsFavorited(string softwareTag)
+    {
+        if (!_softwareTags.TryGetValue(softwareTag, out SoftwareData data)) return false;
+        if (data.IsNull) return false;
+        return data.Favorited;
     }
 
     public void LoadData(string tag, string data)

@@ -76,7 +76,8 @@ public partial class SoftwareLocator : WindowBase
             _tagLineEdit.Text, new(
                 _colorPickerButton.Color.ToHtml(),
                 _pathLineEdit.Text,
-                _argsLineEdit.Text
+                _argsLineEdit.Text,
+                false
             )
         );
 
