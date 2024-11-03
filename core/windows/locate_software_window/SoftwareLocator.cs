@@ -6,6 +6,7 @@ public partial class SoftwareLocator : WindowBase
 {
     private VBoxContainer _container;
     private LineEdit _tagLineEdit;
+    private ColorPickerButton _colorPickerButton;
     private LineEdit _pathLineEdit;
     private Button _locateButton;
     private LineEdit _argsLineEdit;
@@ -15,6 +16,8 @@ public partial class SoftwareLocator : WindowBase
         _container = GetNode<VBoxContainer>("%ContentContainer");
         _tagLineEdit = GetNode<LineEdit>("%TagLineEdit");
         _tagLineEdit.TextChanged += OnLineEdited;
+        _colorPickerButton = GetNode<ColorPickerButton>("%ColorPickerButton");
+        _colorPickerButton.ColorChanged += OnColorPicked;
         _pathLineEdit = GetNode<LineEdit>("%PathLineEdit");
         _pathLineEdit.TextChanged += OnLineEdited;
         _locateButton = GetNode<Button>("%LocateButton");
@@ -62,10 +65,19 @@ public partial class SoftwareLocator : WindowBase
         _tagLineEdit.Text = "";
         _pathLineEdit.Text = "";
         _argsLineEdit.Text = "";
+        _colorPickerButton.Color = new(1, 1, 1, 1);
     }
 
     protected override void OnConfirmPressed()
     {
+        TagCache.Instance.AddOrUpdateSoftwareTag(
+            _tagLineEdit.Text, new(
+                _colorPickerButton.Color.ToHtml(),
+                _pathLineEdit.Text,
+                _argsLineEdit.Text
+            )
+        );
+
         Hide();
     }
 
@@ -85,4 +97,6 @@ public partial class SoftwareLocator : WindowBase
         _pathLineEdit.Text = path;
         Validate();
     }
+
+    private void OnColorPicked(Color _) => Validate();
 }

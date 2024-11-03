@@ -13,16 +13,16 @@ public partial class TagData
         public string RAWCommand { get; private set; }
 
         public SoftwareData() { }
-        public SoftwareData(string colorCode, string command)
+        public SoftwareData(string colorCode, string path, string argStr)
         {
             ColorCode = colorCode;
-            RAWCommand = command;
-            _isNull = !UpdateCommand(command);
+            RAWCommand = path + " " + argStr;
+            _isNull = !UpdateCommand(path, argStr);
         }
 
-        public bool UpdateCommand(string command)
+        public bool UpdateCommand(string path, string argStr)
         {
-            CommandParts data = SplitCommand(command);
+            CommandParts data = SplitCommand(path, argStr);
             if (data.IsNull)
                 return false;
 
@@ -30,17 +30,12 @@ public partial class TagData
             return true;
         }
 
-        private static CommandParts SplitCommand(string commandStr)
+        private static CommandParts SplitCommand(string path, string argStr)
         {
             // TODO: Santized for '\ ' chars and mid spaces withing params
-            string[] parts = commandStr.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = argStr.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-            if (parts.Length == 0)
-                return new();
-            else if (parts.Length == 1)
-                return new(parts[0], []);
-            else
-                return new(parts[0], [.. parts.Skip(1)]);
+            return new(path, parts);
         }
     }
 
