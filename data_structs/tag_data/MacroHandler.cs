@@ -18,12 +18,13 @@ public partial class TagData
         if (commandData.IsNull) return new();
 
         string command = commandData.Command;
-        // string userDirectory = 
+        string userDirectory = "";
         string projectDirectory = "";
         string rootDirectory = "";
 
         if (projectName != null)
         {
+            userDirectory = ProjectCache.Instance.GetProjectSaveFolder(projectName);
             projectDirectory = ProjectCache.Instance.GetProjectPath(projectName);
             rootDirectory = ProjectCache.Instance.GetProjectFolder(projectName);
         }
@@ -46,8 +47,7 @@ public partial class TagData
 
             //* Project Based MACROs
             if (parts[i] == PROJECT_MACROS[0])
-                // parts[i] = USER_DIRECTORY;
-                continue;   // TODO: Plug this in once implemented
+                results.Add(userDirectory);
             else if (parts[i] == PROJECT_MACROS[1])
                 results.Add(rootDirectory);
             else if (parts[i] == PROJECT_MACROS[2])
