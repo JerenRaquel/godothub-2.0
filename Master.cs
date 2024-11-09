@@ -7,6 +7,7 @@ public partial class Master : Node
 
     public override void _EnterTree()
     {
+        OSAPI.Initialize();
         string userDirectory = ProjectSettings.GlobalizePath("user://");
         SettingsCache.Initialize(userDirectory);
         VersionCache.Initialize(userDirectory);

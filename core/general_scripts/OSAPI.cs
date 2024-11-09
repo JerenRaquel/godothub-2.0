@@ -1,8 +1,18 @@
+using System.IO;
 using Godot;
 
 public static partial class OSAPI
 {
-    private static string _defaultUserFolderPath = null;
+    public static string OS_USER_DATA_ROOT { get; private set; } = null;
+    public static string DEFAULT_GODOT_USER_ROOT { get; private set; } = null;
+
+    public static void Initialize()
+    {
+        if (OS_USER_DATA_ROOT != null) return;
+
+        OS_USER_DATA_ROOT = OS.GetDataDir();
+        DEFAULT_GODOT_USER_ROOT = OS_USER_DATA_ROOT + "/Godot/app_userdata/";
+    }
 
     public static bool OpenFolder(string path)
     {
@@ -12,8 +22,17 @@ public static partial class OSAPI
 
     public static bool OpenUserFolder(string projectName)
     {
-        // TODO: Check to see if the project has a different user path
-        return OpenFolder(GetDefaultUserPath() + projectName);
+        string path = DEFAULT_GODOT_USER_ROOT + projectName;
+        if (!Directory.Exists(path))
+            path = OS_USER_DATA_ROOT + "/" + projectName;
+
+        if (!Directory.Exists(path))
+        {
+            NotifcationManager.Instance.NotifyError($"Could not locate save data for project: {projectName}");
+            return false;
+        }
+
+        return OpenFolder(path);
     }
 
     public static long OpenGodotProject(string godotPath, string projectName, bool withVerbose = false)
@@ -52,16 +71,5 @@ public static partial class OSAPI
         if (processID == -1) return -1; // Failed
 
         return processID;
-    }
-
-    private static string GetDefaultUserPath()
-    {
-        if (_defaultUserFolderPath != null) return _defaultUserFolderPath;
-
-        string appUserPath = ProjectSettings.GlobalizePath("user://");
-        appUserPath = appUserPath.Replace((string)ProjectSettings.GetSetting("application/config/name") + "/", "");
-        _defaultUserFolderPath ??= appUserPath;
-
-        return _defaultUserFolderPath;
     }
 }

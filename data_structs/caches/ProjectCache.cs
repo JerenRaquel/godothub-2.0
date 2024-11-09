@@ -120,6 +120,19 @@ public partial class ProjectCache : Cache
 
     public string GetProjectFolder(string projectName) => GetProject(projectName)?.RootPath;
 
+    public string GetProjectSaveFolder(string projectName)
+    {
+        if (!_projects.ContainsKey(projectName)) return null;
+
+        string path = OSAPI.DEFAULT_GODOT_USER_ROOT + projectName;
+        if (!Directory.Exists(path))
+            path = OSAPI.OS_USER_DATA_ROOT + "/" + projectName;
+
+        if (!Directory.Exists(path)) return null;
+
+        return path;
+    }
+
     public string GetRenderer(string projectName)
     {
         ProjectData.Renderer renderer = GetProject(projectName)?.Renderer ?? ProjectData.Renderer.INVALID;
@@ -224,10 +237,10 @@ public partial class ProjectCache : Cache
         }
         // Check if valid config
         int configVersion = (int)configLoadData.Item1.GetValue("", "config_version", -1);
-        if (!READABLE_CONFIG_VERSIONS.Contains<int>(configVersion)) return; // Invalid version
+        if (!READABLE_CONFIG_VERSIONS.Contains(configVersion)) return; // Invalid version
 
         // Create a project object
-        ProjectDataState project = new ProjectDataState();
+        ProjectDataState project = new();
         if (!project.LoadUncached(ref configLoadData, ref directoryPath)) return;
         if (_projects.ContainsKey(project.projectName)) return;
 
