@@ -6,10 +6,9 @@ public partial class ProjectSidePanel : MarginContainer
     private Button _openButton;
     private Button _openWithOutToolsButton;
     private Button _runButton;
-    private Button _changeVersionButton;
     private Button _openFolderButton;
     private Button _openSaveFolderButton;
-    private Button _renameButton;
+    private Button _editButtonButton;
     private Button _cloneButton;
     private Button _deleteButton;
     private QuickToolRoot _quickToolRoot;
@@ -28,12 +27,11 @@ public partial class ProjectSidePanel : MarginContainer
         _openButton = GetNode<Button>("%OpenButton");
         _openWithOutToolsButton = GetNode<Button>("%OpenWOToolsButton");
         _runButton = GetNode<Button>("%RunButton");
-        _changeVersionButton = GetNode<Button>("%ChangeVerButton");
+        _editButtonButton = GetNode<Button>("%EditButton");
         _openFolderButton = GetNode<Button>("%OpenFolderButton");
         _openFolderButton.Pressed += OnFolderOpenPressed;
         _openSaveFolderButton = GetNode<Button>("%OpenSaveFolderButton");
         _openSaveFolderButton.Pressed += OnSaveFolderOpenPressed;
-        _renameButton = GetNode<Button>("%RenameButton");
         _cloneButton = GetNode<Button>("%CloneButton");
         _deleteButton = GetNode<Button>("%DeleteButton");
         _quickToolRoot = GetNode<QuickToolRoot>("%QuickToolRoot");
@@ -62,12 +60,11 @@ public partial class ProjectSidePanel : MarginContainer
         _openButton.Disabled = disabled;
         _openWithOutToolsButton.Disabled = disabled;
         _runButton.Disabled = disabled;
-        _changeVersionButton.Disabled = disabled;
+        _editButtonButton.Disabled = true;   // TEMP
         _openFolderButton.Disabled = disabled;
         _openSaveFolderButton.Disabled = disabled;
-        _renameButton.Disabled = disabled;
-        _cloneButton.Disabled = disabled;
-        _deleteButton.Disabled = disabled;
+        _cloneButton.Disabled = true;   // TEMP
+        _deleteButton.Disabled = true;   // TEMP
     }
 
     private void OnFolderOpenPressed()
