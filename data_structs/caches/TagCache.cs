@@ -114,7 +114,7 @@ public partial class TagCache : Cache
 
     public string GetArgString(string softwareTag) => _RAM.GetArgString(softwareTag);
 
-    public string GetColor(bool isSoftware, string tag, string defaultValue = "000000") => _RAM.GetColor(isSoftware, tag, defaultValue);
+    public string GetColor(bool isSoftware, string tag, string defaultValue = "FFFFFF") => _RAM.GetColor(isSoftware, tag, defaultValue);
 
     public bool IsFavorited(string softwareTag) => _RAM.IsFavorited(softwareTag);
 

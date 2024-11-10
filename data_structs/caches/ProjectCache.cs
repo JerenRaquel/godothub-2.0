@@ -145,6 +145,10 @@ public partial class ProjectCache : Cache
         };
     }
 
+    public string[] GetProjectTags(string projectName) => GetProject(projectName)?.ProjectTags;
+
+    public string[] GetSoftwareTags(string projectName) => GetProject(projectName)?.SoftwareTags;
+
     public bool HasTags(string projectName) => GetProject(projectName)?.HasTags ?? false;
 
     public bool IsFavorited(string projectName) => GetProject(projectName)?.IsFavorited ?? false;

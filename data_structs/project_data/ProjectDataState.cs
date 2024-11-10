@@ -23,6 +23,8 @@ public partial class ProjectDataState
     public string VersionStr => _RAM.version.ToString();
     public VersionData.BuildType Build => _RAM.Build;
     public ProjectData.Renderer Renderer => _RAM.renderer;
+    public string[] ProjectTags => [.. _RAM.projectTags];
+    public string[] SoftwareTags => [.. _RAM.softwareTags];
     public bool HasTags => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0;
     public bool IsDotNet => _usingDotNet;
     public bool IsGDExt => _RAM.ProjectPathAddtion?.Length > 0;
