@@ -19,6 +19,7 @@ public partial class Projects : TabBase
     private VBoxContainer _projectEntryContainer;
     private ProjectSidePanel _sidePanel;
     private BuildPrompt _buildPrompt;
+    private NewProjectWindow _newProjectPrompt;
 
     private Dictionary<string, ProjectEntry> _projectEntries = [];
 
@@ -34,6 +35,7 @@ public partial class Projects : TabBase
         _projectEntryPackedScene = GD.Load<PackedScene>("res://core/tabs/projects/project_entry/project_entry.tscn");
 
         _newButton = GetNode<Button>("%NewButton");
+        _newButton.Pressed += OnNewProjectPressed;
         _importButton = GetNode<Button>("%ImportButton");
         _importButton.Pressed += OnImportPressed;
         _scanButton = GetNode<Button>("%ScanButton");
@@ -50,6 +52,7 @@ public partial class Projects : TabBase
         _sidePanel = GetNode<ProjectSidePanel>("%ProjectSidePanel");
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
         _buildPrompt.BuildUpdated += OnBuildUpdated;
+        _newProjectPrompt = GetNode<NewProjectWindow>("%NewProjectWindow");
 
         string[] versions = ProjectCache.Instance.GetVersions();
         Array.Sort(versions, VersionData.reverseComparer);
@@ -231,4 +234,6 @@ public partial class Projects : TabBase
     }
 
     private void OnBuildUpdated(string projectName) => _projectEntries[projectName].UpdateProjectLabel();
+
+    private void OnNewProjectPressed() => _newProjectPrompt.Show();
 }
