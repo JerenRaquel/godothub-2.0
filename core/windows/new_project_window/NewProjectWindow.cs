@@ -4,8 +4,8 @@ using System;
 public partial class NewProjectWindow : WindowBase
 {
     private const string FORWARD_TEXT = "* Supports desktop platforms only.\n* Advanced 3D graphics available.\n* Can scale to large complex scenes.\n* Uses RenderingDevice backend.\n* Slower rendering of simple scenes.";
-    private const string MOBILE_TEXT = "* Supports desktop + mobile platforms.\n* Less advanced 3D graphics.\n* Less scalable for complex scenes.\n* Uses RenderingDevice backend.\n* Fast rendering of simple scenes.";
-    private const string COMPAT_TEXT = "* Supports desktop, mobile + web platforms.\n* Least advanced 3D graphics (currently work-in-progress).\n* Intended for low-end/older devices.\n* Uses OpengGL 3 backend (OpengGL 3.3/ES 3.0/WebGL2).\n* Fastest rendering of simple scenes.";
+    private const string MOBILE_TEXT = "* Supports desktop & mobile platforms.\n* Less advanced 3D graphics.\n* Less scalable for complex scenes.\n* Uses RenderingDevice backend.\n* Fast rendering of simple scenes.";
+    private const string COMPAT_TEXT = "* Supports desktop, mobile & web platforms.\n* Least advanced 3D graphics (currently work-in-progress).\n* Intended for low-end/older devices.\n* Uses OpengGL 3 backend (OpengGL 3.3/ES 3.0/WebGL2).\n* Fastest rendering of simple scenes.";
 
     private LineEdit _nameLineEdit;
     private LineEdit _pathLineEdit;

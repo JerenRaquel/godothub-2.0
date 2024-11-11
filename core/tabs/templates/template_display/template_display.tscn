@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://ch5o1bnp8mh0m"]
+
+[ext_resource type="Script" path="res://core/tabs/templates/template_display/TemplateDisplay.cs" id="1_krina"]
+
+[node name="TemplateDisplay" type="MarginContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_krina")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="Tree" type="Tree" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+allow_reselect = true
+allow_rmb_select = true
+drop_mode_flags = 3
+select_mode = 2

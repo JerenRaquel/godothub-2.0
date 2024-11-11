@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://c0ba1xq2k0h15"]
+[gd_scene load_steps=14 format=3 uid="uid://c0ba1xq2k0h15"]
 
 [ext_resource type="Script" path="res://Master.cs" id="1_ogyj1"]
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="2_4tg3t"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://core/tabs/TabManager.cs" id="3_fr8ku"]
 [ext_resource type="PackedScene" uid="uid://drrdbffd8u2ph" path="res://core/tabs/godot_versions/godot_versions.tscn" id="4_1loeo"]
 [ext_resource type="PackedScene" uid="uid://cfn5g8ax1ltl5" path="res://core/tabs/settings/settings.tscn" id="4_qcrru"]
+[ext_resource type="PackedScene" uid="uid://dlj76n5x3gx1w" path="res://core/tabs/templates/templates.tscn" id="5_2desc"]
 [ext_resource type="PackedScene" uid="uid://cxhuuu006jdni" path="res://core/components/control_shield/control_shield.tscn" id="6_2amfe"]
 [ext_resource type="PackedScene" uid="uid://d0gpnlaocc1vu" path="res://core/tabs/software/software.tscn" id="6_b8144"]
 [ext_resource type="Script" path="res://core/general_scripts/FileDialogManager.cs" id="7_ip4lf"]
@@ -58,7 +59,7 @@ layout_mode = 2
 theme = null
 metadata/_tab_index = 0
 
-[node name="Templates" type="Control" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer"]
+[node name="Templates" parent="PanelContainer/CoreContent/VBoxContainer/TabContainer" instance=ExtResource("5_2desc")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
