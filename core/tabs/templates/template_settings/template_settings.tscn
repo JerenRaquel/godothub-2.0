@@ -1,14 +1,18 @@
 [gd_scene load_steps=6 format=3 uid="uid://2nq38hycl1vj"]
 
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_0a5ee"]
 [ext_resource type="Script" path="res://core/tabs/templates/template_settings/TemplateSettings.cs" id="1_0gyf3"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="1_p66kw"]
-[ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="2_aa2hy"]
+[ext_resource type="PackedScene" uid="uid://cyd7qc2dwuin8" path="res://core/components/buttons/add_delete_component/add_delete_component.tscn" id="4_50fbk"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4ncgt"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_84ikv"]
-
 [node name="TemplateSettings" type="MarginContainer"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 164.0
+grow_vertical = 2
+theme = ExtResource("1_0a5ee")
 theme_override_constants/margin_left = 5
 script = ExtResource("1_0gyf3")
 
@@ -17,6 +21,8 @@ layout_mode = 2
 
 [node name="CheckButton" type="CheckButton" parent="VBoxContainer"]
 layout_mode = 2
+tooltip_text = "If true, all empty folders will have a \".tmp\" file. 
+This is indented for Git to add/commit the empty folder."
 text = "Fill Empty Folders"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
@@ -50,20 +56,8 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 20)
-layout_mode = 2
-text = "Add"
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_84ikv")
-
-[node name="DeleteButton" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_aa2hy")]
+[node name="VersionAddDeleteComponent" parent="VBoxContainer" instance=ExtResource("4_50fbk")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
@@ -92,18 +86,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(50, 20)
-layout_mode = 2
-text = "Add"
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_84ikv")
-
-[node name="DeleteButton" parent="VBoxContainer/HBoxContainer2" instance=ExtResource("2_aa2hy")]
+[node name="TagAddDeleteComponent" parent="VBoxContainer" instance=ExtResource("4_50fbk")]
+unique_name_in_owner = true
 layout_mode = 2

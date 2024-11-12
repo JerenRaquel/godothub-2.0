@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://cyd7qc2dwuin8"]
+
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_edyaw"]
+[ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="1_nrbbg"]
+[ext_resource type="Script" path="res://core/components/buttons/add_delete_component/AddDeleteComponent.cs" id="2_wsds3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_84ikv"]
+
+[node name="AddDeleteComponent" type="HBoxContainer"]
+theme = ExtResource("1_edyaw")
+script = ExtResource("2_wsds3")
+
+[node name="AddButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 20)
+layout_mode = 2
+text = "Add"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_84ikv")
+
+[node name="DeleteButton" parent="." instance=ExtResource("1_nrbbg")]
+unique_name_in_owner = true
+layout_mode = 2
