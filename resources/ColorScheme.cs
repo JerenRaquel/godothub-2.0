@@ -2,6 +2,7 @@ public static class ColorTheme
 {
     public static readonly string BaseBlue = "478cbf";
     public static readonly string FadedGray = "888888";
+    public static readonly string FadedYellow = "b19a59";
     public static readonly string HighlightBlue = "3dbde0";
     public static readonly string Unknown = "ffff70";
     public static readonly string Stable = "6aff7c";

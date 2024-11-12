@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dlj76n5x3gx1w"]
+[gd_scene load_steps=6 format=3 uid="uid://dlj76n5x3gx1w"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_jl0u4"]
 [ext_resource type="Script" path="res://core/tabs/templates/Templates.cs" id="2_5axoy"]
 [ext_resource type="PackedScene" uid="uid://c4uo62iwd5yw4" path="res://core/tabs/templates/template_list_panel/template_list.tscn" id="3_ukb7v"]
 [ext_resource type="PackedScene" uid="uid://ch5o1bnp8mh0m" path="res://core/tabs/templates/template_display/template_display.tscn" id="4_i6s10"]
+[ext_resource type="PackedScene" uid="uid://2nq38hycl1vj" path="res://core/tabs/templates/template_settings/template_settings.tscn" id="5_uedly"]
 
 [node name="Templates" instance=ExtResource("1_jl0u4")]
 script = ExtResource("2_5axoy")
@@ -22,5 +23,9 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="TemplateDisplay" parent="MarginContainer/HBoxContainer" index="1" instance=ExtResource("4_i6s10")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TemplateSettings" parent="MarginContainer/HBoxContainer" index="2" instance=ExtResource("5_uedly")]
 unique_name_in_owner = true
 layout_mode = 2

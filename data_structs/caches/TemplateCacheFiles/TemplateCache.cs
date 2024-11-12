@@ -8,6 +8,8 @@ public partial class TemplateCache : Cache
 
     public string[] TemplateNames => _RAM.Templates;
 
+    public TemplateData.DataNode GetRoot(string templateName) => _RAM.GetRoot(templateName);
+
     private string GetFilePath(string fileName)
     {
         if (!_fileDatabase.TryGetValue(fileName, out string value)) return null;

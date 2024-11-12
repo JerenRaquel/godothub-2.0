@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,15 @@ public partial class TemplateData
         private Dictionary<string, string> _files;
 
         public string Name { get; private set; }
+        public string[] Files
+        {
+            get
+            {
+                string[] data = [.. _files.Keys];
+                Array.Sort(data);
+                return data;
+            }
+        }
         public readonly bool IsNull => _isNull;
         public readonly bool IsRoot => _isRoot;
         public readonly long Count => !_isNull ? _folders.Count + _files.Count : 0;

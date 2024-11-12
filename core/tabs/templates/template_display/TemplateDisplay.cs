@@ -5,22 +5,28 @@ public partial class TemplateDisplay : MarginContainer
 {
     private Tree _tree;
 
-    public override void _Ready()
-    {
-        _tree = GetNode<Tree>("%Tree");
+    public override void _Ready() => _tree = GetNode<Tree>("%Tree");
 
-        CreateTree();
-    }
-
-    private TreeItem CreateTree()
+    public void Build(string templateName)
     {
+        if (templateName == null) return;
+
+        _tree.Clear();
+        TemplateData.DataNode rootData = TemplateCache.Instance.GetRoot(templateName);
+        if (rootData.IsNull) return;
+
         TreeItem root = _tree.CreateItem();
-        root.SetText(0, "[Unnamed Project]");
+        root.SetText(0, "[Unamed Project]");
 
-        TreeItem childA = AddChild(root, "icon.svg", ColorTheme.FadedGray);
-        TreeItem childB = AddChild(root, "project.godot", ColorTheme.FadedGray);
+        foreach (string file in rootData.Files)
+        {
+            string colorCode = null;
+            if (file == "project.godot" || file == "icon.svg") colorCode = ColorTheme.FadedYellow;
+            else if (file.StartsWith('.')) colorCode = ColorTheme.FadedGray;
 
-        return root;
+            AddChild(root, file, colorCode);
+        }
+
     }
 
     private TreeItem AddChild(TreeItem parent, string text, string colorCode = null)

@@ -1,9 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://ch5o1bnp8mh0m"]
+[gd_scene load_steps=3 format=3 uid="uid://ch5o1bnp8mh0m"]
 
 [ext_resource type="Script" path="res://core/tabs/templates/template_display/TemplateDisplay.cs" id="1_krina"]
+[ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_qft5n"]
 
 [node name="TemplateDisplay" type="MarginContainer"]
 size_flags_horizontal = 3
+theme = ExtResource("1_qft5n")
 script = ExtResource("1_krina")
 
 [node name="Panel" type="Panel" parent="."]
@@ -14,5 +16,4 @@ unique_name_in_owner = true
 layout_mode = 2
 allow_reselect = true
 allow_rmb_select = true
-drop_mode_flags = 3
 select_mode = 2
