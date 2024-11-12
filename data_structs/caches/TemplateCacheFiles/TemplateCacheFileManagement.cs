@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public partial class TemplateCache : Cache
 {
+    private const int VERSION_FLAG = 1;
+
     private readonly string _ASSET_DIRECTORY;
     private readonly string _ASSET_METADATA_FILE_PATH;
     private readonly string _TEMPLATE_DIRECTORY;
@@ -119,7 +122,9 @@ public partial class TemplateCache : Cache
                 if (entry.Value.IsNull) continue;
 
                 string filePath = _TEMPLATE_DIRECTORY + "/" + entry.Key + ".gdhub";
+
                 StreamWriter file = new(filePath);
+                file.WriteLine($"Version={VERSION_FLAG}");
                 TemplateData.DataNode.WriteToFile("", entry.Value, ref file);
                 file.Close();
             }
@@ -152,6 +157,19 @@ public partial class TemplateCache : Cache
 
     private void ReadTemplateFile(string path)
     {
+        string unixPath = path.Replace("\\", "/");
+        using StreamReader file = new(unixPath);
+        string fileName = unixPath.Split("/", StringSplitOptions.RemoveEmptyEntries)
+                            .Last()
+                            .Replace(".gdhub", "");
 
+        string versionStr = file.ReadLine();
+        if (versionStr == null) return;
+        if (!int.TryParse(versionStr.Split("=")[1], out int result)) return;
+        if (result != VERSION_FLAG) return;
+
+        TemplateData.DataNode root = _ROM.AddTemplate(fileName);
+        TemplateData.DataNode.ReadFromFile(ref root, file);
     }
+
 }

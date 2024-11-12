@@ -14,7 +14,7 @@ public partial class TemplateData
     {
         if (_roots.ContainsKey(templateName)) return new();
 
-        DataNode node = new(templateName);
+        DataNode node = new(templateName, true);
         _roots.Add(templateName, node);
         return node;
     }
