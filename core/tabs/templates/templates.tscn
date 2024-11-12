@@ -18,7 +18,9 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 
 [node name="TemplateList" parent="MarginContainer/HBoxContainer" index="0" instance=ExtResource("3_ukb7v")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="TemplateDisplay" parent="MarginContainer/HBoxContainer" index="1" instance=ExtResource("4_i6s10")]
+unique_name_in_owner = true
 layout_mode = 2

@@ -6,6 +6,7 @@ public partial class TemplateData
 
     public Dictionary<string, DataNode>.Enumerator RawTemplateData => _roots.GetEnumerator();
     public int TemplateCount => _roots.Count;
+    public string[] Templates => [.. _roots.Keys];
 
     public TemplateData() { }
     public TemplateData(TemplateData other) => OverwriteWith(other);
@@ -17,6 +18,12 @@ public partial class TemplateData
         DataNode node = new(templateName, true);
         _roots.Add(templateName, node);
         return node;
+    }
+
+    public DataNode GetRoot(string templateName)
+    {
+        if (!_roots.TryGetValue(templateName, out DataNode value)) return new();
+        return value;
     }
 
     public void OverwriteWith(TemplateData other)

@@ -4,7 +4,7 @@ using System;
 public partial class TabManager : TabContainer
 {
     [Export] private Projects _projectTab;
-    // TODO: Templates
+    [Export] private Templates _templateTab;
     [Export] private GodotVersions _versionsTab;
     [Export] private Software _softwareTab;
     [Export] private Settings _settingsTab;
@@ -15,6 +15,7 @@ public partial class TabManager : TabContainer
 
         SettingsCache.Instance.LoadData();
         _projectTab.LoadData();
+        _templateTab.LoadData();
         _versionsTab.LoadData();
         _softwareTab.LoadData();
         _settingsTab.LoadData();

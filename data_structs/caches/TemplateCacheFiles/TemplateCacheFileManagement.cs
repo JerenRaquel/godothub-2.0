@@ -42,10 +42,12 @@ public partial class TemplateCache : Cache
         _RAM = new();
 
         if (!ReadAssetFile()) InitializeDefaultTemplates();
+        _ROM.OverwriteWith(_RAM);
 
         string[] files = Directory.GetFiles(_TEMPLATE_DIRECTORY);
         foreach (string filePath in files)
             ReadTemplateFile(filePath);
+        _RAM.OverwriteWith(_ROM);
 
         return true;
     }
