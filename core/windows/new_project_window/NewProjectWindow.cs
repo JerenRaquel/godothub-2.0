@@ -34,6 +34,7 @@ public partial class NewProjectWindow : WindowBase
 
         RefreshKnownImportPaths();
         RefreshVersionOptions();
+        RefreshTemplateOptions();
         base._Ready();
     }
 
@@ -68,6 +69,15 @@ public partial class NewProjectWindow : WindowBase
         }
     }
 
+    public void RefreshTemplateOptions()
+    {
+        _templateOptionButton.Clear();
+        foreach (string key in TemplateCache.Instance.SortedTemplateNames)
+        {
+            _templateOptionButton.AddItem(key);
+        }
+    }
+
     protected override void ClearWindowData()
     {
         base.ClearWindowData();
@@ -88,7 +98,7 @@ public partial class NewProjectWindow : WindowBase
         _compatCheckBox.SetPressedNoSignal(false);
         _renderLabel.Text = FORWARD_TEXT;
         _versionOptionButton.Selected = 0;
-        // _templateOptionButton.Selected = 0; // TEMP - Implement Templates Tab
+        _templateOptionButton.Selected = 0;
     }
 
     protected override bool Validate()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public partial class TemplateCache : Cache
@@ -7,6 +8,15 @@ public partial class TemplateCache : Cache
     private TemplateData _ROM;
 
     public string[] TemplateNames => _RAM.Templates;
+    public string[] SortedTemplateNames
+    {
+        get
+        {
+            string[] names = _RAM.Templates;
+            Array.Sort(names);
+            return names;
+        }
+    }
 
     public TemplateData.DataNode GetRoot(string templateName) => _RAM.GetRoot(templateName);
 
