@@ -1,0 +1,77 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3llqp83tpk3l"]
+
+[ext_resource type="PackedScene" uid="uid://dsnnuiiwm8vo3" path="res://core/tabs/settings/interfaces/base/interface_base.tscn" id="1_k5xc8"]
+[ext_resource type="Script" path="res://core/tabs/settings/interfaces/project_defaults/ProjectPathDefaults.cs" id="2_kiowv"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_hbv63"]
+
+[node name="Defaults" instance=ExtResource("1_k5xc8")]
+script = ExtResource("2_kiowv")
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/SidePanel" index="0"]
+layout_mode = 2
+text = "Rendering Device"
+label_settings = ExtResource("3_hbv63")
+
+[node name="Label2" type="Label" parent="MarginContainer/ScrollContainer/SidePanel" index="1"]
+layout_mode = 2
+text = "Project Folder Naming Scheme"
+label_settings = ExtResource("3_hbv63")
+
+[node name="Label3" type="Label" parent="MarginContainer/ScrollContainer/SidePanel" index="2"]
+layout_mode = 2
+tooltip_text = "When double clicking a project, this is the behavior that happens."
+mouse_filter = 0
+text = "Project Quick Launch Behavior"
+label_settings = ExtResource("3_hbv63")
+
+[node name="RenderingDeviceOptionButton" type="OptionButton" parent="MarginContainer2/ScrollContainer2/ContentPanel" index="0"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 23)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_hover_color = Color(0.239216, 0.741176, 0.878431, 1)
+theme_override_colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_font_sizes/font_size = 16
+selected = 0
+item_count = 3
+popup/item_0/text = "Forward+"
+popup/item_1/text = "Mobile"
+popup/item_1/id = 1
+popup/item_2/text = "Compatibility"
+popup/item_2/id = 2
+
+[node name="NamingSchemeOptionButton" type="OptionButton" parent="MarginContainer2/ScrollContainer2/ContentPanel" index="1"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 23)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_hover_color = Color(0.239216, 0.741176, 0.878431, 1)
+theme_override_colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_font_sizes/font_size = 16
+selected = 2
+item_count = 3
+popup/item_0/text = "PascalCase"
+popup/item_1/text = "snake_case"
+popup/item_1/id = 1
+popup/item_2/text = "kebab-case"
+popup/item_2/id = 2
+
+[node name="LaunchBehaviorOptionButton" type="OptionButton" parent="MarginContainer2/ScrollContainer2/ContentPanel" index="2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 23)
+layout_mode = 2
+tooltip_text = "When double clicking a project, this is the behavior that happens."
+theme_override_colors/font_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_hover_color = Color(0.239216, 0.741176, 0.878431, 1)
+theme_override_colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_colors/font_color = Color(0.278431, 0.54902, 0.74902, 1)
+theme_override_font_sizes/font_size = 16
+selected = 0
+item_count = 3
+popup/item_0/text = "Open With Tools"
+popup/item_1/text = "Open Without Tools"
+popup/item_1/id = 1
+popup/item_2/text = "Run"
+popup/item_2/id = 2
