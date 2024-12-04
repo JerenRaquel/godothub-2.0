@@ -94,9 +94,6 @@ public partial class NewProjectWindow : WindowBase
             _pathLineEdit.Text = "";
             _pathOptionButton.Hide();
         }
-        _forwardCheckBox.SetPressedNoSignal(true);
-        _mobileCheckBox.SetPressedNoSignal(false);
-        _compatCheckBox.SetPressedNoSignal(false);
         _renderLabel.Text = FORWARD_TEXT;
         _versionOptionButton.Selected = 0;
         _templateOptionButton.Selected = 0;
@@ -105,6 +102,18 @@ public partial class NewProjectWindow : WindowBase
     protected override bool Validate()
     {
         return false;
+    }
+
+    protected override void OnOpened()
+    {
+        int idx = SettingsCache.Instance.GetData("Project Settings/Defaults/rendering_device/LONG");
+        switch (idx)
+        {
+            case 0: OnCheckBoxToggled(true, _forwardCheckBox); break;
+            case 1: OnCheckBoxToggled(true, _mobileCheckBox); break;
+            case 2: OnCheckBoxToggled(true, _compatCheckBox); break;
+            default: OnCheckBoxToggled(true, _forwardCheckBox); break;
+        }
     }
 
     protected override void OnConfirmPressed()
@@ -120,13 +129,25 @@ public partial class NewProjectWindow : WindowBase
             return;
         }
 
-        if (node == _forwardCheckBox) _renderLabel.Text = FORWARD_TEXT;
+        if (node == _forwardCheckBox)
+        {
+            _renderLabel.Text = FORWARD_TEXT;
+            _forwardCheckBox.SetPressedNoSignal(true);
+        }
         else _forwardCheckBox.SetPressedNoSignal(false);
 
-        if (node == _mobileCheckBox) _renderLabel.Text = MOBILE_TEXT;
+        if (node == _mobileCheckBox)
+        {
+            _renderLabel.Text = MOBILE_TEXT;
+            _mobileCheckBox.SetPressedNoSignal(true);
+        }
         else _mobileCheckBox.SetPressedNoSignal(false);
 
-        if (node == _compatCheckBox) _renderLabel.Text = COMPAT_TEXT;
+        if (node == _compatCheckBox)
+        {
+            _renderLabel.Text = COMPAT_TEXT;
+            _compatCheckBox.SetPressedNoSignal(true);
+        }
         else _compatCheckBox.SetPressedNoSignal(false);
     }
 
@@ -147,6 +168,7 @@ public partial class NewProjectWindow : WindowBase
             0 => name.Replace("-", " ").Replace("_", " ").ToPascalCase(),  // PascalCase
             1 => name.Replace("-", " ").ToSnakeCase(),  // snake_case
             2 => name.ToSnakeCase().Replace("_", "-"),  // kebab-case
+            3 => name.Replace("-", " ").Replace("_", " ").ToCamelCase(),    // camelCase
             _ => name
         };
     }

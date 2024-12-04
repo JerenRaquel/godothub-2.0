@@ -63,6 +63,18 @@ public static partial class OSAPI
         return processID;
     }
 
+    public static long RunGodotProject(string godotPath, string projectName)
+    {
+        string projectPath = ProjectCache.Instance.GetProjectPath(projectName);
+        if (projectPath.Length == 0) return -1; // Failed
+
+        long processID;
+        processID = OS.CreateProcess(godotPath, ["--path", projectPath]);
+        if (processID == -1) return -1; // Failed
+
+        return processID;
+    }
+
     public static long RunTool(string toolName, string projectName = "")
     {
         TagData.CommandParts executableCommand = TagCache.Instance.GetExecutableCommand(toolName, projectName);

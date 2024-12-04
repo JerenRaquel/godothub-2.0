@@ -34,6 +34,7 @@ public partial class WindowBase : PanelContainer
 
         ClearWindowData();
         Hide();
+        VisibilityChanged += () => { if (Visible) OnOpened(); };
     }
 
     protected void DisplayError(string message)
@@ -72,6 +73,8 @@ public partial class WindowBase : PanelContainer
     protected void OnPathTextUpdated(string _path) => Validate();
     protected void OnOptionUpdated(long _index) => Validate();
     protected void OnToggleUpdated(bool _state) => Validate();
+
+    protected virtual void OnOpened() { }
 
     protected virtual void OnConfirmPressed() => GD.Print("Window Confirm Pressed");
 

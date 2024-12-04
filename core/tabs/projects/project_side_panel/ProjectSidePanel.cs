@@ -27,6 +27,7 @@ public partial class ProjectSidePanel : MarginContainer
         _openButton = GetNode<Button>("%OpenButton");
         _openWithOutToolsButton = GetNode<Button>("%OpenWOToolsButton");
         _runButton = GetNode<Button>("%RunButton");
+        _runButton.Pressed += OnRunPressed;
         _editButtonButton = GetNode<Button>("%EditButton");
         _openFolderButton = GetNode<Button>("%OpenFolderButton");
         _openFolderButton.Pressed += OnFolderOpenPressed;
@@ -65,6 +66,28 @@ public partial class ProjectSidePanel : MarginContainer
         _openSaveFolderButton.Disabled = disabled;
         _cloneButton.Disabled = true;   // TEMP
         _deleteButton.Disabled = true;   // TEMP
+    }
+
+    private void OnRunPressed()
+    {
+        string key = ProjectCache.Instance.ProjectNameToKey(SelectedProject);
+        if (key == null)
+        {
+            // Failed
+            NotifcationManager.Instance.NotifyError("Failed to launch project.");
+            return;
+        }
+
+        string godotExe = VersionCache.Instance.GetPath(key);
+        if (godotExe.Length == 0)
+        {
+            // Failed
+            NotifcationManager.Instance.NotifyError("Failed to launch project.");
+            return;
+        }
+
+        NotifcationManager.Instance.NotifyValid("Project Running");
+        OSAPI.RunGodotProject(godotExe, SelectedProject);
     }
 
     private void OnFolderOpenPressed()
