@@ -13,9 +13,9 @@ public partial class ProjectPathDefaults : InterfaceBase
 
     public override void _Ready()
     {
-        _renderingDeviceOptionButton = GetNode<OptionButton>("RenderingDeviceOptionButton");
-        _namingSchemeOptionButton = GetNode<OptionButton>("NamingSchemeOptionButton");
-        _launchBehaviorOptionButton = GetNode<OptionButton>("LaunchBehaviorOptionButton");
+        _renderingDeviceOptionButton = GetNode<OptionButton>("%RenderingDeviceOptionButton");
+        _namingSchemeOptionButton = GetNode<OptionButton>("%NamingSchemeOptionButton");
+        _launchBehaviorOptionButton = GetNode<OptionButton>("%LaunchBehaviorOptionButton");
 
         _renderingDeviceOptionButton.ItemSelected += _ => EmitSignal(SignalName.SettingChanged, RENDERING_DEVICE_TAG);
         _namingSchemeOptionButton.ItemSelected += _ => EmitSignal(SignalName.SettingChanged, NAMING_SCHEME_TAG);
