@@ -180,62 +180,28 @@ public partial class Projects : TabBase
     private void OnLaunchRequested(string projectName)
     {
         if (ProjectCache.Instance.GetBuild(projectName) == VersionData.BuildType.UNKNOWN)
-            _buildPrompt.Open(projectName);
-        else
         {
-            string key = ProjectCache.Instance.ProjectNameToKey(projectName);
-            if (key == null)
+            _buildPrompt.Open(projectName);
+            return;
+        }
+
+        //? Is there a better way to fetch this key?
+        int runInstruction = SettingsCache.Instance.GetData("Project Settings/Defaults/launch_behavior/LONG");
+        if (runInstruction == 2)  // Run
+        {
+            ProjectSidePanel.RunProject(projectName);
+            return;
+        }
+
+        if (ProjectSidePanel.OpenProject(projectName, runInstruction == 1))
+        {
+            if (SettingsCache.Instance.GetData("Application/Config/HUB_behavior/LONG") == 0)
             {
-                // Failed
-                NotifcationManager.Instance.NotifyError("Failed to launch project.");
-                return;
+                // Resort
+                CallDeferred("FillProjectContainer");
+                return; //* Success
             }
-
-            string godotExe = VersionCache.Instance.GetPath(key);
-            if (godotExe.Length == 0)
-            {
-                // Failed
-                NotifcationManager.Instance.NotifyError("Failed to launch project.");
-                return;
-            }
-
-            //? Is there a better way to fetch this key?
-            int runInstruction = SettingsCache.Instance.GetData("Project Settings/Defaults/launch_behavior/LONG");
-            if (runInstruction == 2)  // Run
-            {
-                if (OSAPI.RunGodotProject(godotExe, projectName) == -1)
-                {
-                    // Failed
-                    NotifcationManager.Instance.NotifyError("Failed to launch project.");
-                    return;
-                }
-                NotifcationManager.Instance.NotifyValid("Project Running");
-                return;
-            }
-
-
-            if (OSAPI.OpenGodotProject(godotExe, projectName) >= 0)
-            {
-                NotifcationManager.Instance.NotifyValid("Project Launching");
-                if (runInstruction == 1)
-                {
-                    NotifcationManager.Instance.NotifyValid("Software Launching");
-                    foreach (string toolName in ProjectCache.Instance.GetSoftwareTags(projectName))
-                        OSAPI.RunTool(toolName, projectName);
-                }
-
-                if (SettingsCache.Instance.GetData("Application/Config/HUB_behavior/LONG") == 0)
-                {
-                    // Resort
-                    CallDeferred("FillProjectContainer");
-                    return; //* Success
-                }
-                else
-                {
-                    GetTree().Quit();
-                    return;
-                }
-            }
+            GetTree().Quit();
         }
     }
 
