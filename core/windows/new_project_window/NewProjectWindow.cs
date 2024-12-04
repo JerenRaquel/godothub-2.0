@@ -20,6 +20,7 @@ public partial class NewProjectWindow : WindowBase
     public override void _Ready()
     {
         _nameLineEdit = GetNode<LineEdit>("%NameLineEdit");
+        _nameLineEdit.TextChanged += OnProjectNameChanged;
         _pathLineEdit = GetNode<LineEdit>("%PathLineEdit");
         _pathOptionButton = GetNode<OptionButton>("%PathOptionButton");
         _forwardCheckBox = GetNode<CheckBox>("%ForwardCheckBox");
@@ -131,7 +132,22 @@ public partial class NewProjectWindow : WindowBase
 
     private void OnProjectNameChanged(string text)
     {
+        _pathLineEdit.Text = _pathOptionButton.GetItemText(_pathOptionButton.Selected);
+        if (text.Length > 0)
+            _pathLineEdit.Text += "/" + FormatFolderName(text);
 
         Validate();
+    }
+
+    private static string FormatFolderName(string name)
+    {
+        int idx = SettingsCache.Instance.GetData("Project Settings/Defaults/naming_scheme/LONG");
+        return idx switch
+        {
+            0 => name.Replace("-", " ").Replace("_", " ").ToPascalCase(),  // PascalCase
+            1 => name.Replace("-", " ").ToSnakeCase(),  // snake_case
+            2 => name.ToSnakeCase().Replace("_", "-"),  // kebab-case
+            _ => name
+        };
     }
 }
