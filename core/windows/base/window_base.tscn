@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://b6h8vrtke4bck"]
+[gd_scene load_steps=12 format=3 uid="uid://b6h8vrtke4bck"]
 
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_fwxbr"]
 [ext_resource type="Script" path="res://core/windows/base/WindowBase.cs" id="2_r54tg"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_p08fv"]
+[ext_resource type="Texture2D" uid="uid://cbas6pqh4jh17" path="res://assets/art/Warning.svg" id="4_fd015"]
 [ext_resource type="Texture2D" uid="uid://cr0rkjah0myld" path="res://assets/art/Error.svg" id="4_sjwtw"]
 [ext_resource type="Texture2D" uid="uid://dl08ln612563l" path="res://assets/art/Smiley.svg" id="4_w035c"]
 
@@ -36,6 +37,7 @@ theme = ExtResource("1_fwxbr")
 theme_override_styles/panel = SubResource("StyleBoxFlat_1b72f")
 script = ExtResource("2_r54tg")
 errorIcon = ExtResource("4_sjwtw")
+warningIcon = ExtResource("4_fd015")
 passIcon = ExtResource("4_w035c")
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true

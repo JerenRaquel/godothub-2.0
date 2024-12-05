@@ -1,10 +1,13 @@
 using System.IO;
+using System.Text.RegularExpressions;
 using Godot;
 
 public static partial class OSAPI
 {
     public static string OS_USER_DATA_ROOT { get; private set; } = null;
     public static string DEFAULT_GODOT_USER_ROOT { get; private set; } = null;
+
+    private static Regex _regex = new(@"[^A-Za-z0-9-_ ]");
 
     public static void Initialize()
     {
@@ -83,5 +86,15 @@ public static partial class OSAPI
         if (processID == -1) return -1; // Failed
 
         return processID;
+    }
+
+    public static bool IsDirectoryEmpty(string path)
+        => Directory.GetFiles(path).Length == 0 && Directory.GetDirectories(path).Length == 0;
+
+    public static bool IsValidFolderName(string folderName)
+    {
+        if (string.IsNullOrWhiteSpace(folderName)) return false;
+        if (char.IsNumber(folderName[0])) return false;
+        return _regex.Count(folderName) == 0;
     }
 }

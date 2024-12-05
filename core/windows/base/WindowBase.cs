@@ -10,6 +10,7 @@ public partial class WindowBase : PanelContainer
     private Label _notificationLabel;
 
     [Export] private Texture2D errorIcon;
+    [Export] private Texture2D warningIcon;
     [Export] private Texture2D passIcon;
 
     public override void _ExitTree()
@@ -44,6 +45,16 @@ public partial class WindowBase : PanelContainer
         _notificationLabel.AddThemeColorOverride("font_color", new Color(ColorTheme.Dev));
         _notificationContainer.Show();
         _confirmButton.Disabled = true;
+    }
+
+    protected void DisplayWarning(string message)
+    {
+
+        _notificationIcon.Texture = warningIcon;
+        _notificationLabel.Text = message;
+        _notificationLabel.AddThemeColorOverride("font_color", new Color(ColorTheme.Unknown));
+        _notificationContainer.Show();
+        _confirmButton.Disabled = false;
     }
 
     protected void DisplayMessage(string message)

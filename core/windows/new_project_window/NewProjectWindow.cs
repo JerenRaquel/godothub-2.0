@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.IO;
 
 public partial class NewProjectWindow : WindowBase
 {
@@ -101,7 +102,26 @@ public partial class NewProjectWindow : WindowBase
 
     protected override bool Validate()
     {
-        return false;
+        string path = _pathLineEdit.Text.StripEdges();
+        bool isWarning = false;
+
+        if (Directory.Exists(path))
+        {
+            if (File.Exists(path + "/.gdhub") || File.Exists(path + "/project.godot"))
+            {
+                DisplayError("Project already exists.");
+                return false;
+            }
+            else if (!OSAPI.IsDirectoryEmpty(path))
+            {
+
+                DisplayWarning("Directory is not empty.");
+                isWarning = true;
+            }
+        }
+
+        if (!isWarning) DisplayMessage("Valid Project");
+        return true;
     }
 
     protected override void OnOpened()
@@ -155,7 +175,16 @@ public partial class NewProjectWindow : WindowBase
     {
         _pathLineEdit.Text = _pathOptionButton.GetItemText(_pathOptionButton.Selected);
         if (text.Length > 0)
-            _pathLineEdit.Text += "/" + FormatFolderName(text);
+        {
+            string name = FormatFolderName(text);
+            if (name == null)
+            {
+                DisplayError("Invalid Folder Name");
+                return;
+            }
+
+            _pathLineEdit.Text += "/" + name;
+        }
 
         Validate();
     }
@@ -163,7 +192,7 @@ public partial class NewProjectWindow : WindowBase
     private static string FormatFolderName(string name)
     {
         int idx = SettingsCache.Instance.GetData("Project Settings/Defaults/naming_scheme/LONG");
-        return idx switch
+        string folderName = idx switch
         {
             0 => name.Replace("-", " ").Replace("_", " ").ToPascalCase(),  // PascalCase
             1 => name.Replace("-", " ").ToSnakeCase(),  // snake_case
@@ -171,5 +200,8 @@ public partial class NewProjectWindow : WindowBase
             3 => name.Replace("-", " ").Replace("_", " ").ToCamelCase(),    // camelCase
             _ => name
         };
+
+        if (OSAPI.IsValidFolderName(folderName)) return folderName;
+        return null;
     }
 }
