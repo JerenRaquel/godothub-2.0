@@ -24,6 +24,7 @@ public partial class TemplateData
                 return data;
             }
         }
+        public readonly DataNode[] FolderNodes => [.. _folders.Values];
         public readonly bool IsNull => _isNull;
         public readonly bool IsRoot => _isRoot;
         public readonly long Count => !_isNull ? _folders.Count + _files.Count : 0;

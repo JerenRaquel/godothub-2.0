@@ -20,7 +20,7 @@ public partial class TemplateCache : Cache
 
     public TemplateData.DataNode GetRoot(string templateName) => _RAM.GetRoot(templateName);
 
-    private string GetFilePath(string fileName)
+    public string GetFilePath(string fileName)
     {
         if (!_fileDatabase.TryGetValue(fileName, out string value)) return null;
         return value;
