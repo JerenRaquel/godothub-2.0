@@ -1,12 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://b21kjgs0nm751"]
+[gd_scene load_steps=5 format=3 uid="uid://b21kjgs0nm751"]
 
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_wicwp"]
 [ext_resource type="Script" path="res://core/components/tag/Tag.cs" id="2_p37yt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_itdk1"]
 bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gf1dv"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
 anti_aliasing = false
 
 [node name="Tag" type="PanelContainer"]
@@ -20,10 +28,11 @@ script = ExtResource("2_p37yt")
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer"]
+[node name="Color" type="Panel" parent="HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 4)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gf1dv")
 
 [node name="Label" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true

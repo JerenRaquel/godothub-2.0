@@ -3,7 +3,7 @@ using System;
 
 public partial class Tag : PanelContainer
 {
-    private ColorRect _colorRect;
+    private Panel _colorRect;
     private Label _tagLabel;
 
     public bool Displayed
@@ -18,13 +18,13 @@ public partial class Tag : PanelContainer
 
     public override void _Ready()
     {
-        _colorRect = GetNode<ColorRect>("%ColorRect");
+        _colorRect = GetNode<Panel>("%Color");
         _tagLabel = GetNode<Label>("%Label");
     }
 
     public void SetData(string tag, string colorCode, bool displayed = false)
     {
-        _colorRect.Color = new(colorCode);
+        _colorRect.SelfModulate = new(colorCode);
         _tagLabel.Text = tag;
         Displayed = displayed;
     }
