@@ -28,10 +28,14 @@ public partial class ProjectDataState
     public bool HasTags => _RAM.projectTags.Count > 0 || _RAM.softwareTags.Count > 0;
     public bool IsDotNet => _usingDotNet;
     public bool IsGDExt => _RAM.ProjectPathAddtion?.Length > 0;
-    public bool IsFavorited => _RAM.IsFavorited;
     public DateTime LastEdited => _lastEdited;
     public Texture2D Icon => _icon;
     public string RootPath => _RAM.RootPath;
+    public bool IsFavorited
+    {
+        get => _RAM.IsFavorited;
+        set => _RAM.IsFavorited = value;
+    }
 
     public void SetBuild(VersionData.BuildType build)
     {

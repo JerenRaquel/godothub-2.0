@@ -62,6 +62,7 @@ public partial class ProjectCache : Cache
                         oldProject.Renderer == project.Renderer)
                     {
                         project.SetBuild(oldProject.Build);
+                        project.IsFavorited = oldProject.IsFavorited;
                     }
                 }
 

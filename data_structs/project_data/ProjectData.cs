@@ -8,7 +8,6 @@ public partial class ProjectData
 
     private string _path;
     private string _projectPath;
-    private bool _favorited;
 
     public List<string> projectTags;
     public List<string> softwareTags;
@@ -26,7 +25,6 @@ public partial class ProjectData
         }
     }
     public string ProjectGodotPath => FullPath + "/project.godot";
-    public bool IsFavorited => _favorited;
     public string RendererString => renderer switch
     {
         Renderer.COMPAT => "GL Compatibility",
@@ -34,6 +32,7 @@ public partial class ProjectData
         Renderer.FORWARD => "Forward Plus",
         _ => "Unknown"
     };
+    public bool IsFavorited { get; set; } = false;
     public VersionData.BuildType Build { get; set; } = VersionData.BuildType.UNKNOWN;
 
     public ProjectData(string version, string renderer, string path, string gdextPathExtra,
@@ -41,7 +40,7 @@ public partial class ProjectData
     {
         _path = path;
         _projectPath = gdextPathExtra;
-        _favorited = isFavorited;
+        IsFavorited = isFavorited;
         this.projectTags = new List<string>(projectTags);
         this.softwareTags = new List<string>(softwareTags);
         this.version = new(version);
@@ -58,7 +57,7 @@ public partial class ProjectData
     {
         _path = copy._path;
         _projectPath = copy._projectPath;
-        _favorited = copy._favorited;
+        IsFavorited = copy.IsFavorited;
         projectTags = [.. copy.projectTags];
         softwareTags = [.. copy.softwareTags];
         version = new(copy.version);

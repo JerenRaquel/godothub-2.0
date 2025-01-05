@@ -11,6 +11,13 @@ public partial class ProjectCache : Cache
         _projects.Remove(projectName);
     }
 
+    public void ToggleFavorite(string projectName, bool state)
+    {
+        ProjectDataState project = GetProject(projectName);
+        if (project == null) return;
+        project.IsFavorited = state;
+    }
+
     public bool SetBuild(string projectName, VersionData.BuildType build)
     {
         ProjectDataState project = GetProject(projectName);
