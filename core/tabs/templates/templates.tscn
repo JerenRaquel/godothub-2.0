@@ -1,10 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://dlj76n5x3gx1w"]
+[gd_scene load_steps=10 format=3 uid="uid://dlj76n5x3gx1w"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_jl0u4"]
 [ext_resource type="Script" path="res://core/tabs/templates/Templates.cs" id="2_5axoy"]
 [ext_resource type="PackedScene" uid="uid://c4uo62iwd5yw4" path="res://core/tabs/templates/template_list_panel/template_list.tscn" id="3_ukb7v"]
+[ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_70xi3"]
 [ext_resource type="PackedScene" uid="uid://ch5o1bnp8mh0m" path="res://core/tabs/templates/template_display/template_display.tscn" id="4_i6s10"]
-[ext_resource type="PackedScene" uid="uid://2nq38hycl1vj" path="res://core/tabs/templates/template_settings/template_settings.tscn" id="5_uedly"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="5_dx8kv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3q2b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_83n28"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_6sonh"]
+color = Color(0.101961, 0.101961, 0.101961, 1)
+thickness = 2
 
 [node name="Templates" instance=ExtResource("1_jl0u4")]
 script = ExtResource("2_5axoy")
@@ -22,10 +31,97 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TemplateDisplay" parent="MarginContainer/HBoxContainer" index="1" instance=ExtResource("4_i6s10")]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" index="0"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i3q2b")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ToolBar" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" index="0"]
+layout_mode = 2
+
+[node name="EditButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="0"]
+layout_mode = 2
+text = "Edit Template Structure"
+
+[node name="AddTagButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="1"]
+layout_mode = 2
+text = "Add Tag"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_83n28")
+
+[node name="FillFoldersCheckButton" type="CheckButton" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="3"]
+layout_mode = 2
+text = "Fill Empty Folders"
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" index="1"]
+layout_mode = 2
+text = "Tags: "
+label_settings = ExtResource("4_70xi3")
+
+[node name="NoTagLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" index="2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "No Tags Added"
+label_settings = ExtResource("5_dx8kv")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TagContainerRoot" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" index="3"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TemplateSettings" parent="MarginContainer/HBoxContainer" index="2" instance=ExtResource("5_uedly")]
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/TagContainerRoot" index="0"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i3q2b")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/TagContainerRoot" index="1"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+
+[node name="TagContainer" type="HFlowContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/TagContainerRoot/ScrollContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/TagContainerRoot" index="2"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i3q2b")
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" index="2"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_i3q2b")
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer" index="1"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_6sonh")
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer" index="2"]
+layout_mode = 2
+text = "Template Structure:"
+label_settings = ExtResource("4_70xi3")
+
+[node name="TemplateDisplay" parent="MarginContainer/HBoxContainer/VBoxContainer" index="3" instance=ExtResource("4_i6s10")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
