@@ -15,7 +15,7 @@ config/version="2.0.0"
 run/main_scene="res://master.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 run/low_processor_mode=true
-config/icon="res://icon.svg"
+config/icon="res://assets/art/HUBIcon.png"
 
 [display]
 
