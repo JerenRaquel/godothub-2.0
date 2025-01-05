@@ -1,28 +1,68 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 public partial class TemplateCache : Cache
 {
-    private Dictionary<string, string> _fileDatabase = [];
-    private TemplateData _RAM;
-    private TemplateData _ROM;
+    private readonly static string[] AUTO_CREATED = ["project.godot", ".gitignore", ".gitattributes"];
 
-    public string[] TemplateNames => _RAM.Templates;
+    private Dictionary<string, string> _fileDatabase = [];
+    private Dictionary<string, TemplateStructure> _RAM;
+    private Dictionary<string, TemplateStructure> _ROM;
+
+    public string[] TemplateNames => [.. _RAM.Keys];
     public string[] SortedTemplateNames
     {
         get
         {
-            string[] names = _RAM.Templates;
+            string[] names = [.. _RAM.Keys];
             Array.Sort(names);
             return names;
         }
     }
 
-    public TemplateData.DataNode GetRoot(string templateName) => _RAM.GetRoot(templateName);
+    public void AddTemplate(string templateName)
+    {
+        if (_RAM.ContainsKey(templateName)) return;
+        _RAM.Add(templateName, new(templateName));
+    }
+
+    public void AddFileToTemplate(string templateName, string path, string fileTag)
+    {
+        if (AUTO_CREATED.Contains(fileTag)) return;
+        if (_fileDatabase.ContainsKey(fileTag)) return;
+        if (!_RAM.TryGetValue(templateName, out TemplateStructure template)) return;
+
+        template.AddFile(path, fileTag);
+    }
+
+    public bool CopyFileToPath(string fileTag, string absPath)
+    {
+        if (AUTO_CREATED.Contains(fileTag))
+        {
+            // TODO: Create at destination
+
+            return true;
+        }
+        // Couldn't find file to copy over
+        if (!_fileDatabase.ContainsKey(fileTag)) return false;
+
+        // TODO: Copy file over
+
+        return true;    // Success
+    }
+
+    public TemplateStructure.Folder GetRoot(string templateName)
+    {
+        if (!_RAM.TryGetValue(templateName, out TemplateStructure templateData)) return new();
+        return templateData.RootFolder;
+    }
 
     public string GetFilePath(string fileName)
     {
         if (!_fileDatabase.TryGetValue(fileName, out string value)) return null;
         return value;
     }
+
 }

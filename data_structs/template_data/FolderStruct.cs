@@ -10,6 +10,7 @@ public partial class TemplateStructure
 
         public string Name { get; set; }
         public readonly bool IsNull => _isNull;
+        public readonly bool IsRoot => Name == "";
         public readonly string[] FolderNames => [.. _folders.Keys];
         public readonly int FolderCount => _folders.Count;
         public readonly int FileCount => _files.Count;
@@ -57,12 +58,13 @@ public partial class TemplateStructure
             return name;
         }
 
-        public readonly void AddFile(string fileName)
+        public readonly string AddFile(string fileName)
         {
             string name = fileName;
             if (FileExists(fileName))
                 name = GenerateDuplicateName(fileName, [.. _files.Keys]);
             _files.Add(name, fileName);
+            return name;
         }
 
         private static string GenerateDuplicateName(string originalName, string[] names)

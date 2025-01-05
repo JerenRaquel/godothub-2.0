@@ -38,16 +38,16 @@ public partial class TemplateCache : Cache
 
     public override bool LoadData()
     {
-        _ROM = new();
-        _RAM = new();
+        _ROM = [];
+        _RAM = [];
 
         if (!ReadAssetFile()) InitializeDefaultTemplates();
-        _ROM.OverwriteWith(_RAM);
+        OverWrite(_RAM, _ROM);
 
         string[] files = Directory.GetFiles(_TEMPLATE_DIRECTORY);
         foreach (string filePath in files)
             ReadTemplateFile(filePath);
-        _RAM.OverwriteWith(_ROM);
+        OverWrite(_ROM, _RAM);
 
         return true;
     }
@@ -62,7 +62,7 @@ public partial class TemplateCache : Cache
 
     public override void ForceWrite()
     {
-        _ROM.OverwriteWith(_RAM);
+        OverWrite(_RAM, _ROM);
 
         WriteAssetFile();
         WriteTemplateFiles();
@@ -79,15 +79,15 @@ public partial class TemplateCache : Cache
             WriteAssetFile();
         }
 
-        TemplateData.DataNode emptyRoot = _RAM.AddTemplate("Default - Empty");
-        emptyRoot.AddFile("project.godot");
-        emptyRoot.AddFile("icon.svg");
+        AddTemplate("Default - Empty");
+        AddFileToTemplate("Default - Empty", "", "project.godot");
+        AddFileToTemplate("Default - Empty", "", "icon.svg");
 
-        TemplateData.DataNode gitRoot = _RAM.AddTemplate("Default - Git");
-        gitRoot.AddFile("project.godot");
-        gitRoot.AddFile("icon.svg");
-        gitRoot.AddFile(".gitignore");
-        gitRoot.AddFile(".gitattributes");
+        AddTemplate("Default - Git");
+        AddFileToTemplate("Default - Git", "", "project.godot");
+        AddFileToTemplate("Default - Git", "", "icon.svg");
+        AddFileToTemplate("Default - Git", "", ".gitignore");
+        AddFileToTemplate("Default - Git", "", ".gitattributes");
     }
 
     private void WriteAssetFile()
@@ -111,7 +111,7 @@ public partial class TemplateCache : Cache
 
     private void WriteTemplateFiles()
     {
-        _ROM.OverwriteWith(_RAM);
+        OverWrite(_RAM, _ROM);
 
         if (!Directory.Exists(_TEMPLATE_DIRECTORY))
             Directory.CreateDirectory(_TEMPLATE_DIRECTORY);
@@ -170,8 +170,18 @@ public partial class TemplateCache : Cache
         if (!int.TryParse(versionStr.Split("=")[1], out int result)) return;
         if (result != VERSION_FLAG) return;
 
-        TemplateData.DataNode root = _ROM.AddTemplate(fileName);
-        TemplateData.DataNode.ReadFromFile(ref root, file);
+        // TODO: Load Template
     }
 
+    private static void OverWrite(Dictionary<string, TemplateStructure> copyFrom,
+        Dictionary<string, TemplateStructure> copyTo)
+    {
+        foreach (KeyValuePair<string, TemplateStructure> entry in copyFrom)
+        {
+            if (copyTo.ContainsKey(entry.Key))
+                copyTo[entry.Key].OverwriteWith(entry.Value);
+            else
+                copyTo.Add(entry.Key, entry.Value);
+        }
+    }
 }
