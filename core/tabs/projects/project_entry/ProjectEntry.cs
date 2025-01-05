@@ -82,7 +82,11 @@ public partial class ProjectEntry : PanelContainer
 
         if (_cachedProjectMETAText.Contains(sanitizedFilter)) return true;
 
-        // TODO: Add tag filtering
+        foreach (KeyValuePair<string, Tag> tagEntry in _projectTags)
+            if (tagEntry.Key.ToLower().Contains(sanitizedFilter)) return true;
+
+        foreach (KeyValuePair<string, Tag> tagEntry in _softwareTags)
+            if (tagEntry.Key.ToLower().Contains(sanitizedFilter)) return true;
 
         return false;
     }
