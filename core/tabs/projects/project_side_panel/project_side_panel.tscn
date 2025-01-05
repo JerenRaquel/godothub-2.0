@@ -63,6 +63,7 @@ text = "Edit Project Data"
 
 [node name="CloneButton" type="Button" parent="VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 text = "Clone"
 

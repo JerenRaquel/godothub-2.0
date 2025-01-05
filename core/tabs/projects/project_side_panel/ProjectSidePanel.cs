@@ -82,7 +82,7 @@ public partial class ProjectSidePanel : MarginContainer
 
         _openFolderButton.Disabled = disabled;
         _openSaveFolderButton.Disabled = disabled;
-        _cloneButton.Disabled = true;   // TEMP
+        _cloneButton.Disabled = true;   // TEMP::UI is hidden -- Marked as future/planned
         _deleteButton.Disabled = true;   // TEMP
     }
 
