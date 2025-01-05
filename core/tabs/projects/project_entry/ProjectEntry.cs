@@ -3,9 +3,12 @@ using Godot;
 
 public partial class ProjectEntry : PanelContainer
 {
+    [Signal] public delegate void EntryFavoriteToggledEventHandler();
+
     [Export] private PackedScene _tagPackedScene;
 
     // Nodes
+    private Button _favoriteButton;
     private HFlowContainer _tagContainer;
     private RichTextLabel _projectLabel;
     private Label _pathLabel;
@@ -23,6 +26,8 @@ public partial class ProjectEntry : PanelContainer
     public override void _Ready()
     {
         DoubleClickButton = GetNode<DoubleClickButton>("%DoubleClickButton");
+        _favoriteButton = GetNode<Button>("%FavoriteButton");
+        _favoriteButton.Toggled += OnFavoriteToggled;
         _tagContainer = GetNode<HFlowContainer>("%TagsContainer");
         _projectLabel = GetNode<RichTextLabel>("%ProjectLabel");
         _pathLabel = GetNode<Label>("%PathLabel");
@@ -41,6 +46,7 @@ public partial class ProjectEntry : PanelContainer
         _dateTimeLabel.Text = ProjectCache.Instance.GetLocalTime(_projectName);
         Texture2D texture = ProjectCache.Instance.GetIcon(_projectName);
         if (texture != null) _projectIcon.Texture = texture;
+        if (ProjectCache.Instance.IsFavorited(_projectName)) _favoriteButton.SetPressedNoSignal(true);
 
         if (!ProjectCache.Instance.HasTags(projectName)) return;
 
@@ -109,6 +115,12 @@ public partial class ProjectEntry : PanelContainer
         _tagContainer.AddChild(tagInstance);
         tagInstance.SetData(tagName, colorCode);
         return tagInstance;
+    }
+
+    private void OnFavoriteToggled(bool state)
+    {
+        ProjectCache.Instance.ToggleFavorite(_projectName, state);
+        EmitSignal(SignalName.EntryFavoriteToggled);
     }
 
     private void OnTagButtonToggled(bool state)

@@ -107,6 +107,7 @@ public partial class Projects : TabBase
             entryInstance.Initialize(projectName);
             entryInstance.DoubleClickButton.LaunchRequested += () => OnLaunchRequested(projectName);
             entryInstance.DoubleClickButton.StateToggled += (bool state) => OnToggled(projectName, state);
+            entryInstance.EntryFavoriteToggled += FillProjectContainer;
         }
         Name = $"Projects [{ProjectCache.Instance.ProjectCount}]";
     }
@@ -132,9 +133,9 @@ public partial class Projects : TabBase
     {
         int result;
         if (ProjectCache.Instance.IsFavorited(lhs) && !ProjectCache.Instance.IsFavorited(rhs))
-            result = -1;
-        else if (!ProjectCache.Instance.IsFavorited(lhs) && ProjectCache.Instance.IsFavorited(rhs))
             result = 1;
+        else if (!ProjectCache.Instance.IsFavorited(lhs) && ProjectCache.Instance.IsFavorited(rhs))
+            result = -1;
         else
         {
             if (_sortOptionButton.Selected == 0)  // Last Edited
