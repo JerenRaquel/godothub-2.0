@@ -21,6 +21,7 @@ public partial class Projects : TabBase
     private BuildPrompt _buildPrompt;
     private NewProjectWindow _newProjectPrompt;
     private EditProjectWindow _editProjectDataPrompt;
+    private DeletePrompt _deletePrompt;
 
     private Dictionary<string, ProjectEntry> _projectEntries = [];
 
@@ -52,11 +53,13 @@ public partial class Projects : TabBase
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
         _sidePanel = GetNode<ProjectSidePanel>("%ProjectSidePanel");
         _sidePanel.EditProject += OnEditProjectPressed;
+        _sidePanel.DeleteProject += OnDeleteProjectPressed;
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
         _buildPrompt.BuildUpdated += OnBuildUpdated;
         _newProjectPrompt = GetNode<NewProjectWindow>("%NewProjectWindow");
         _editProjectDataPrompt = GetNode<EditProjectWindow>("%EditProjectWindow");
         _editProjectDataPrompt.BuildUpdated += OnBuildUpdated;
+        _deletePrompt = GetNode<DeletePrompt>("%DeletePrompt");
 
         string[] versions = ProjectCache.Instance.GetVersions();
         Array.Sort(versions, VersionData.reverseComparer);
@@ -238,4 +241,6 @@ public partial class Projects : TabBase
     private void OnNewProjectPressed() => _newProjectPrompt.Show();
 
     private void OnEditProjectPressed() => _editProjectDataPrompt.Open(_sidePanel.SelectedProject);
+
+    private void OnDeleteProjectPressed() => _deletePrompt.Open(_sidePanel.SelectedProject);
 }

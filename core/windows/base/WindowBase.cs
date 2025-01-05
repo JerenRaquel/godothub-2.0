@@ -66,6 +66,12 @@ public partial class WindowBase : PanelContainer
         _confirmButton.Disabled = false;
     }
 
+    protected void ForceConfirm()
+    {
+        ClearMessage();
+        _confirmButton.Disabled = false;
+    }
+
     protected void ClearMessage()
     {
         _notificationContainer.Hide();

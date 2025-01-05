@@ -4,6 +4,7 @@ using Godot;
 public partial class ProjectSidePanel : MarginContainer
 {
     [Signal] public delegate void EditProjectEventHandler();
+    [Signal] public delegate void DeleteProjectEventHandler();
 
     private Button _openButton;
     private Button _openWithOutToolsButton;
@@ -47,6 +48,7 @@ public partial class ProjectSidePanel : MarginContainer
         _cloneButton = GetNode<Button>("%CloneButton");
 
         _deleteButton = GetNode<Button>("%DeleteButton");
+        _deleteButton.Pressed += () => EmitSignal(SignalName.DeleteProject);
 
         _quickToolRoot = GetNode<QuickToolRoot>("%QuickToolRoot");
 
@@ -83,7 +85,7 @@ public partial class ProjectSidePanel : MarginContainer
         _openFolderButton.Disabled = disabled;
         _openSaveFolderButton.Disabled = disabled;
         _cloneButton.Disabled = true;   // TEMP::UI is hidden -- Marked as future/planned
-        _deleteButton.Disabled = true;   // TEMP
+        _deleteButton.Disabled = disabled;
     }
 
     private void OnRunPressed() => RunProject(SelectedProject);

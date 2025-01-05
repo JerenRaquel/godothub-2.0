@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://y3qk7slv58hk"]
+
+[ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_a4ph5"]
+[ext_resource type="Script" path="res://core/windows/delete_prompt/DeletePrompt.cs" id="2_0phrv"]
+[ext_resource type="PackedScene" uid="uid://bmwtlbhmxv28n" path="res://core/components/project_label/project_label.tscn" id="2_pyo1h"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_cyoec"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kd61u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2xvgy"]
+
+[node name="DeletePrompt" instance=ExtResource("1_a4ph5")]
+script = ExtResource("2_0phrv")
+errorIcon = null
+warningIcon = null
+passIcon = null
+
+[node name="TitleLabel" parent="MarginContainer/PanelContainer/VBoxContainer" index="0"]
+text = "Delete Project?"
+
+[node name="ProjectLabel" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="0" instance=ExtResource("2_pyo1h")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "[center]Project Name [ vX.X | Stable ] [Forward+] [Using GDExtension] [Using .NET][/center]"
+
+[node name="HSeparator5" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="1"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_kd61u")
+
+[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="2"]
+layout_mode = 2
+text = "You are about to delete this project. 
+This should send your project to your recycling bin if system is supported."
+label_settings = ExtResource("3_cyoec")
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="3"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_2xvgy")
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="4"]
+layout_mode = 2
+
+[node name="DeleteSave" type="CheckButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/CenterContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Delete Save Directory? (user:/)    "
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="5"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_2xvgy")
