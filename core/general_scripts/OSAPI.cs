@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Godot;
@@ -96,5 +97,30 @@ public static partial class OSAPI
         if (string.IsNullOrWhiteSpace(folderName)) return false;
         if (char.IsNumber(folderName[0])) return false;
         return _regex.Count(folderName) == 0;
+    }
+
+    public static Tuple<bool, bool> DeleteProject(string projectName, bool deleteSave)
+    {
+        string projectFolder = ProjectCache.Instance.GetProjectFolder(projectName);
+        if (projectFolder == null) return new(false, false);
+
+        bool state = OS.MoveToTrash(projectFolder) == Error.Ok;
+        if (!state) return new(false, false);
+
+        if (deleteSave)
+        {
+            string projectSaveFolder = ProjectCache.Instance.GetProjectSaveFolder(projectName);
+            if (projectSaveFolder == null)
+            {
+                ProjectCache.Instance.DeleteProject(projectName);
+                return new(true, false);
+            }
+
+            bool saveState = OS.MoveToTrash(projectSaveFolder) == Error.Ok;
+            ProjectCache.Instance.DeleteProject(projectName);
+            return new(true, saveState);
+        }
+        ProjectCache.Instance.DeleteProject(projectName);
+        return new(true, true);
     }
 }

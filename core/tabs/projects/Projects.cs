@@ -60,6 +60,7 @@ public partial class Projects : TabBase
         _editProjectDataPrompt = GetNode<EditProjectWindow>("%EditProjectWindow");
         _editProjectDataPrompt.BuildUpdated += OnBuildUpdated;
         _deletePrompt = GetNode<DeletePrompt>("%DeletePrompt");
+        _deletePrompt.ProjectDeletedSuccessfully += OnProjectDeletedSuccessfully;
 
         string[] versions = ProjectCache.Instance.GetVersions();
         Array.Sort(versions, VersionData.reverseComparer);
@@ -243,4 +244,6 @@ public partial class Projects : TabBase
     private void OnEditProjectPressed() => _editProjectDataPrompt.Open(_sidePanel.SelectedProject);
 
     private void OnDeleteProjectPressed() => _deletePrompt.Open(_sidePanel.SelectedProject);
+
+    private void OnProjectDeletedSuccessfully() => FillProjectContainer();
 }

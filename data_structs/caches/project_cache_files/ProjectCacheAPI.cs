@@ -4,6 +4,13 @@ using Godot;
 
 public partial class ProjectCache : Cache
 {
+    public void DeleteProject(string projectName)
+    {
+        if (!_projects.ContainsKey(projectName)) return;
+
+        _projects.Remove(projectName);
+    }
+
     public bool SetBuild(string projectName, VersionData.BuildType build)
     {
         ProjectDataState project = GetProject(projectName);
@@ -43,7 +50,7 @@ public partial class ProjectCache : Cache
         return data.GetFullPath(prettify);
     }
 
-    public string GetProjectFolder(string projectName) => GetProject(projectName)?.RootPath;
+    public string GetProjectFolder(string projectName) => GetProject(projectName)?.RootPath ?? null;
 
     public string GetProjectSaveFolder(string projectName)
     {
