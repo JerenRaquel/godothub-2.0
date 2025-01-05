@@ -20,6 +20,7 @@ public partial class Projects : TabBase
     private ProjectSidePanel _sidePanel;
     private BuildPrompt _buildPrompt;
     private NewProjectWindow _newProjectPrompt;
+    private EditProjectWindow _editProjectDataPrompt;
 
     private Dictionary<string, ProjectEntry> _projectEntries = [];
 
@@ -50,9 +51,12 @@ public partial class Projects : TabBase
         _versionOptionButton.ItemSelected += OnVersionChanged;
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
         _sidePanel = GetNode<ProjectSidePanel>("%ProjectSidePanel");
+        _sidePanel.EditProject += OnEditProjectPressed;
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
         _buildPrompt.BuildUpdated += OnBuildUpdated;
         _newProjectPrompt = GetNode<NewProjectWindow>("%NewProjectWindow");
+        _editProjectDataPrompt = GetNode<EditProjectWindow>("%EditProjectWindow");
+        _editProjectDataPrompt.BuildUpdated += OnBuildUpdated;
 
         string[] versions = ProjectCache.Instance.GetVersions();
         Array.Sort(versions, VersionData.reverseComparer);
@@ -232,4 +236,6 @@ public partial class Projects : TabBase
     private void OnBuildUpdated(string projectName) => _projectEntries[projectName].UpdateProjectLabel();
 
     private void OnNewProjectPressed() => _newProjectPrompt.Show();
+
+    private void OnEditProjectPressed() => _editProjectDataPrompt.Open(_sidePanel.SelectedProject);
 }

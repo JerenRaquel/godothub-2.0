@@ -3,6 +3,8 @@ using Godot;
 
 public partial class ProjectSidePanel : MarginContainer
 {
+    [Signal] public delegate void EditProjectEventHandler();
+
     private Button _openButton;
     private Button _openWithOutToolsButton;
     private Button _runButton;
@@ -33,13 +35,14 @@ public partial class ProjectSidePanel : MarginContainer
         _runButton = GetNode<Button>("%RunButton");
         _runButton.Pressed += OnRunPressed;
 
-        _editButtonButton = GetNode<Button>("%EditButton");
-
         _openFolderButton = GetNode<Button>("%OpenFolderButton");
         _openFolderButton.Pressed += OnFolderOpenPressed;
 
         _openSaveFolderButton = GetNode<Button>("%OpenSaveFolderButton");
         _openSaveFolderButton.Pressed += OnSaveFolderOpenPressed;
+
+        _editButtonButton = GetNode<Button>("%EditButton");
+        _editButtonButton.Pressed += () => EmitSignal(SignalName.EditProject);
 
         _cloneButton = GetNode<Button>("%CloneButton");
 
@@ -71,7 +74,12 @@ public partial class ProjectSidePanel : MarginContainer
         _openButton.Disabled = disabled;
         _openWithOutToolsButton.Disabled = disabled;
         _runButton.Disabled = disabled;
-        _editButtonButton.Disabled = true;   // TEMP
+
+        if (!disabled && !ProjectCache.Instance.HasBuildSelected(SelectedProject))
+            _editButtonButton.Disabled = true;
+        else
+            _editButtonButton.Disabled = disabled;
+
         _openFolderButton.Disabled = disabled;
         _openSaveFolderButton.Disabled = disabled;
         _cloneButton.Disabled = true;   // TEMP
@@ -147,4 +155,5 @@ public partial class ProjectSidePanel : MarginContainer
         NotifcationManager.Instance.NotifyError("Failed to launch project.");
         return false;
     }
+
 }

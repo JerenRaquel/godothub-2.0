@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://xmnb7y2krvm4"]
+[gd_scene load_steps=8 format=3 uid="uid://xmnb7y2krvm4"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_pbyxy"]
 [ext_resource type="Script" path="res://core/tabs/projects/Projects.cs" id="2_rwuvn"]
 [ext_resource type="PackedScene" uid="uid://bdi2isgeih4f4" path="res://core/tabs/projects/project_side_panel/project_side_panel.tscn" id="3_176p4"]
 [ext_resource type="PackedScene" uid="uid://jjhubcradv16" path="res://core/windows/build_prompt/build_prompt.tscn" id="4_8h7lg"]
 [ext_resource type="PackedScene" uid="uid://do0rya1wgxigc" path="res://core/windows/new_project_window/new_project_window.tscn" id="5_1j1si"]
+[ext_resource type="PackedScene" uid="uid://cltujedon5omd" path="res://core/windows/edit_project_window/edit_project_window.tscn" id="6_0cerr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_17xyk"]
 bg_color = Color(0.101961, 0.101961, 0.101961, 1)
@@ -111,7 +112,9 @@ layout_mode = 2
 
 [node name="BuildPrompt" parent="CanvasLayer" index="0" instance=ExtResource("4_8h7lg")]
 unique_name_in_owner = true
-visible = false
 
 [node name="NewProjectWindow" parent="CanvasLayer" index="1" instance=ExtResource("5_1j1si")]
+unique_name_in_owner = true
+
+[node name="EditProjectWindow" parent="CanvasLayer" index="2" instance=ExtResource("6_0cerr")]
 unique_name_in_owner = true

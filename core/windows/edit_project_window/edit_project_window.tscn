@@ -1,0 +1,93 @@
+[gd_scene load_steps=6 format=3 uid="uid://cltujedon5omd"]
+
+[ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_cjbfd"]
+[ext_resource type="Script" path="res://core/windows/edit_project_window/EditProjectWindow.cs" id="2_casid"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_ggymp"]
+[ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_03eig"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p6l3r"]
+
+[node name="EditProjectWindow" instance=ExtResource("1_cjbfd")]
+script = ExtResource("2_casid")
+
+[node name="TitleLabel" parent="MarginContainer/PanelContainer/VBoxContainer" index="0"]
+text = "Edit Project Data"
+
+[node name="Label3" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="0"]
+layout_mode = 2
+text = "Renderer"
+label_settings = ExtResource("3_ggymp")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="1"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3" index="0"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_p6l3r")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3" index="1"]
+layout_mode = 2
+
+[node name="ForwardCheckBox" type="CheckBox" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3/VBoxContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_hover_pressed_color = Color(0.415686, 1, 0.486275, 1)
+theme_override_colors/font_hover_color = Color(0.415686, 1, 0.486275, 1)
+theme_override_colors/font_pressed_color = Color(0.415686, 1, 0.486275, 1)
+theme_override_colors/font_color = Color(0.415686, 1, 0.486275, 1)
+text = "Forward+"
+
+[node name="MobileCheckBox" type="CheckBox" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3/VBoxContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_hover_pressed_color = Color(0.615686, 0.321569, 0.466667, 1)
+theme_override_colors/font_hover_color = Color(0.615686, 0.321569, 0.466667, 1)
+theme_override_colors/font_pressed_color = Color(0.615686, 0.321569, 0.466667, 1)
+theme_override_colors/font_color = Color(0.615686, 0.321569, 0.466667, 1)
+text = "Mobile"
+
+[node name="CompatCheckBox" type="CheckBox" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3/VBoxContainer" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_hover_pressed_color = Color(0.141176, 0.67451, 0.94902, 1)
+theme_override_colors/font_hover_color = Color(0.141176, 0.67451, 0.94902, 1)
+theme_override_colors/font_pressed_color = Color(0.141176, 0.67451, 0.94902, 1)
+theme_override_colors/font_color = Color(0.141176, 0.67451, 0.94902, 1)
+text = "Compatibility"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3" index="2"]
+layout_mode = 2
+
+[node name="RenderLabel" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer3" index="3"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="Label4" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="2"]
+layout_mode = 2
+text = "The renderer can be changed later, but scene may need to be adjusted."
+label_settings = ExtResource("4_03eig")
+horizontal_alignment = 1
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="3"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_p6l3r")
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="4"]
+layout_mode = 2
+
+[node name="Label5" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4" index="0"]
+layout_mode = 2
+text = "Godot Version: "
+label_settings = ExtResource("3_ggymp")
+
+[node name="VersionOptionButton" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer4" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+allow_reselect = true

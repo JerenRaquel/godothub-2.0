@@ -104,6 +104,18 @@ public partial class ProjectCache : Cache
 
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
+    public string GetProjectVersionBuild(string projectName)
+    {
+        ProjectDataState projectData = GetProject(projectName);
+        if (projectData == null) return null;
+
+        string versionBuild = $"v{projectData.VersionStr ?? "Unknown"} [{VersionData.BuildEnumToString(projectData.Build)}]";
+        if (projectData.IsDotNet)
+            versionBuild += $" [.Net]";
+
+        return versionBuild;
+    }
+
     public string GetLocalTime(string projectName) => GetProject(projectName)?.LastEdited.ToLocalTime().ToString() ?? "Unknown";
 
     public Texture2D GetIcon(string projectName) => GetProject(projectName)?.Icon ?? null;
@@ -148,6 +160,8 @@ public partial class ProjectCache : Cache
     public string[] GetProjectTags(string projectName) => GetProject(projectName)?.ProjectTags;
 
     public string[] GetSoftwareTags(string projectName) => GetProject(projectName)?.SoftwareTags;
+
+    public bool HasBuildSelected(string projectName) => GetProject(projectName)?.Build != VersionData.BuildType.UNKNOWN;
 
     public bool HasTags(string projectName) => GetProject(projectName)?.HasTags ?? false;
 
