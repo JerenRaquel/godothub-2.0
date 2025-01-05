@@ -18,10 +18,7 @@ public partial class ProjectCache : Cache
 
     public static ProjectCache Instance => _instance;
 
-    private ProjectCache(string userDirectory) : base(userDirectory, "/ProjectCache.gdhub")
-    {
-        LoadData();
-    }
+    private ProjectCache(string userDirectory) : base(userDirectory, "/ProjectCache.gdhub") => LoadData();
 
     public static ProjectCache Initialize(string userDirectory)
     {
@@ -52,13 +49,27 @@ public partial class ProjectCache : Cache
             {
                 string sanitizedPath = folderPath.Replace("\\", "/");
                 ProjectDataState project = CreateProjectFromConfig(sanitizedPath);
+                if (project == null) continue;  // Skip non project folders
+
+                // Skip dupes
+                if (tempProjects.ContainsKey(project.projectName)) continue;
+
+                // See if build data can be transfered over
                 if (cachedProjects.Contains(project.projectName))
                 {
-
+                    ProjectDataState oldProject = _projects[project.projectName];
+                    if (oldProject.VersionData == project.VersionData &&
+                        oldProject.Renderer == project.Renderer)
+                    {
+                        project.SetBuild(oldProject.Build);
+                    }
                 }
-            }
 
+                tempProjects.Add(project.projectName, project);
+            }
         }
+        _projects.Clear();
+        _projects = tempProjects;
     }
 
     public override bool LoadData()
@@ -100,7 +111,6 @@ public partial class ProjectCache : Cache
         file.Close();
     }
 
-
     private ProjectDataState CreateProjectFromConfig(string directoryPath)
     {
         // Load config file
@@ -118,7 +128,6 @@ public partial class ProjectCache : Cache
         // Create a project object
         ProjectDataState project = new();
         if (!project.LoadUncached(ref configLoadData, ref directoryPath)) return null;
-        if (_projects.ContainsKey(project.projectName)) return null;
 
         return project;
     }
