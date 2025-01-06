@@ -123,4 +123,14 @@ public static partial class OSAPI
         ProjectCache.Instance.DeleteProject(projectName);
         return new(true, true);
     }
+
+    public static bool CreateDirectoryIfNotExists(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+            return false;
+        }
+        return true;
+    }
 }

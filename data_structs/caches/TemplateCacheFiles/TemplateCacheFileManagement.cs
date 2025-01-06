@@ -38,16 +38,19 @@ public partial class TemplateCache : Cache
 
     public override bool LoadData()
     {
-        _ROM = new();
-        _RAM = new();
+        _ROM = [];
+        _RAM = [];
 
-        if (!ReadAssetFile()) InitializeDefaultTemplates();
-        _ROM.OverwriteWith(_RAM);
+        if (!CheckForDefaultFiles())
+            InitializeDefaultTemplates();
+
+        ReadAssetFile();
+        OverWrite(_RAM, _ROM);
 
         string[] files = Directory.GetFiles(_TEMPLATE_DIRECTORY);
         foreach (string filePath in files)
             ReadTemplateFile(filePath);
-        _RAM.OverwriteWith(_ROM);
+        OverWrite(_ROM, _RAM);
 
         return true;
     }
@@ -62,7 +65,7 @@ public partial class TemplateCache : Cache
 
     public override void ForceWrite()
     {
-        _ROM.OverwriteWith(_RAM);
+        OverWrite(_RAM, _ROM);
 
         WriteAssetFile();
         WriteTemplateFiles();
@@ -72,28 +75,33 @@ public partial class TemplateCache : Cache
     private void InitializeDefaultTemplates()
     {
         string iconPath = _ASSET_DIRECTORY + "/icon.svg";
+        bool iconCreated = false;
         if (!File.Exists(iconPath))
         {
             File.Copy(_ICON_SVG_PATH, iconPath);
-            _fileDatabase.Add("icon.svg", iconPath);
-            WriteAssetFile();
+            iconCreated = true;
         }
 
-        TemplateData.DataNode emptyRoot = _RAM.AddTemplate("Default - Empty");
-        emptyRoot.AddFile("project.godot");
-        emptyRoot.AddFile("icon.svg");
+        if (!_fileDatabase.ContainsKey("icon.svg") && iconCreated)
+            _fileDatabase.Add("icon.svg", iconPath);
 
-        TemplateData.DataNode gitRoot = _RAM.AddTemplate("Default - Git");
-        gitRoot.AddFile("project.godot");
-        gitRoot.AddFile("icon.svg");
-        gitRoot.AddFile(".gitignore");
-        gitRoot.AddFile(".gitattributes");
+        if (iconCreated)
+            WriteAssetFile();
+
+        AddTemplate("Default - Empty");
+        AddFileToTemplate("Default - Empty", "", "project.godot");
+        AddFileToTemplate("Default - Empty", "", "icon.svg");
+
+        AddTemplate("Default - Git");
+        AddFileToTemplate("Default - Git", "", "project.godot");
+        AddFileToTemplate("Default - Git", "", "icon.svg");
+        AddFileToTemplate("Default - Git", "", ".gitignore");
+        AddFileToTemplate("Default - Git", "", ".gitattributes");
     }
 
     private void WriteAssetFile()
     {
-        if (!Directory.Exists(_ASSET_DIRECTORY))
-            Directory.CreateDirectory(_ASSET_DIRECTORY);
+        OSAPI.CreateDirectoryIfNotExists(_ASSET_DIRECTORY);
 
         using StreamWriter file = new(_ASSET_METADATA_FILE_PATH, false);
         if (_fileDatabase.Count == 0)
@@ -111,37 +119,31 @@ public partial class TemplateCache : Cache
 
     private void WriteTemplateFiles()
     {
-        _ROM.OverwriteWith(_RAM);
+        OverWrite(_RAM, _ROM);
 
-        if (!Directory.Exists(_TEMPLATE_DIRECTORY))
-            Directory.CreateDirectory(_TEMPLATE_DIRECTORY);
+        OSAPI.CreateDirectoryIfNotExists(_TEMPLATE_DIRECTORY);
 
-        using (Dictionary<string, TemplateData.DataNode>.Enumerator romEnumerator = _ROM.RawTemplateData)
+        foreach (KeyValuePair<string, TemplateStructure> entry in _ROM)
         {
-            while (romEnumerator.MoveNext())
-            {
-                KeyValuePair<string, TemplateData.DataNode> entry = romEnumerator.Current;
-                if (entry.Value.IsNull) continue;
+            string filePath = $"{_TEMPLATE_DIRECTORY}/{entry.Key}.gdhub";
+            StreamWriter file = new(filePath);
+            file.WriteLine($"Version={VERSION_FLAG}");
 
-                string filePath = _TEMPLATE_DIRECTORY + "/" + entry.Key + ".gdhub";
+            // Write to file
+            string projectTagsCompiled = CompileTagsToStr(entry.Value.ProjectTags);
+            file.WriteLine(projectTagsCompiled);
+            string softwareTagsCompiled = CompileTagsToStr(entry.Value.SoftwareTags);
+            file.WriteLine(softwareTagsCompiled);
+            WriteTemplateFilesHelper(ref file, entry.Value.RootFolder, "");
 
-                StreamWriter file = new(filePath);
-                file.WriteLine($"Version={VERSION_FLAG}");
-                TemplateData.DataNode.WriteToFile("", entry.Value, ref file);
-                file.Close();
-            }
+            file.Close();
         }
     }
 
     private bool ReadAssetFile()
     {
-        if (!Directory.Exists(_ASSET_DIRECTORY))
-        {
-            Directory.CreateDirectory(_ASSET_DIRECTORY);
-            return false;
-        }
-        if (!File.Exists(_ASSET_METADATA_FILE_PATH)) return false;
-        if (new FileInfo(_ASSET_METADATA_FILE_PATH).Length == 0) return false;
+        if (!OSAPI.CreateDirectoryIfNotExists(_ASSET_DIRECTORY)) return false;
+        if (!DoesFileExistAndContainData(_ASSET_METADATA_FILE_PATH)) return false;
 
         using StreamReader file = new(_ASSET_METADATA_FILE_PATH);
         string name = file.ReadLine();
@@ -161,7 +163,7 @@ public partial class TemplateCache : Cache
     {
         string unixPath = path.Replace("\\", "/");
         using StreamReader file = new(unixPath);
-        string fileName = unixPath.Split("/", StringSplitOptions.RemoveEmptyEntries)
+        string templateName = unixPath.Split("/", StringSplitOptions.RemoveEmptyEntries)
                             .Last()
                             .Replace(".gdhub", "");
 
@@ -170,8 +172,108 @@ public partial class TemplateCache : Cache
         if (!int.TryParse(versionStr.Split("=")[1], out int result)) return;
         if (result != VERSION_FLAG) return;
 
-        TemplateData.DataNode root = _ROM.AddTemplate(fileName);
-        TemplateData.DataNode.ReadFromFile(ref root, file);
+        // Load Template
+        LoadROMTemplate(templateName);
+        int readLines = 1;
+        string line = file.ReadLine();
+        while (line != null)
+        {
+            //* Tag Data
+            if (readLines < 3)
+            {
+                if (line == "")
+                {
+                    line = file.ReadLine();
+                    readLines++;
+                    continue;
+                }
+
+                string[] tags = line.Split(" | ", StringSplitOptions.RemoveEmptyEntries);
+                if (tags.Length == 0)
+                {
+                    line = file.ReadLine();
+                    readLines++;
+                    continue;
+                }
+                if (readLines == 1)
+                    _ROM[templateName].BulkAddProjectTags(tags);
+                else
+                    _ROM[templateName].BulkAddSoftwareTags(tags);
+            }
+            else    //* Template Files
+            {
+                string[] parts = line.Split(" | ", StringSplitOptions.RemoveEmptyEntries);
+                string fileName = parts[0];
+                string fileTag = parts[1];
+                string structurePath = "";
+                if (parts.Length > 2) structurePath = parts[2];
+
+                _ROM[templateName].LoadFileData(ref fileName, ref fileTag, ref structurePath);
+            }
+
+            line = file.ReadLine();
+            readLines++;
+        }
+        file.Close();
     }
 
+    private void LoadROMTemplate(string templateName)
+    {
+        if (_ROM.ContainsKey(templateName)) return;
+        _ROM.Add(templateName, new(templateName));
+    }
+
+    private bool CheckForDefaultFiles()
+    {
+        if (!OSAPI.CreateDirectoryIfNotExists(_ASSET_DIRECTORY)) return false;
+        if (!DoesFileExistAndContainData(_ASSET_METADATA_FILE_PATH)) return false;
+        if (!OSAPI.CreateDirectoryIfNotExists(_TEMPLATE_DIRECTORY)) return false;
+        if (Directory.GetFiles(_TEMPLATE_DIRECTORY).Length == 0) return false;
+
+        return true;
+    }
+
+    private static void WriteTemplateFilesHelper(ref StreamWriter file, TemplateStructure.Folder currentFolder,
+        string path)
+    {
+        foreach (string fileName in currentFolder.FileNames)
+            // FileName | FileTag | Path to PWD
+            file.WriteLine($"{fileName} | {currentFolder.GetFileTag(fileName)} | {path}");
+
+        foreach (string folderName in currentFolder.FolderNames)
+            WriteTemplateFilesHelper(ref file, currentFolder.GetFolder(folderName), $"{path}/{folderName}");
+    }
+
+    private static void OverWrite(Dictionary<string, TemplateStructure> copyFrom,
+        Dictionary<string, TemplateStructure> copyTo)
+    {
+        foreach (KeyValuePair<string, TemplateStructure> entry in copyFrom)
+        {
+            if (copyTo.ContainsKey(entry.Key))
+                copyTo[entry.Key].OverwriteWith(entry.Value);
+            else
+                copyTo.Add(entry.Key, entry.Value);
+        }
+    }
+
+    private static bool DoesFileExistAndContainData(string path)
+    {
+        if (!File.Exists(path)) return false;
+        if (new FileInfo(path).Length == 0) return false;
+        return true;
+    }
+
+    private static string CompileTagsToStr(string[] tags)
+    {
+        string tagStr = "";
+        int i = 0;
+        int maxCount = tags.Length;
+        foreach (string tag in tags)
+        {
+            tagStr += tag;
+            if (i < maxCount - 1) tagStr += " | ";
+            i++;
+        }
+        return tagStr;
+    }
 }

@@ -15,44 +15,44 @@ public static partial class ProjectCreator
 
     public static void CreateProject(string path, string templateTag, ProjectCreationData data)
     {
-        TemplateData.DataNode projectRoot = TemplateCache.Instance.GetRoot(templateTag);
-        if (projectRoot.IsNull)
-        {
-            NotifcationManager.Instance.NotifyError("Unable to generate project from template.");
-            return;
-        }
+        // TemplateData.DataNode projectRoot = TemplateCache.Instance.GetRoot(templateTag);
+        // if (projectRoot.IsNull)
+        // {
+        //     NotifcationManager.Instance.NotifyError("Unable to generate project from template.");
+        //     return;
+        // }
 
-        GenerateFiles(path, path, projectRoot, data);
+        // GenerateFiles(path, path, projectRoot, data);
     }
 
-    private static void GenerateFiles(string projectPath, string currentPath,
-        TemplateData.DataNode currentNode, ProjectCreationData data)
-    {
-        string[] fileNames = currentNode.Files;
-        foreach (string fileName in fileNames)
-        {
-            string filePath = TemplateCache.Instance.GetFilePath(fileName);
-            if (filePath == null)
-            {
-                Abort(projectPath, $"Missing file: {fileName}");
-                return;
-            }
+    // private static void GenerateFiles(string projectPath, string currentPath,
+    //     TemplateData.DataNode currentNode, ProjectCreationData data)
+    // {
+    //     string[] fileNames = currentNode.Files;
+    //     foreach (string fileName in fileNames)
+    //     {
+    //         string filePath = TemplateCache.Instance.GetFilePath(fileName);
+    //         if (filePath == null)
+    //         {
+    //             Abort(projectPath, $"Missing file: {fileName}");
+    //             return;
+    //         }
 
-            if (fileName == "project.godot")
-                CreateProjectGodot(currentPath, data);
-            else if (fileName == "icon.svg")
-            {
+    //         if (fileName == "project.godot")
+    //             CreateProjectGodot(currentPath, data);
+    //         else if (fileName == "icon.svg")
+    //         {
 
-            }
-            else    // Copy File to Location
-            {
+    //         }
+    //         else    // Copy File to Location
+    //         {
 
-            }
-        }
+    //         }
+    //     }
 
-        foreach (TemplateData.DataNode folder in currentNode.FolderNodes)
-            GenerateFiles(projectPath, currentPath + "/" + folder.Name, folder, data);
-    }
+    //     foreach (TemplateData.DataNode folder in currentNode.FolderNodes)
+    //         GenerateFiles(projectPath, currentPath + "/" + folder.Name, folder, data);
+    // }
 
     private static void Abort(string projectPath, string message)
     {
