@@ -130,6 +130,10 @@ public partial class TemplateCache : Cache
             file.WriteLine($"Version={VERSION_FLAG}");
 
             // Write to file
+            string projectTagsCompiled = CompileTagsToStr(entry.Value.ProjectTags);
+            file.WriteLine(projectTagsCompiled);
+            string softwareTagsCompiled = CompileTagsToStr(entry.Value.SoftwareTags);
+            file.WriteLine(softwareTagsCompiled);
             WriteTemplateFilesHelper(ref file, entry.Value.RootFolder, "");
 
             file.Close();
@@ -257,5 +261,19 @@ public partial class TemplateCache : Cache
         if (!File.Exists(path)) return false;
         if (new FileInfo(path).Length == 0) return false;
         return true;
+    }
+
+    private static string CompileTagsToStr(string[] tags)
+    {
+        string tagStr = "";
+        int i = 0;
+        int maxCount = tags.Length;
+        foreach (string tag in tags)
+        {
+            tagStr += tag;
+            if (i < maxCount - 1) tagStr += " | ";
+            i++;
+        }
+        return tagStr;
     }
 }

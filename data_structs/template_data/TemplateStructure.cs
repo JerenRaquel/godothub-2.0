@@ -8,7 +8,9 @@ public partial class TemplateStructure
 
     public string Name { get; set; }
     public string[] ProjectTags => [.. _projectTags];
+    public int ProjectTagCount => _projectTags.Count;
     public string[] SoftwareTags => [.. _softwareTags];
+    public int SoftwareTagCount => _softwareTags.Count;
     public bool HasTags => _projectTags.Count > 0 || _softwareTags.Count > 0;
     public long FolderCount => FolderCountHelper(_root);
     public long FileCount => FileCountHelper(_root);
