@@ -7,6 +7,7 @@ public partial class Templates : TabBase
     [Export] private PackedScene TagScene;
 
     private TemplateList _templateList;
+    private TemplateToolBar _toolBar;
     private Label _noTagAddedLabel;
     private HBoxContainer _tagContainerRoot;
     private HFlowContainer _tagContainer;
@@ -16,6 +17,9 @@ public partial class Templates : TabBase
     {
         _templateList = GetNode<TemplateList>("%TemplateList");
         _templateList.GainFocus += OnNewFocus;
+
+        _toolBar = GetNode<TemplateToolBar>("%ToolBar");
+        _toolBar.FillFolderStateToggled += () => TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate).FillFolders = _toolBar.FillFolders;
 
         _noTagAddedLabel = GetNode<Label>("%NoTagLabel");
         _tagContainerRoot = GetNode<HBoxContainer>("%TagContainerRoot");
@@ -34,6 +38,7 @@ public partial class Templates : TabBase
     private void LoadTags()
     {
         TemplateStructure template = TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate);
+        _toolBar.FillFolders = template.FillFolders;
         if (template != null && template.HasTags)
         {
             _noTagAddedLabel.Hide();

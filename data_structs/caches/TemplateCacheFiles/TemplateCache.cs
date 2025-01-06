@@ -66,6 +66,8 @@ public partial class TemplateCache : Cache
         return templateData;
     }
 
+    public bool GetTemplateFillFoldersState(string templateName) => GetTemplate(templateName)?.FillFolders ?? false;
+
     public string GetFilePath(string fileName)
     {
         if (!_fileDatabase.TryGetValue(fileName, out string value)) return null;

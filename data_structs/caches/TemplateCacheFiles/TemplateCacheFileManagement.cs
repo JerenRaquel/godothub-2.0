@@ -129,11 +129,19 @@ public partial class TemplateCache : Cache
             StreamWriter file = new(filePath);
             file.WriteLine($"Version={VERSION_FLAG}");
 
-            // Write to file
+            //* Write to file
+            // Fill folder state
+            file.WriteLine(entry.Value.FillFolders ? "true" : "false");
+
+            // Project tags
             string projectTagsCompiled = CompileTagsToStr(entry.Value.ProjectTags);
             file.WriteLine(projectTagsCompiled);
+
+            // Software tags
             string softwareTagsCompiled = CompileTagsToStr(entry.Value.SoftwareTags);
             file.WriteLine(softwareTagsCompiled);
+
+            // Data
             WriteTemplateFilesHelper(ref file, entry.Value.RootFolder, "");
 
             file.Close();
@@ -178,8 +186,12 @@ public partial class TemplateCache : Cache
         string line = file.ReadLine();
         while (line != null)
         {
-            //* Tag Data
-            if (readLines < 3)
+            //* State Data
+            if (readLines == 1)
+            {
+                _ROM[templateName].FillFolders = line == "true";
+            }
+            else if (readLines < 4) //* Tag Data
             {
                 if (line == "")
                 {

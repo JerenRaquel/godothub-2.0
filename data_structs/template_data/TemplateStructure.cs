@@ -7,6 +7,8 @@ public partial class TemplateStructure
     private Folder _root;
 
     public string Name { get; set; }
+    public bool FillFolders { get; set; } = true;
+
     public string[] ProjectTags => [.. _projectTags];
     public int ProjectTagCount => _projectTags.Count;
     public string[] SoftwareTags => [.. _softwareTags];

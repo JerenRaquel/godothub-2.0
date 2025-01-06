@@ -7,10 +7,9 @@
 [ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_70xi3"]
 [ext_resource type="PackedScene" uid="uid://ch5o1bnp8mh0m" path="res://core/tabs/templates/template_display/template_display.tscn" id="4_i6s10"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="5_dx8kv"]
+[ext_resource type="PackedScene" uid="uid://bh537wm3kv7mb" path="res://core/tabs/templates/template_toolbar/tool_bar.tscn" id="5_qmimf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3q2b"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_83n28"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_6sonh"]
 color = Color(0.101961, 0.101961, 0.101961, 1)
@@ -49,25 +48,9 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_i3q2b")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ToolBar" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" index="0"]
+[node name="ToolBar" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" index="0" instance=ExtResource("5_qmimf")]
+unique_name_in_owner = true
 layout_mode = 2
-
-[node name="EditButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="0"]
-layout_mode = 2
-text = "Edit Template Structure"
-
-[node name="AddTagButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="1"]
-layout_mode = 2
-text = "Add Tag"
-
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="2"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_83n28")
-
-[node name="FillFoldersCheckButton" type="CheckButton" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/ToolBar" index="3"]
-layout_mode = 2
-text = "Fill Empty Folders"
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" index="1"]
 layout_mode = 2
