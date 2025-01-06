@@ -3,12 +3,11 @@ using System.Linq;
 
 public partial class Templates : TabBase
 {
-    [Export] private PackedScene TagScene;
-
     private TemplateList _templateList;
     private VSplitContainer _splitContainer;
     private TagDisplay _tagDisplay;
     private TreeDisplay _treeDisplay;
+    private TagPrompt _tagPrompt;
 
     public override void _Ready()
     {
@@ -20,9 +19,13 @@ public partial class Templates : TabBase
         _tagDisplay = GetNode<TagDisplay>("%TagDisplay");
         _tagDisplay.TagContainerEnabled += () => _splitContainer.Collapsed = false;
         _tagDisplay.TagContainerDisabled += () => _splitContainer.Collapsed = true;
+        _tagDisplay.TagAdded += () => _tagPrompt.Show();
 
         _treeDisplay = GetNode<TreeDisplay>("%TreeDisplay");
         _treeDisplay.FillFolderStateToggled += () => TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate).FillFolders = _treeDisplay.FillFolders;
+
+        _tagPrompt = GetNode<TagPrompt>("%TagPrompt");
+        _tagPrompt.TagAdded += OnTagAdded;
     }
 
     public override void LoadData()
@@ -44,5 +47,12 @@ public partial class Templates : TabBase
     {
         _treeDisplay.Build(templateName);
         LoadTags();
+    }
+
+    private void OnTagAdded(string tagName, Color color)
+    {
+        TemplateStructure template = TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate);
+        template.AddProjectTag(tagName);
+        _tagDisplay.LoadTags(template);
     }
 }

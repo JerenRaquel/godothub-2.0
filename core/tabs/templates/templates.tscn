@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dlj76n5x3gx1w"]
+[gd_scene load_steps=9 format=3 uid="uid://dlj76n5x3gx1w"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_jl0u4"]
 [ext_resource type="Script" path="res://core/tabs/templates/Templates.cs" id="2_5axoy"]
@@ -6,12 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://c4uo62iwd5yw4" path="res://core/tabs/templates/template_list_panel/template_list.tscn" id="3_ukb7v"]
 [ext_resource type="PackedScene" uid="uid://dwt08id213glc" path="res://core/tabs/templates/tag_display/tag_display.tscn" id="5_xuj8g"]
 [ext_resource type="PackedScene" uid="uid://dvuebtf2144vv" path="res://core/tabs/templates/tree_display/tree_display.tscn" id="6_uetsu"]
+[ext_resource type="PackedScene" uid="uid://dmxwaxokr5keq" path="res://core/windows/tag_prompt/tag_prompt.tscn" id="7_xiwxx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kvlwn"]
 
 [node name="Templates" instance=ExtResource("1_jl0u4")]
 script = ExtResource("2_5axoy")
-TagScene = ExtResource("3_lfirh")
 
 [node name="MarginContainer" type="MarginContainer" parent="." index="0"]
 layout_mode = 2
@@ -44,7 +44,13 @@ split_offset = 80
 [node name="TagDisplay" parent="MarginContainer/HBoxContainer/VBoxContainer/VSplitContainer" index="0" instance=ExtResource("5_xuj8g")]
 unique_name_in_owner = true
 layout_mode = 2
+TagScene = ExtResource("3_lfirh")
 
 [node name="TreeDisplay" parent="MarginContainer/HBoxContainer/VBoxContainer/VSplitContainer" index="1" instance=ExtResource("6_uetsu")]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." index="1"]
+
+[node name="TagPrompt" parent="CanvasLayer" index="0" instance=ExtResource("7_xiwxx")]
+unique_name_in_owner = true

@@ -50,6 +50,8 @@ public partial class TagData
 
     public bool HasSoftwareTag(string tag) => _softwareTags.ContainsKey(tag);
 
+    public bool HasProjectTag(string tag) => _projectTags.ContainsKey(tag);
+
     public string GetColor(bool isSoftware, string name, string defaultValue)
     {
         if (isSoftware)
@@ -145,11 +147,19 @@ public partial class TagData
 
     #region Color Regex
     // https://stackoverflow.com/a/13035186 -- Altered to store Regex for multiple use
-    private static bool CheckValidHtmlColor(string inputColor) => HTMLColorRegex().Match(inputColor).Success;
+    private static bool CheckValidHtmlColor(string inputColor)
+    {
+        if (HTMLColorRegex().Match(inputColor).Success) return true;
+        if (HTMLColorAlphaRegex().Match(inputColor).Success) return true;
 
+        return false;
+    }
     //regex from http://stackoverflow.com/a/1636354/2343 -- Altered to remove '#'
     [GeneratedRegex("^(?:[0-9a-fA-F]{3}){1,2}$")]
     private static partial Regex HTMLColorRegex();
+
+    [GeneratedRegex("^(?:[0-9a-fA-F]{4}){1,2}$")]
+    private static partial Regex HTMLColorAlphaRegex();
 
     #endregion
 

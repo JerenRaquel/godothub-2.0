@@ -103,22 +103,4 @@ public partial class TagCache : Cache
 
         file.Close();
     }
-
-    public void AddOrUpdateSoftwareTag(string name, TagData.SoftwareData data) => _RAM.AddOrUpdateSoftwareTag(name, data);
-
-    public TagData.CommandParts GetExecutableCommand(string softwareTag, string projectName) => _RAM.GetCommandString(softwareTag, projectName);
-
-    public string GetRAWCommand(string softwareTag, bool full = true) => _RAM.GetRawCommand(softwareTag, full);
-
-    public string GetPath(string softwareTag) => _RAM.GetPath(softwareTag);
-
-    public string GetArgString(string softwareTag) => _RAM.GetArgString(softwareTag);
-
-    public string GetColor(bool isSoftware, string tag, string defaultValue = "FFFFFF") => _RAM.GetColor(isSoftware, tag, defaultValue);
-
-    public bool IsFavorited(string softwareTag) => _RAM.IsFavorited(softwareTag);
-
-    public bool HasSoftwareTag(string softwareTag) => _RAM.HasSoftwareTag(softwareTag);
-
-    public void SetFavorited(string softwareTag, bool state) => _RAM.UpdateFavoriteState(softwareTag, state);
 }

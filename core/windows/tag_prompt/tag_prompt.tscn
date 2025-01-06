@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3 uid="uid://dmxwaxokr5keq"]
+
+[ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_lybrd"]
+[ext_resource type="Script" path="res://core/windows/tag_prompt/TagPrompt.cs" id="2_7rs42"]
+[ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_eqop5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g2yvf"]
+
+[node name="TagPrompt" instance=ExtResource("1_lybrd")]
+script = ExtResource("2_7rs42")
+
+[node name="MarginContainer" parent="." index="0"]
+theme_override_constants/margin_top = 225
+theme_override_constants/margin_bottom = 175
+
+[node name="TitleLabel" parent="MarginContainer/PanelContainer/VBoxContainer" index="0"]
+text = "Enter Tag"
+
+[node name="ContentContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer" index="0"]
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="0"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer" index="0"]
+layout_mode = 2
+text = "Color: "
+label_settings = ExtResource("3_eqop5")
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer" index="1"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 16)
+layout_mode = 2
+color = Color(1, 1, 1, 1)
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="1"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_g2yvf")
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "<Insert Text Here>"

@@ -207,9 +207,9 @@ public partial class TemplateCache : Cache
                     readLines++;
                     continue;
                 }
-                if (readLines == 1)
+                if (readLines == 2)
                     _ROM[templateName].BulkAddProjectTags(tags);
-                else
+                else if (readLines == 3)
                     _ROM[templateName].BulkAddSoftwareTags(tags);
             }
             else    //* Template Files
