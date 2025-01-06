@@ -116,20 +116,16 @@ public partial class TemplateCache : Cache
         if (!Directory.Exists(_TEMPLATE_DIRECTORY))
             Directory.CreateDirectory(_TEMPLATE_DIRECTORY);
 
-        using (Dictionary<string, TemplateData.DataNode>.Enumerator romEnumerator = _ROM.RawTemplateData)
+        foreach (KeyValuePair<string, TemplateStructure> entry in _ROM)
         {
-            while (romEnumerator.MoveNext())
-            {
-                KeyValuePair<string, TemplateData.DataNode> entry = romEnumerator.Current;
-                if (entry.Value.IsNull) continue;
+            string filePath = $"{_TEMPLATE_DIRECTORY}/{entry.Key}.gdhub";
+            StreamWriter file = new(filePath);
+            file.WriteLine($"Version={VERSION_FLAG}");
 
-                string filePath = _TEMPLATE_DIRECTORY + "/" + entry.Key + ".gdhub";
+            // Write to file
+            WriteTemplateFilesHelper(ref file, entry.Value.RootFolder, "");
 
-                StreamWriter file = new(filePath);
-                file.WriteLine($"Version={VERSION_FLAG}");
-                TemplateData.DataNode.WriteToFile("", entry.Value, ref file);
-                file.Close();
-            }
+            file.Close();
         }
     }
 
@@ -161,7 +157,7 @@ public partial class TemplateCache : Cache
     {
         string unixPath = path.Replace("\\", "/");
         using StreamReader file = new(unixPath);
-        string fileName = unixPath.Split("/", StringSplitOptions.RemoveEmptyEntries)
+        string templateName = unixPath.Split("/", StringSplitOptions.RemoveEmptyEntries)
                             .Last()
                             .Replace(".gdhub", "");
 
@@ -170,7 +166,32 @@ public partial class TemplateCache : Cache
         if (!int.TryParse(versionStr.Split("=")[1], out int result)) return;
         if (result != VERSION_FLAG) return;
 
-        // TODO: Load Template
+        // Load Template
+        AddTemplate(templateName);
+        string line = file.ReadLine();
+        while (line != null)
+        {
+            string[] parts = line.Split(" | ", StringSplitOptions.RemoveEmptyEntries);
+            string fileName = parts[0];
+            string fileTag = parts[1];
+            string structurePath = parts[2];
+
+            _ROM[templateName].LoadFileData(ref fileName, ref fileTag, ref structurePath);
+
+            line = file.ReadLine();
+        }
+
+    }
+
+    private static void WriteTemplateFilesHelper(ref StreamWriter file, TemplateStructure.Folder currentFolder,
+        string path)
+    {
+        foreach (string fileName in currentFolder.FileNames)
+            // FileName | FileTag | Path to PWD
+            file.WriteLine($"{fileName} | {currentFolder.GetFileTag(fileName)} | {path}");
+
+        foreach (string folderName in currentFolder.FolderNames)
+            WriteTemplateFilesHelper(ref file, currentFolder.GetFolder(folderName), $"{path}/{folderName}");
     }
 
     private static void OverWrite(Dictionary<string, TemplateStructure> copyFrom,

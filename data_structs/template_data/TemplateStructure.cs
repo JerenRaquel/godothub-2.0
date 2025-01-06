@@ -19,6 +19,12 @@ public partial class TemplateStructure
         _root = new("");
     }
 
+    public void LoadFileData(ref string fileName, ref string fileTag, ref string path)
+    {
+        string[] parts = path.Split("/");
+        LoadFileDataHelper(ref parts, 0, _root, ref fileName, ref fileTag);
+    }
+
     public void AddFile(string path, string fileTag)
     {
         string[] pathParts = path.Split('/', System.StringSplitOptions.RemoveEmptyEntries);
@@ -111,6 +117,29 @@ public partial class TemplateStructure
         foreach (string folderName in currentFolder.FolderNames)
             amount += FolderCountHelper(currentFolder.GetFolder(folderName));
         return amount;
+    }
+
+    private static void LoadFileDataHelper(ref string[] parts, int depth, Folder currentFolder,
+        ref string fileName, ref string fileTag)
+    {
+        if (depth + 1 >= parts.Length)
+        {
+            currentFolder.LoadData(fileName, fileTag);
+            return;
+        }
+
+        string nextFolderName = parts[depth + 1];
+        if (!currentFolder.FolderExists(nextFolderName))
+            currentFolder.AddFolder(nextFolderName);
+
+        LoadFileDataHelper(
+            ref parts,
+            depth + 1,
+            currentFolder.GetFolder(nextFolderName),
+            ref fileName,
+            ref fileTag
+        );
+
     }
 
 }
