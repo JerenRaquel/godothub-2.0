@@ -41,7 +41,10 @@ public partial class TemplateCache : Cache
         _ROM = [];
         _RAM = [];
 
-        if (!ReadAssetFile()) InitializeDefaultTemplates();
+        if (!CheckForDefaultFiles())
+            InitializeDefaultTemplates();
+
+        ReadAssetFile();
         OverWrite(_RAM, _ROM);
 
         string[] files = Directory.GetFiles(_TEMPLATE_DIRECTORY);
@@ -72,12 +75,18 @@ public partial class TemplateCache : Cache
     private void InitializeDefaultTemplates()
     {
         string iconPath = _ASSET_DIRECTORY + "/icon.svg";
+        bool iconCreated = false;
         if (!File.Exists(iconPath))
         {
             File.Copy(_ICON_SVG_PATH, iconPath);
-            _fileDatabase.Add("icon.svg", iconPath);
-            WriteAssetFile();
+            iconCreated = true;
         }
+
+        if (!_fileDatabase.ContainsKey("icon.svg") && iconCreated)
+            _fileDatabase.Add("icon.svg", iconPath);
+
+        if (iconCreated)
+            WriteAssetFile();
 
         AddTemplate("Default - Empty");
         AddFileToTemplate("Default - Empty", "", "project.godot");
@@ -92,8 +101,7 @@ public partial class TemplateCache : Cache
 
     private void WriteAssetFile()
     {
-        if (!Directory.Exists(_ASSET_DIRECTORY))
-            Directory.CreateDirectory(_ASSET_DIRECTORY);
+        OSAPI.CreateDirectoryIfNotExists(_ASSET_DIRECTORY);
 
         using StreamWriter file = new(_ASSET_METADATA_FILE_PATH, false);
         if (_fileDatabase.Count == 0)
@@ -113,8 +121,7 @@ public partial class TemplateCache : Cache
     {
         OverWrite(_RAM, _ROM);
 
-        if (!Directory.Exists(_TEMPLATE_DIRECTORY))
-            Directory.CreateDirectory(_TEMPLATE_DIRECTORY);
+        OSAPI.CreateDirectoryIfNotExists(_TEMPLATE_DIRECTORY);
 
         foreach (KeyValuePair<string, TemplateStructure> entry in _ROM)
         {
@@ -131,13 +138,8 @@ public partial class TemplateCache : Cache
 
     private bool ReadAssetFile()
     {
-        if (!Directory.Exists(_ASSET_DIRECTORY))
-        {
-            Directory.CreateDirectory(_ASSET_DIRECTORY);
-            return false;
-        }
-        if (!File.Exists(_ASSET_METADATA_FILE_PATH)) return false;
-        if (new FileInfo(_ASSET_METADATA_FILE_PATH).Length == 0) return false;
+        if (!OSAPI.CreateDirectoryIfNotExists(_ASSET_DIRECTORY)) return false;
+        if (!DoesFileExistAndContainData(_ASSET_METADATA_FILE_PATH)) return false;
 
         using StreamReader file = new(_ASSET_METADATA_FILE_PATH);
         string name = file.ReadLine();
@@ -167,20 +169,37 @@ public partial class TemplateCache : Cache
         if (result != VERSION_FLAG) return;
 
         // Load Template
-        AddTemplate(templateName);
+        LoadROMTemplate(templateName);
         string line = file.ReadLine();
         while (line != null)
         {
             string[] parts = line.Split(" | ", StringSplitOptions.RemoveEmptyEntries);
             string fileName = parts[0];
             string fileTag = parts[1];
-            string structurePath = parts[2];
+            string structurePath = "";
+            if (parts.Length > 2) structurePath = parts[2];
 
             _ROM[templateName].LoadFileData(ref fileName, ref fileTag, ref structurePath);
 
             line = file.ReadLine();
         }
+        file.Close();
+    }
 
+    private void LoadROMTemplate(string templateName)
+    {
+        if (_ROM.ContainsKey(templateName)) return;
+        _ROM.Add(templateName, new(templateName));
+    }
+
+    private bool CheckForDefaultFiles()
+    {
+        if (!OSAPI.CreateDirectoryIfNotExists(_ASSET_DIRECTORY)) return false;
+        if (!DoesFileExistAndContainData(_ASSET_METADATA_FILE_PATH)) return false;
+        if (!OSAPI.CreateDirectoryIfNotExists(_TEMPLATE_DIRECTORY)) return false;
+        if (Directory.GetFiles(_TEMPLATE_DIRECTORY).Length == 0) return false;
+
+        return true;
     }
 
     private static void WriteTemplateFilesHelper(ref StreamWriter file, TemplateStructure.Folder currentFolder,
@@ -204,5 +223,12 @@ public partial class TemplateCache : Cache
             else
                 copyTo.Add(entry.Key, entry.Value);
         }
+    }
+
+    private static bool DoesFileExistAndContainData(string path)
+    {
+        if (!File.Exists(path)) return false;
+        if (new FileInfo(path).Length == 0) return false;
+        return true;
     }
 }

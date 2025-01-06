@@ -13,8 +13,22 @@ public partial class TemplateStructure
         public readonly bool IsRoot => Name == "";
         public readonly string[] FolderNames => [.. _folders.Keys];
         public readonly string[] FileNames => [.. _files.Keys];
-        public readonly int FolderCount => _folders.Count;
-        public readonly int FileCount => _files.Count;
+        public readonly int FolderCount
+        {
+            get
+            {
+                if (_isNull) return 0;
+                return _folders.Count;
+            }
+        }
+        public readonly int FileCount
+        {
+            get
+            {
+                if (_isNull) return 0;
+                return _files.Count;
+            }
+        }
 
         public Folder() { _isNull = true; }
 

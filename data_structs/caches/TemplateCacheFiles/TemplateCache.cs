@@ -30,8 +30,7 @@ public partial class TemplateCache : Cache
 
     public void AddFileToTemplate(string templateName, string path, string fileTag)
     {
-        if (AUTO_CREATED.Contains(fileTag)) return;
-        if (_fileDatabase.ContainsKey(fileTag)) return;
+        if (_fileDatabase.ContainsKey(fileTag) && !AUTO_CREATED.Contains(fileTag)) return;
         if (!_RAM.TryGetValue(templateName, out TemplateStructure template)) return;
 
         template.AddFile(path, fileTag);
