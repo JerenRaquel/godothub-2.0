@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Linq;
 
 public partial class Templates : TabBase
@@ -7,83 +6,43 @@ public partial class Templates : TabBase
     [Export] private PackedScene TagScene;
 
     private TemplateList _templateList;
-    private TemplateToolBar _toolBar;
-    private Label _noTagAddedLabel;
-    private HBoxContainer _tagContainerRoot;
-    private HFlowContainer _tagContainer;
-    private TemplateDisplay _templateDisplay;
+    private VSplitContainer _splitContainer;
+    private TagDisplay _tagDisplay;
+    private TreeDisplay _treeDisplay;
 
     public override void _Ready()
     {
         _templateList = GetNode<TemplateList>("%TemplateList");
         _templateList.GainFocus += OnNewFocus;
 
-        _toolBar = GetNode<TemplateToolBar>("%ToolBar");
-        _toolBar.FillFolderStateToggled += () => TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate).FillFolders = _toolBar.FillFolders;
+        _splitContainer = GetNode<VSplitContainer>("%VSplitContainer");
 
-        _noTagAddedLabel = GetNode<Label>("%NoTagLabel");
-        _tagContainerRoot = GetNode<HBoxContainer>("%TagContainerRoot");
-        _tagContainer = GetNode<HFlowContainer>("%TagContainer");
-        _templateDisplay = GetNode<TemplateDisplay>("%TemplateDisplay");
+        _tagDisplay = GetNode<TagDisplay>("%TagDisplay");
+        _tagDisplay.TagContainerEnabled += () => _splitContainer.Collapsed = false;
+        _tagDisplay.TagContainerDisabled += () => _splitContainer.Collapsed = true;
+
+        _treeDisplay = GetNode<TreeDisplay>("%TreeDisplay");
+        _treeDisplay.FillFolderStateToggled += () => TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate).FillFolders = _treeDisplay.FillFolders;
     }
 
     public override void LoadData()
     {
         foreach (string templateName in TemplateCache.Instance.TemplateNames)
             _templateList.AddTemplate(templateName);
-        _templateDisplay.Build(_templateList.ActiveTemplate);
+        _treeDisplay.Build(_templateList.ActiveTemplate);
         LoadTags();
     }
 
     private void LoadTags()
     {
         TemplateStructure template = TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate);
-        _toolBar.FillFolders = template.FillFolders;
-        if (template != null && template.HasTags)
-        {
-            _noTagAddedLabel.Hide();
-            _tagContainerRoot.Show();
-
-            //* Load Tags
-            foreach (Tag tag in _tagContainer.GetChildren().Cast<Tag>())
-            {
-                if (tag.IsQueuedForDeletion()) continue;
-                tag.QueueFree();
-            }
-
-            foreach (string tagName in template.ProjectTags)
-            {
-                Tag tagInstance = TagScene.Instantiate<Tag>();
-                _tagContainer.AddChild(tagInstance);
-                tagInstance.SetData(
-                    tagName,
-                    TagCache.Instance.GetColor(false, tagName),
-                    true
-                );
-            }
-
-            foreach (string tagName in template.SoftwareTags)
-            {
-                Tag tagInstance = TagScene.Instantiate<Tag>();
-                _tagContainer.AddChild(tagInstance);
-                tagInstance.SetData(
-                    tagName,
-                    TagCache.Instance.GetColor(true, tagName),
-                    true
-                );
-            }
-
-        }
-        else
-        {
-            _noTagAddedLabel.Show();
-            _tagContainerRoot.Hide();
-        }
+        _treeDisplay.FillFolders = template.FillFolders;
+        _tagDisplay.LoadTags(template);
     }
 
     private void OnNewFocus(string templateName)
     {
-        _templateDisplay.Build(templateName);
+        _treeDisplay.Build(templateName);
         LoadTags();
     }
 }
