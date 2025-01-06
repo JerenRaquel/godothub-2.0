@@ -52,10 +52,18 @@ public partial class TemplateCache : Cache
         return true;    // Success
     }
 
-    public TemplateStructure.Folder GetRoot(string templateName)
+    public TemplateStructure.Folder GetTemplateRootFolder(string templateName)
     {
+        if (templateName == null) return new();
         if (!_RAM.TryGetValue(templateName, out TemplateStructure templateData)) return new();
         return templateData.RootFolder;
+    }
+
+    public TemplateStructure GetTemplate(string templateName)
+    {
+        if (templateName == null) return null;
+        if (!_RAM.TryGetValue(templateName, out TemplateStructure templateData)) return null;
+        return templateData;
     }
 
     public string GetFilePath(string fileName)

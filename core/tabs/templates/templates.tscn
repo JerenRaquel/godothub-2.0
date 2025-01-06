@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://dlj76n5x3gx1w"]
+[gd_scene load_steps=11 format=3 uid="uid://dlj76n5x3gx1w"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_jl0u4"]
 [ext_resource type="Script" path="res://core/tabs/templates/Templates.cs" id="2_5axoy"]
+[ext_resource type="PackedScene" uid="uid://b21kjgs0nm751" path="res://core/components/tag/tag.tscn" id="3_lfirh"]
 [ext_resource type="PackedScene" uid="uid://c4uo62iwd5yw4" path="res://core/tabs/templates/template_list_panel/template_list.tscn" id="3_ukb7v"]
 [ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_70xi3"]
 [ext_resource type="PackedScene" uid="uid://ch5o1bnp8mh0m" path="res://core/tabs/templates/template_display/template_display.tscn" id="4_i6s10"]
@@ -17,6 +18,7 @@ thickness = 2
 
 [node name="Templates" instance=ExtResource("1_jl0u4")]
 script = ExtResource("2_5axoy")
+TagScene = ExtResource("3_lfirh")
 
 [node name="MarginContainer" type="MarginContainer" parent="." index="0"]
 layout_mode = 2

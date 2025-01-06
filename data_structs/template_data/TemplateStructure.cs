@@ -9,6 +9,7 @@ public partial class TemplateStructure
     public string Name { get; set; }
     public string[] ProjectTags => [.. _projectTags];
     public string[] SoftwareTags => [.. _softwareTags];
+    public bool HasTags => _projectTags.Count > 0 || _softwareTags.Count > 0;
     public long FolderCount => FolderCountHelper(_root);
     public long FileCount => FileCountHelper(_root);
     public Folder RootFolder => _root;
@@ -17,6 +18,36 @@ public partial class TemplateStructure
     {
         Name = name;
         _root = new("");
+    }
+
+    public void BulkAddProjectTags(string[] tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (_projectTags.Contains(tag)) continue;
+            _projectTags.Add(tag);
+        }
+    }
+
+    public void BulkAddSoftwareTags(string[] tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (_softwareTags.Contains(tag)) continue;
+            _softwareTags.Add(tag);
+        }
+    }
+
+    public void AddProjectTag(string tag)
+    {
+        if (_projectTags.Contains(tag)) return;
+        _projectTags.Add(tag);
+    }
+
+    public void AddSoftwareTag(string tag)
+    {
+        if (_softwareTags.Contains(tag)) return;
+        _softwareTags.Add(tag);
     }
 
     public void AddFile(string path, string fileTag)
@@ -47,6 +78,20 @@ public partial class TemplateStructure
 
         // Sub Folder
         AddFolderHelper(ref _root, ref pathParts, 0, ref folderName);
+    }
+
+    public bool RemoveProjectTag(string tag)
+    {
+        if (!_projectTags.Contains(tag)) return false;
+        _projectTags.Remove(tag);
+        return true;
+    }
+
+    public bool RemoveSoftwareTag(string tag)
+    {
+        if (!_softwareTags.Contains(tag)) return false;
+        _softwareTags.Remove(tag);
+        return true;
     }
 
     private static string AddFileHelper(ref Folder currentFolder, ref string[] pathParts, int depth, ref string fileTag)

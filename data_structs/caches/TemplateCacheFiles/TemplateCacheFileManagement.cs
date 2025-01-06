@@ -170,18 +170,45 @@ public partial class TemplateCache : Cache
 
         // Load Template
         LoadROMTemplate(templateName);
+        int readLines = 1;
         string line = file.ReadLine();
         while (line != null)
         {
-            string[] parts = line.Split(" | ", StringSplitOptions.RemoveEmptyEntries);
-            string fileName = parts[0];
-            string fileTag = parts[1];
-            string structurePath = "";
-            if (parts.Length > 2) structurePath = parts[2];
+            //* Tag Data
+            if (readLines < 3)
+            {
+                if (line == "")
+                {
+                    line = file.ReadLine();
+                    readLines++;
+                    continue;
+                }
 
-            _ROM[templateName].LoadFileData(ref fileName, ref fileTag, ref structurePath);
+                string[] tags = line.Split(" | ", StringSplitOptions.RemoveEmptyEntries);
+                if (tags.Length == 0)
+                {
+                    line = file.ReadLine();
+                    readLines++;
+                    continue;
+                }
+                if (readLines == 1)
+                    _ROM[templateName].BulkAddProjectTags(tags);
+                else
+                    _ROM[templateName].BulkAddSoftwareTags(tags);
+            }
+            else    //* Template Files
+            {
+                string[] parts = line.Split(" | ", StringSplitOptions.RemoveEmptyEntries);
+                string fileName = parts[0];
+                string fileTag = parts[1];
+                string structurePath = "";
+                if (parts.Length > 2) structurePath = parts[2];
+
+                _ROM[templateName].LoadFileData(ref fileName, ref fileTag, ref structurePath);
+            }
 
             line = file.ReadLine();
+            readLines++;
         }
         file.Close();
     }

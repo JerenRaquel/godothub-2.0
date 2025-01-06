@@ -12,7 +12,7 @@ public partial class TemplateDisplay : MarginContainer
         if (templateName == null) return;
 
         _tree.Clear();
-        TemplateStructure.Folder rootFolder = TemplateCache.Instance.GetRoot(templateName);
+        TemplateStructure.Folder rootFolder = TemplateCache.Instance.GetTemplateRootFolder(templateName);
         if (rootFolder.IsNull) return;
 
         TreeItem root = _tree.CreateItem();
