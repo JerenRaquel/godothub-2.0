@@ -84,7 +84,6 @@ public partial class TagCache : Cache
             {
                 KeyValuePair<string, TagData.SoftwareData> entry = romEnumerator.Current;
                 if (entry.Value.IsNull) continue;
-                if (IsOrphaned(entry.Key, true)) continue;
 
                 file.WriteLine(entry.Key);
                 file.WriteLine(entry.Value.ToJSONString());
