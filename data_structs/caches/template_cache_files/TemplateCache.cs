@@ -22,6 +22,14 @@ public partial class TemplateCache : Cache
         }
     }
 
+    public bool DoesAnyTemplateHaveThisTag(string tagName, bool isSoftware)
+    {
+        foreach (KeyValuePair<string, TemplateStructure> entry in _RAM)
+            if (entry.Value.ContainsTag(tagName, isSoftware)) return true;
+        return false;
+    }
+
+
     public void AddTemplate(string templateName)
     {
         if (_RAM.ContainsKey(templateName)) return;

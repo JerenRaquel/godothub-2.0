@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 public partial class TemplateStructure
 {
-    private List<string> _projectTags = [];
-    private List<string> _softwareTags = [];
+    private HashSet<string> _projectTags = [];
+    private HashSet<string> _softwareTags = [];
     private Folder _root;
 
     public string Name { get; set; }
@@ -22,6 +22,15 @@ public partial class TemplateStructure
     {
         Name = name;
         _root = new("");
+    }
+
+    public bool ContainsTag(string tagName, bool isSoftware)
+    {
+        if (!HasTags) return false;
+
+        if (isSoftware)
+            return _softwareTags.Contains(tagName);
+        return _projectTags.Contains(tagName);
     }
 
     public void BulkAddProjectTags(string[] tags)
