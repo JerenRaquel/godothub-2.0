@@ -84,6 +84,7 @@ public partial class TagCache : Cache
             {
                 KeyValuePair<string, TagData.SoftwareData> entry = romEnumerator.Current;
                 if (entry.Value.IsNull) continue;
+                if (IsOrphaned(entry.Key, true)) continue;
 
                 file.WriteLine(entry.Key);
                 file.WriteLine(entry.Value.ToJSONString());
@@ -95,6 +96,7 @@ public partial class TagCache : Cache
             {
                 KeyValuePair<string, string> entry = romEnumerator.Current;
                 if (entry.Value == null || entry.Value.Length == 0) continue;
+                if (IsOrphaned(entry.Key, false)) continue;
 
                 file.WriteLine(entry.Key);
                 file.WriteLine(entry.Value);
@@ -102,5 +104,13 @@ public partial class TagCache : Cache
         }
 
         file.Close();
+    }
+
+    private static bool IsOrphaned(string tagName, bool isSoftware)
+    {
+        if (TemplateCache.Instance.DoesAnyTemplateHaveThisTag(tagName, isSoftware)) return false;
+        if (ProjectCache.Instance.DoesAnyProjectHaveThisTag(tagName, isSoftware)) return false;
+
+        return true;
     }
 }

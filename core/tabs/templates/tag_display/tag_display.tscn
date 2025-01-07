@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dwt08id213glc"]
+[gd_scene load_steps=8 format=3 uid="uid://dwt08id213glc"]
 
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_3nh72"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="1_itfyf"]
 [ext_resource type="Script" path="res://core/tabs/templates/tag_display/TagDisplay.cs" id="2_gtte6"]
+[ext_resource type="PackedScene" uid="uid://d0g1tsm7kaj1d" path="res://core/components/clickable_tag/clickable_tag.tscn" id="3_siium"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1bvg2"]
 
@@ -19,6 +20,7 @@ offset_bottom = 35.0
 grow_horizontal = 2
 theme = ExtResource("1_3nh72")
 script = ExtResource("2_gtte6")
+TagScene = ExtResource("3_siium")
 
 [node name="Toolbar" type="HBoxContainer" parent="."]
 layout_mode = 2

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class TagDisplay : VBoxContainer
@@ -16,6 +17,10 @@ public partial class TagDisplay : VBoxContainer
     private Button _removeButton;
     private HBoxContainer _tagRootContainer;
     private HFlowContainer _tagContainer;
+
+    private readonly List<ClickableTag> _selectedTags = [];
+
+    public ClickableTag[] SelectedTags => [.. _selectedTags];
 
     public override void _Ready()
     {
@@ -41,7 +46,7 @@ public partial class TagDisplay : VBoxContainer
         }
 
         DisplayTagTitle(true);
-        foreach (Tag tag in _tagContainer.GetChildren().Cast<Tag>())
+        foreach (ClickableTag tag in _tagContainer.GetChildren().Cast<ClickableTag>())
         {
             if (tag.IsQueuedForDeletion()) continue;
             tag.QueueFree();
@@ -49,6 +54,20 @@ public partial class TagDisplay : VBoxContainer
 
         LoadTagsFromArray(template.ProjectTags, false);
         LoadTagsFromArray(template.SoftwareTags, true);
+    }
+
+    public void ClearRemovedTags()
+    {
+        _selectedTags.Clear();
+
+        foreach (ClickableTag tag in _tagContainer.GetChildren())
+        {
+            if (tag.IsQueuedForDeletion()) continue;
+
+            DisplayTagTitle(true);
+            return;
+        }
+        DisplayTagTitle(false);
     }
 
     private void DisplayTagTitle(bool hasTags)
@@ -71,13 +90,23 @@ public partial class TagDisplay : VBoxContainer
     {
         foreach (string tagName in tags)
         {
-            Tag tagInstance = TagScene.Instantiate<Tag>();
+            ClickableTag tagInstance = TagScene.Instantiate<ClickableTag>();
             _tagContainer.AddChild(tagInstance);
             tagInstance.SetData(
                 tagName,
                 TagCache.Instance.GetColor(isSoftware, tagName),
                 true
             );
+            tagInstance.IsSoftware = isSoftware;
+            tagInstance.Toggled += () => OnToggled(tagInstance);
         }
+    }
+
+    private void OnToggled(ClickableTag tagInstance)
+    {
+        if (tagInstance.Selected)
+            _selectedTags.Add(tagInstance);
+        else    //* Removed
+            _selectedTags.Remove(tagInstance);
     }
 }

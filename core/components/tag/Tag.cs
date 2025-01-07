@@ -3,8 +3,8 @@ using System;
 
 public partial class Tag : PanelContainer
 {
+    protected Label _tagLabel;
     private Panel _colorRect;
-    private Label _tagLabel;
 
     public bool Displayed
     {

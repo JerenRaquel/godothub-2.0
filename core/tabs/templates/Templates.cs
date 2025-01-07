@@ -20,6 +20,7 @@ public partial class Templates : TabBase
         _tagDisplay.TagContainerEnabled += () => _splitContainer.Collapsed = false;
         _tagDisplay.TagContainerDisabled += () => _splitContainer.Collapsed = true;
         _tagDisplay.TagAdded += () => _tagPrompt.Show();
+        _tagDisplay.TagRemoved += OnTagRemoved;
 
         _treeDisplay = GetNode<TreeDisplay>("%TreeDisplay");
         _treeDisplay.FillFolderStateToggled += () => TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate).FillFolders = _treeDisplay.FillFolders;
@@ -54,5 +55,18 @@ public partial class Templates : TabBase
         TemplateStructure template = TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate);
         template.AddProjectTag(tagName);
         _tagDisplay.LoadTags(template);
+    }
+
+    private void OnTagRemoved()
+    {
+        foreach (ClickableTag tagInstance in _tagDisplay.SelectedTags)
+        {
+            if (tagInstance.IsSoftware)
+                TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate).RemoveSoftwareTag(tagInstance.Text);
+            else
+                TemplateCache.Instance.GetTemplate(_templateList.ActiveTemplate).RemoveProjectTag(tagInstance.Text);
+            tagInstance.QueueFree();
+        }
+        _tagDisplay.ClearRemovedTags();
     }
 }
