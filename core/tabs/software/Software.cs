@@ -3,6 +3,8 @@ using System;
 
 public partial class Software : TabBase
 {
+    [Signal] public delegate void EntryFavoritedEventHandler();
+
     [Export] private PackedScene entryScene;
 
     private Button _locateButton;
@@ -49,6 +51,7 @@ public partial class Software : TabBase
         entryInstance.SetData(name);
         entryInstance.MainButton.StateToggled += (bool state) => OnStateToggled(state, entryInstance);
         entryInstance.MainButton.LaunchRequested += OnLaunchRequested;
+        entryInstance.FavoriteToggled += () => EmitSignal(SignalName.EntryFavorited);
     }
 
     private void OnStateToggled(bool state, SoftwareEntry entry)

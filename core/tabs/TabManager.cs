@@ -11,8 +11,11 @@ public partial class TabManager : TabContainer
 
     public override void _Ready()
     {
+        //* Signals
+        _softwareTab.EntryFavorited += _projectTab.UpdateQuickTools;
         _settingsTab.SettingUpdated += OnSettingUpdated;
 
+        //* Load Data
         SettingsCache.Instance.LoadData();
         _projectTab.LoadData();
         _templateTab.LoadData();

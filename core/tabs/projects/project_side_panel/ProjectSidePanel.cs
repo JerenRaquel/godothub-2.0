@@ -70,6 +70,8 @@ public partial class ProjectSidePanel : MarginContainer
         }
     }
 
+    public void UpdateQuickTools() => _quickToolRoot.SetQuickToolList();
+
     private void SetPanelState(bool disabled)
     {
         _isDisabled = disabled;

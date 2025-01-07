@@ -38,5 +38,6 @@ public partial class QuickToolRoot : VBoxContainer
             buttonInstance.Pressed += () => OSAPI.RunTool(tag, "");
             _buttons.Add(tag, buttonInstance);
         }
+        _container.Show();
     }
 }

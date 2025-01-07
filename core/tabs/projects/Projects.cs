@@ -112,6 +112,8 @@ public partial class Projects : TabBase
         Name = $"Projects [{ProjectCache.Instance.ProjectCount}]";
     }
 
+    public void UpdateQuickTools() => _sidePanel.UpdateQuickTools();
+
     private void Filter()
     {
         string text = _filterLineEdit.Text;

@@ -3,6 +3,8 @@ using System;
 
 public partial class SoftwareEntry : MarginContainer
 {
+    [Signal] public delegate void FavoriteToggledEventHandler();
+
     private Button _favoriteButton;
     private TextureRect _colorTab;
     private Label _nameLabel;
@@ -38,5 +40,9 @@ public partial class SoftwareEntry : MarginContainer
         _favoriteButton.SetPressedNoSignal(favorited);
     }
 
-    private void OnFavoriteToggled(bool state) => TagCache.Instance.SetFavorited(SoftwareTag, state);
+    private void OnFavoriteToggled(bool state)
+    {
+        TagCache.Instance.SetFavorited(SoftwareTag, state);
+        EmitSignal(SignalName.FavoriteToggled);
+    }
 }
