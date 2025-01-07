@@ -15,6 +15,7 @@ public partial class TreeDisplay : VBoxContainer
         set => _fillFolderCheckButton.SetPressedNoSignal(value);
     }
 
+    private HBoxContainer _editingContainer;
     private Button _addFileButton;
     private Button _removeFileButton;
     private Button _addFolderButton;
@@ -24,6 +25,8 @@ public partial class TreeDisplay : VBoxContainer
 
     public override void _Ready()
     {
+        _editingContainer = GetNode<HBoxContainer>("%EditingContainer");
+
         _addFileButton = GetNode<Button>("%AddFileButton");
         _addFileButton.Pressed += () => EmitSignal(SignalName.FileAdded);
 
@@ -43,4 +46,12 @@ public partial class TreeDisplay : VBoxContainer
     }
 
     public void Build(string activeTemplate) => _templateDisplay.Build(activeTemplate);
+
+    public void ToggleEditting(bool state)
+    {
+        if (state)
+            _editingContainer.Show();
+        else
+            _editingContainer.Hide();
+    }
 }

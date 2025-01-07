@@ -6,6 +6,7 @@ using System.Linq;
 public partial class TemplateCache : Cache
 {
     private const int VERSION_FLAG = 1;
+    public static readonly string[] DEFAULT_TEMPLATES = ["Default - Empty", "Default - Git"];
 
     private readonly string _ASSET_DIRECTORY;
     private readonly string _ASSET_METADATA_FILE_PATH;

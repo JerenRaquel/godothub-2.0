@@ -33,8 +33,7 @@ public partial class Templates : TabBase
     {
         foreach (string templateName in TemplateCache.Instance.TemplateNames)
             _templateList.AddTemplate(templateName);
-        _treeDisplay.Build(_templateList.ActiveTemplate);
-        LoadTags();
+        OnNewFocus(_templateList.ActiveTemplate);
     }
 
     private void LoadTags()
@@ -48,6 +47,8 @@ public partial class Templates : TabBase
     {
         _treeDisplay.Build(templateName);
         LoadTags();
+        // TODO: Uncomment once template editting is finished
+        // _treeDisplay.ToggleEditting(!TemplateCache.DEFAULT_TEMPLATES.Contains(templateName));
     }
 
     private void OnTagAdded(string tagName, Color color)
