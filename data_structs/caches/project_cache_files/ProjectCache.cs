@@ -30,6 +30,15 @@ public partial class ProjectCache : Cache
     }
     #endregion
 
+    public bool DoesAnyProjectHaveThisTag(string tagName, bool isSoftware)
+    {
+        foreach (KeyValuePair<string, ProjectDataState> entry in _projects)
+        {
+            if (entry.Value.ContainsTag(tagName, isSoftware)) return true;
+        }
+        return false;
+    }
+
     public void ScanProjects(string[] paths)
     {
         _isDirty = true;

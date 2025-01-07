@@ -37,6 +37,15 @@ public partial class ProjectDataState
         set => _RAM.IsFavorited = value;
     }
 
+    public bool ContainsTag(string tagName, bool isSoftware)
+    {
+        if (!HasTags) return false;
+
+        if (isSoftware)
+            return _RAM.softwareTags.Contains(tagName);
+        return _RAM.projectTags.Contains(tagName);
+    }
+
     public void SetBuild(VersionData.BuildType build)
     {
         _isDirty = true;
