@@ -44,6 +44,7 @@ public partial class ProjectData
         this.projectTags = new List<string>(projectTags);
         this.softwareTags = new List<string>(softwareTags);
         this.version = new(version);
+        //* Godot's storage method
         this.renderer = renderer switch
         {
             "GL Compatibility" => Renderer.COMPAT,
@@ -51,6 +52,18 @@ public partial class ProjectData
             "Forward Plus" => Renderer.FORWARD,
             _ => Renderer.INVALID,
         };
+        //* In the case where this is created from within the hub
+        //* -- This is the hub's internal storage method
+        if (this.renderer == Renderer.INVALID)
+        {
+            this.renderer = renderer switch
+            {
+                "Compatibility" => Renderer.COMPAT,
+                "Mobile" => Renderer.MOBILE,
+                "Forward+" => Renderer.FORWARD,
+                _ => Renderer.INVALID,
+            };
+        }
     }
 
     public ProjectData(ProjectData copy)

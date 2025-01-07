@@ -37,6 +37,18 @@ public partial class ProjectDataState
         set => _RAM.IsFavorited = value;
     }
 
+    public void CreateProject(string versionStr, string renderer, string folderPath, string gdExtPath, string[] projectTags, string[] softwareTags, VersionData.BuildType build, bool isCSharp)
+    {
+        _ROM = new ProjectData(versionStr, renderer, folderPath, gdExtPath, false, projectTags, softwareTags);
+        _ROM.Build = build;
+        _RAM = new ProjectData(versionStr, renderer, folderPath, gdExtPath, false, projectTags, softwareTags);
+        _RAM.Build = build;
+
+        _usingDotNet = isCSharp;
+        _lastEdited = File.GetLastWriteTime(_ROM.ProjectGodotPath);
+        SetProjectIcon("res://icon.svg");
+    }
+
     public bool ContainsTag(string tagName, bool isSoftware)
     {
         if (!HasTags) return false;

@@ -64,9 +64,6 @@ public partial class DeletePrompt : WindowBase
             return;
         }
 
-        // Failed -- Couldn't delete save folder
-        if (!projectSaveDeletedState) return;
-
         // Success -- Both project and save folder deleted
         EmitSignal(SignalName.ProjectDeletedSuccessfully);
     }

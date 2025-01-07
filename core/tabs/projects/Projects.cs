@@ -38,27 +38,40 @@ public partial class Projects : TabBase
 
         _newButton = GetNode<Button>("%NewButton");
         _newButton.Pressed += OnNewProjectPressed;
+
         _importButton = GetNode<Button>("%ImportButton");
         _importButton.Pressed += OnImportPressed;
+
         _scanButton = GetNode<Button>("%ScanButton");
         _scanButton.Pressed += OnScanButtonPressed;
+
         _sortOptionButton = GetNode<OptionButton>("%SortOptionButton");
         _sortOptionButton.ItemSelected += OnSortChanged;
+
         _checkBox = GetNode<CheckBox>("%CheckBox");
         _checkBox.Toggled += OnSortToggled;
+
         _filterLineEdit = GetNode<LineEdit>("%FilterLineEdit");
         _filterLineEdit.TextChanged += OnFilterChanged;
+
         _versionOptionButton = GetNode<OptionButton>("%VersionOptionButton");
         _versionOptionButton.ItemSelected += OnVersionChanged;
+
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
+
         _sidePanel = GetNode<ProjectSidePanel>("%ProjectSidePanel");
         _sidePanel.EditProject += OnEditProjectPressed;
         _sidePanel.DeleteProject += OnDeleteProjectPressed;
+
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
         _buildPrompt.BuildUpdated += OnBuildUpdated;
+
         _newProjectPrompt = GetNode<NewProjectWindow>("%NewProjectWindow");
+        _newProjectPrompt.ProjectCreated += FillProjectContainer;
+
         _editProjectDataPrompt = GetNode<EditProjectWindow>("%EditProjectWindow");
         _editProjectDataPrompt.BuildUpdated += OnBuildUpdated;
+
         _deletePrompt = GetNode<DeletePrompt>("%DeletePrompt");
         _deletePrompt.ProjectDeletedSuccessfully += OnProjectDeletedSuccessfully;
 

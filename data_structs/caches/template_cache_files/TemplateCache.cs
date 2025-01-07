@@ -29,6 +29,7 @@ public partial class TemplateCache : Cache
         return false;
     }
 
+    public bool HasTemplate(string templateName) => _RAM.ContainsKey(templateName);
 
     public void AddTemplate(string templateName)
     {

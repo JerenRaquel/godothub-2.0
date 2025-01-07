@@ -4,6 +4,15 @@ using Godot;
 
 public partial class ProjectCache : Cache
 {
+    public void AddProject(ProjectCreator.ProjectCreationData data, string path, string templateName, VersionData.BuildType build)
+    {
+        ProjectDataState project = new();
+        TemplateStructure template = TemplateCache.Instance.GetTemplate(templateName);
+
+        project.CreateProject(data.Version, data.Renderer, path, "", template.ProjectTags, template.SoftwareTags, build, data.IsCSharp);
+        _projects.Add(data.Name, project);
+    }
+
     public void DeleteProject(string projectName)
     {
         if (!_projects.ContainsKey(projectName)) return;
@@ -75,13 +84,7 @@ public partial class ProjectCache : Cache
     public string GetRenderer(string projectName)
     {
         ProjectData.Renderer renderer = GetProject(projectName)?.Renderer ?? ProjectData.Renderer.INVALID;
-        return renderer switch
-        {
-            ProjectData.Renderer.COMPAT => "Compatibility",
-            ProjectData.Renderer.MOBILE => "Mobile",
-            ProjectData.Renderer.FORWARD => "Forward+",
-            _ => "Unkwown"
-        };
+        return RenderEnumToString(renderer);
     }
 
     public string[] GetProjectTags(string projectName) => GetProject(projectName)?.ProjectTags;
@@ -168,6 +171,17 @@ public partial class ProjectCache : Cache
         if (!_projects.TryGetValue(projectName, out ProjectDataState value)) return null;
 
         return value;
+    }
+
+    public static string RenderEnumToString(ProjectData.Renderer renderer)
+    {
+        return renderer switch
+        {
+            ProjectData.Renderer.COMPAT => "Compatibility",
+            ProjectData.Renderer.MOBILE => "Mobile",
+            ProjectData.Renderer.FORWARD => "Forward+",
+            _ => "Unkwown"
+        };
     }
 
 }

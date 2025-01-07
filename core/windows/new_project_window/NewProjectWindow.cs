@@ -8,6 +8,8 @@ public partial class NewProjectWindow : WindowBase
     private const string MOBILE_TEXT = "* Supports desktop & mobile platforms.\n* Less advanced 3D graphics.\n* Less scalable for complex scenes.\n* Uses RenderingDevice backend.\n* Fast rendering of simple scenes.";
     private const string COMPAT_TEXT = "* Supports desktop, mobile & web platforms.\n* Least advanced 3D graphics (currently work-in-progress).\n* Intended for low-end/older devices.\n* Uses OpengGL 3 backend (OpengGL 3.3/ES 3.0/WebGL2).\n* Fastest rendering of simple scenes.";
 
+    [Signal] public delegate void ProjectCreatedEventHandler();
+
     private LineEdit _nameLineEdit;
     private LineEdit _pathLineEdit;
     private OptionButton _pathOptionButton;
@@ -138,7 +140,73 @@ public partial class NewProjectWindow : WindowBase
 
     protected override void OnConfirmPressed()
     {
+        string projectPath = _pathLineEdit.Text.StripEdges();
+        string templateName = _templateOptionButton.GetItemText(_templateOptionButton.Selected);
+        if (!TemplateCache.Instance.HasTemplate(templateName))
+        {
+            NotifcationManager.Instance.NotifyError("Invalid template used. Some how this got past the validation step...");
+            Hide();
+            return;
+        }
 
+        string godotVersionStrData = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
+        bool isCSharp = godotVersionStrData.Contains("[.Net]");
+        string versionStr = ParseVersionStr(godotVersionStrData);
+        if (versionStr == null)
+        {
+            NotifcationManager.Instance.NotifyError("Could not determine version...");
+            Hide();
+            return;
+        }
+
+        string rendererStr = GetRendererString();
+        if (rendererStr == null)
+        {
+            NotifcationManager.Instance.NotifyError("Could not determine renderer...");
+            Hide();
+            return;
+        }
+
+        string projectName = FormatFolderName(_nameLineEdit.Text.StripEdges());
+        if (rendererStr == null)
+        {
+            NotifcationManager.Instance.NotifyError("Project name not valid. Some how this got past the validation step...");
+            Hide();
+            return;
+        }
+
+        VersionData.BuildType buildType = ParseBuildStr(godotVersionStrData);
+        if (buildType == VersionData.BuildType.UNKNOWN)
+        {
+            NotifcationManager.Instance.NotifyError("Build type not valid. Some how this got past the validation step...");
+            Hide();
+            return;
+        }
+
+        ProjectCreator.ProjectCreationData data = new(projectName, isCSharp, rendererStr, versionStr);
+        bool successState = ProjectCreator.CreateProject(projectPath, templateName, data);
+
+        // Cache Project Data
+        if (successState)
+        {
+            ProjectCache.Instance.AddProject(data, projectPath, templateName, buildType);
+            EmitSignal(SignalName.ProjectCreated);
+        }
+
+        Hide();
+    }
+
+    private string GetRendererString()
+    {
+        //* This is done this way so ensure a single spot where the string conversion is made.
+        if (_forwardCheckBox.ButtonPressed)
+            return ProjectCache.RenderEnumToString(ProjectData.Renderer.FORWARD);
+        else if (_mobileCheckBox.ButtonPressed)
+            return ProjectCache.RenderEnumToString(ProjectData.Renderer.MOBILE);
+        else if (_compatCheckBox.ButtonPressed)
+            return ProjectCache.RenderEnumToString(ProjectData.Renderer.COMPAT);
+        else
+            return null;
     }
 
     private void OnCheckBoxToggled(bool state, CheckBox node)
@@ -203,5 +271,24 @@ public partial class NewProjectWindow : WindowBase
 
         if (OSAPI.IsValidFolderName(folderName)) return folderName;
         return null;
+    }
+
+    private static string ParseVersionStr(string dataStr)
+    {
+        string[] parts = dataStr.Split(" [", false);
+        if (parts.Length == 0) return null;
+
+        return parts[0].Replace("v", "");
+    }
+
+    private static VersionData.BuildType ParseBuildStr(string dataStr)
+    {
+        string[] parts = dataStr.Split(" [", false);
+        if (parts.Length == 0) return VersionData.BuildType.UNKNOWN;
+
+        string newDataStr = parts[1];
+        string[] newParts = newDataStr.Split("]", false);
+        string buildStr = newParts[0];
+        return VersionData.StringToBuildEnum(buildStr);
     }
 }
