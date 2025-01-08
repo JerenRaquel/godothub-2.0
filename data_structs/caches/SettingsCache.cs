@@ -87,6 +87,10 @@ public partial class SettingsCache : Cache
 
     public void AddOrUpdate(string key, SettingsData.Data data) => _RAM.AddOrUpdate(key, data);
 
+    public void AddEntryToDataList(string key, string entry) => _RAM.AddEntryToDataList(key, entry);
+
+    public void RemoveEntryFromDataList(string key, string entry) => _RAM.RemoveEntryFromStringList(key, entry);
+
     public bool Erase(string key) => _RAM.Erase(key);
 
     public SettingsData.Data GetData(string key) => _RAM.GetData(key);

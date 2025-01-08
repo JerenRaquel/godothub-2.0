@@ -107,7 +107,10 @@ public partial class ProjectPathInterface : InterfaceBase
     private void OnFileSelected(string path)
     {
         if (path.Length > 0)
+        {
             _awaitingInstance.Path = path;
+            SettingsCache.Instance.AddEntryToDataList("Project Settings/Paths/project_paths/STRING_LIST", path);
+        }
         _awaitingInstance = null;
         FileDialogManager.Instance.DataCompiled -= OnFileSelected;
     }

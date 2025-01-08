@@ -41,8 +41,7 @@ public partial class ProjectPath : HBoxContainer
 
     private void OnDeletePressed()
     {
-        // TODO: Alert DB that path was removed.
-
+        SettingsCache.Instance.RemoveEntryFromDataList("Project Settings/Paths/project_paths/STRING_LIST", Path);
         QueueFree();
     }
 }
