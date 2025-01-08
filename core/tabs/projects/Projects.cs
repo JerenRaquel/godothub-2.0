@@ -8,6 +8,8 @@ public partial class Projects : TabBase
     public const string SORT_TAG = "GLOBAL/Projects/sort_mode/LONG";
     public const string SORT_MODIFIER_TAG = "GLOBAL/Projects/sort_modifier_mode/BOOL";
 
+    [Signal] public delegate void GoToVersionsRequestedEventHandler();
+
     private PackedScene _projectEntryPackedScene;
     private Button _newButton;
     private Button _importButton;
@@ -65,6 +67,7 @@ public partial class Projects : TabBase
 
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
         _buildPrompt.BuildUpdated += OnBuildUpdated;
+        _buildPrompt.GoToVersionRequested += () => EmitSignal(SignalName.GoToVersionsRequested);
 
         _newProjectPrompt = GetNode<NewProjectWindow>("%NewProjectWindow");
         _newProjectPrompt.ProjectCreated += FillProjectContainer;

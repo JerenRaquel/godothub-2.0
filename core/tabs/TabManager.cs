@@ -12,6 +12,7 @@ public partial class TabManager : TabContainer
     public override void _Ready()
     {
         //* Signals
+        _projectTab.GoToVersionsRequested += OnGoToVersionsPressed;
         _softwareTab.EntryFavorited += _projectTab.UpdateQuickTools;
         _settingsTab.SettingUpdated += OnSettingUpdated;
 
@@ -34,6 +35,14 @@ public partial class TabManager : TabContainer
 
 
             default: break;
+        }
+    }
+
+    private void OnGoToVersionsPressed()
+    {
+        while (GetTabTitle(CurrentTab) != _versionsTab.Name)
+        {
+            SelectNextAvailable();
         }
     }
 }

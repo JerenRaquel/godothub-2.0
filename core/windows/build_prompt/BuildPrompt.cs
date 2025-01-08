@@ -4,11 +4,13 @@ using System;
 public partial class BuildPrompt : WindowBase
 {
     [Signal] public delegate void BuildUpdatedEventHandler(string projectName);
+    [Signal] public delegate void GoToVersionRequestedEventHandler();
 
     private RichTextLabel _projectLabel;
     private VBoxContainer _mainContainer;
     private OptionButton _buildOptionButton;
     private Label _errorLabel;
+    private Button _goToVersionsButton;
 
     private string _projectName = null;
 
@@ -19,6 +21,8 @@ public partial class BuildPrompt : WindowBase
         _buildOptionButton = GetNode<OptionButton>("%BuildOptionButton");
         _buildOptionButton.ItemSelected += OnBuildOptionChanged;
         _errorLabel = GetNode<Label>("%ErrorLabel");
+        _goToVersionsButton = GetNode<Button>("%VersionGotoButton");
+        _goToVersionsButton.Pressed += OnGoToVersionsPressed;
         base._Ready();
     }
 
@@ -79,4 +83,10 @@ public partial class BuildPrompt : WindowBase
     }
 
     private void OnBuildOptionChanged(long index) => Validate();
+
+    private void OnGoToVersionsPressed()
+    {
+        Hide();
+        EmitSignal(SignalName.GoToVersionRequested);
+    }
 }
