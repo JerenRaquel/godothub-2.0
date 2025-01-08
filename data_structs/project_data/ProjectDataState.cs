@@ -64,6 +64,20 @@ public partial class ProjectDataState
         _RAM.Build = build;
     }
 
+    public void SetRenderer(ProjectData.Renderer renderer)
+    {
+        _isDirty = true;
+        _isConfigDirty = true;
+        _RAM.renderer = renderer;
+    }
+
+    public void SetVersion(Version version)
+    {
+        _isDirty = true;
+        _isConfigDirty = true;
+        _RAM.version = version;
+    }
+
     public string GetFullPath(bool prettify = false)
     {
         if (prettify && IsGDExt)
@@ -121,12 +135,13 @@ public partial class ProjectDataState
         GD.Print("Writing ", projectName, " to Config file...");
 
         _isConfigDirty = false;
-
-        // TODO: Write ROM to config file
-        // ConfigFile config = new();
-        // if (config.Load(_ROM.ProjectGodotPath) != Error.Ok) return false;
-
         _ROM = new(_RAM);
+
+        //* Write ROM to config file
+        ConfigFile config = new();
+        if (config.Load(_ROM.ProjectGodotPath) != Error.Ok) return false;
+        UpdateConfig(config, _ROM.version.ToString(), _usingDotNet, _ROM.RendererString, [.. _ROM.projectTags]);
+
         return true;
     }
 
@@ -251,6 +266,22 @@ public partial class ProjectDataState
         _icon = imageTexture;
     }
 
+    public static void UpdateConfig(ConfigFile file, string versionStr, bool isCSharp, string rendererStr, string[] projectTags)
+    {
+        List<string> featureData = [];
+        featureData.Add(versionStr);
+        if (isCSharp) featureData.Add("C#");
+        featureData.Add(rendererStr);
+        file.SetValue("application", "config/features", featureData.ToArray());
+        if (projectTags.Length > 0)
+            file.SetValue("application", "config/tags", projectTags);
+        else
+        {
+            if (file.HasSectionKey("application", "config/tags"))
+                file.EraseSectionKey("application", "config/tags");
+        }
+    }
+
     private static void WriteEntry<T>(JsonTextWriter writer, string propName, T value)
     {
         writer.WritePropertyName(propName);
@@ -310,16 +341,5 @@ public partial class ProjectDataState
         return data;
     }
 
-    // TODO: Integrate this
-    private static void UpdateConfig<T>(ConfigFile config, string section, string key, bool remove, T value)
-    {
-        if (remove)
-        {
-            if (config.HasSectionKey(section, key))
-                config.SetValue(section, key, new Variant());
-        }
-        else
-            config.SetValue(section, key, Variant.From(value));
-    }
 }
 

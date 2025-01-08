@@ -36,6 +36,25 @@ public partial class ProjectCache : Cache
         return true;
     }
 
+    public bool UpdateProjectData(string projectName, VersionData.BuildType build, ProjectData.Renderer renderer, string version)
+    {
+        ProjectDataState project = GetProject(projectName);
+        if (project == null) return false;
+
+        _isDirty = true;
+
+        if (build != project.Build)
+            project.SetBuild(build);
+
+        if (renderer != project.Renderer)
+            project.SetRenderer(renderer);
+
+        if (version != project.VersionStr)
+            project.SetVersion(new(version));
+
+        return true;
+    }
+
     public VersionData.BuildType GetBuild(string projectName) => GetProject(projectName)?.Build ?? VersionData.BuildType.UNKNOWN;
 
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";

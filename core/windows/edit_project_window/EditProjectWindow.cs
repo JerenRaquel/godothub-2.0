@@ -54,18 +54,28 @@ public partial class EditProjectWindow : WindowBase
         }
 
         RefreshVersionOptions();
-        string versionBuild = ProjectCache.Instance.GetProjectVersionBuild(projectName);
-        if (versionBuild == null) return;
 
-        for (int i = 0; i < _versionOptionButton.ItemCount; i++)
+        if (ProjectCache.Instance.GetBuild(projectName) == VersionData.BuildType.UNKNOWN)
         {
-            if (_versionOptionButton.GetItemText(i) == versionBuild)
+            _cachedVersionBuildIndex = -1;
+            _versionOptionButton.Select(0);
+        }
+        else
+        {
+            string versionBuild = ProjectCache.Instance.GetProjectVersionBuild(projectName);
+            if (versionBuild == null) return;
+
+            for (int i = 0; i < _versionOptionButton.ItemCount; i++)
             {
-                _cachedVersionBuildIndex = i;
-                _versionOptionButton.Select(i);
-                break;
+                if (_versionOptionButton.GetItemText(i) == versionBuild)
+                {
+                    _cachedVersionBuildIndex = i;
+                    _versionOptionButton.Select(i);
+                    break;
+                }
             }
         }
+
         Validate();
 
         Show();
@@ -95,8 +105,17 @@ public partial class EditProjectWindow : WindowBase
     {
         if (Validate())
         {
-            VersionData.BuildType build = VersionData.StringToBuildEnum(_versionOptionButton.GetItemText(_versionOptionButton.Selected));
-            ProjectCache.Instance.SetBuild(_cachedProjectName, build);
+            string selectedVersionMetaString = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
+            VersionData.BuildType build = VersionData.ParseBuildStr(selectedVersionMetaString);
+            ProjectData.Renderer renderer = ProjectData.Renderer.INVALID;
+            if (_compatCheckBox.ButtonPressed)
+                renderer = ProjectData.Renderer.COMPAT;
+            else if (_mobileCheckBox.ButtonPressed)
+                renderer = ProjectData.Renderer.MOBILE;
+            else if (_forwardCheckBox.ButtonPressed)
+                renderer = ProjectData.Renderer.FORWARD;
+
+            ProjectCache.Instance.UpdateProjectData(_cachedProjectName, build, renderer, Version.ParseVersionStr(selectedVersionMetaString));
             EmitSignal(SignalName.BuildUpdated, _cachedProjectName);
         }
 

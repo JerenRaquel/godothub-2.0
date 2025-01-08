@@ -23,7 +23,7 @@ public static partial class ProjectCreator
         }
 
         OSAPI.CreateDirectoryIfNotExists(path);
-        bool successState = GenerateFiles(path, path, template.RootFolder, data, template.FillFolders);
+        bool successState = GenerateFiles(path, path, template.RootFolder, data, template.FillFolders, templateTag);
         if (successState)
             NotifcationManager.Instance.NotifyValid("Project Created!");
         else
@@ -32,14 +32,14 @@ public static partial class ProjectCreator
     }
 
     private static bool GenerateFiles(string projectPath, string currentPath,
-        TemplateStructure.Folder currentFolder, ProjectCreationData data, bool fillEmptyFolders)
+        TemplateStructure.Folder currentFolder, ProjectCreationData data, bool fillEmptyFolders, string templateTag)
     {
         bool folderEmpty = true;
         foreach (string fileName in currentFolder.FileNames)
         {
             if (fileName == "project.godot")
             {
-                if (!CreateProjectGodot(currentPath, data))
+                if (!CreateProjectGodot(currentPath, data, templateTag))
                 {
                     Abort(projectPath, "Couldn't generate a project.godot file");
                     return false;
@@ -85,7 +85,7 @@ public static partial class ProjectCreator
             string subFolderPath = $"{currentPath}/{folderName}";
 
             OSAPI.CreateDirectoryIfNotExists(subFolderPath);
-            bool successState = GenerateFiles(projectPath, subFolderPath, subFolder, data, fillEmptyFolders);
+            bool successState = GenerateFiles(projectPath, subFolderPath, subFolder, data, fillEmptyFolders, templateTag);
             if (!successState) return false;
 
             folderEmpty = false;
@@ -109,17 +109,13 @@ public static partial class ProjectCreator
         NotifcationManager.Instance.NotifyError($"{message}. Aborting creation.");
     }
 
-    private static bool CreateProjectGodot(string path, ProjectCreationData data)
+    private static bool CreateProjectGodot(string path, ProjectCreationData data, string templateTag)
     {
         ConfigFile file = new();
         file.SetValue("application", "config/name", data.Name);
 
-        List<string> featureData = [];
-        featureData.Add(data.Version);
-        if (data.IsCSharp) featureData.Add("C#");
-        featureData.Add(data.Renderer);
-        file.SetValue("application", "config/features", featureData.ToArray());
-
+        string[] projectTags = TemplateCache.Instance.GetTemplate(templateTag).ProjectTags;
+        ProjectDataState.UpdateConfig(file, data.Version, data.IsCSharp, data.Renderer, projectTags);
         return file.Save($"{path}/project.godot") == Error.Ok;
     }
 

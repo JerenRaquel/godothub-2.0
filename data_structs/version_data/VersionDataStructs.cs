@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Godot;
 
 public partial class VersionData
 {
@@ -85,6 +86,17 @@ public partial class VersionData
             "Dev" => BuildType.DEV,
             _ => BuildType.UNKNOWN
         };
+    }
+
+    public static BuildType ParseBuildStr(string dataStr)
+    {
+        string[] parts = dataStr.Split(" [", false);
+        if (parts.Length == 0) return BuildType.UNKNOWN;
+
+        string newDataStr = parts[1];
+        string[] newParts = newDataStr.Split("]", false);
+        string buildStr = newParts[0];
+        return StringToBuildEnum(buildStr);
     }
 
     private static Tuple<string, string> GenerateKeys(string version, bool isCSharp, BuildType type)

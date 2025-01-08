@@ -1,4 +1,5 @@
 using System;
+using Godot;
 
 public readonly struct Version
 {
@@ -74,5 +75,13 @@ public readonly struct Version
     public override readonly int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public static string ParseVersionStr(string dataStr)
+    {
+        string[] parts = dataStr.Split(" [", false);
+        if (parts.Length == 0) return null;
+
+        return parts[0].Replace("v", "");
     }
 }

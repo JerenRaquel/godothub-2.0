@@ -78,12 +78,7 @@ public partial class ProjectSidePanel : MarginContainer
         _openButton.Disabled = disabled;
         _openWithOutToolsButton.Disabled = disabled;
         _runButton.Disabled = disabled;
-
-        if (!disabled && !ProjectCache.Instance.HasBuildSelected(SelectedProject))
-            _editButtonButton.Disabled = true;
-        else
-            _editButtonButton.Disabled = disabled;
-
+        _editButtonButton.Disabled = disabled;
         _openFolderButton.Disabled = disabled;
         _openSaveFolderButton.Disabled = disabled;
         _cloneButton.Disabled = true;   // TEMP::UI is hidden -- Marked as future/planned
