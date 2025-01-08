@@ -115,7 +115,11 @@ public partial class EditProjectWindow : WindowBase
             else if (_forwardCheckBox.ButtonPressed)
                 renderer = ProjectData.Renderer.FORWARD;
 
-            ProjectCache.Instance.UpdateProjectData(_cachedProjectName, build, renderer, Version.ParseVersionStr(selectedVersionMetaString));
+            bool state = ProjectCache.Instance.UpdateProjectData(_cachedProjectName, build, renderer, Version.ParseVersionStr(selectedVersionMetaString));
+            if (state)
+                NotifcationManager.Instance.NotifyValid("Project Updated.");
+            else
+                NotifcationManager.Instance.NotifyError("Project could not be updated.");
             EmitSignal(SignalName.BuildUpdated, _cachedProjectName);
         }
 

@@ -31,17 +31,20 @@ public partial class VersionCache : Cache
     {
         _ROM = new();
 
-        using (StreamReader file = new(SAVE_LOCATION))
+        if (File.Exists(SAVE_LOCATION))
         {
-            string key = file.ReadLine();
-            string path = file.ReadLine();
-            while (key != null && path != null)
+            using (StreamReader file = new(SAVE_LOCATION))
             {
-                VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
-                _ROM.AddVersion(parts.version, parts.isCSharp, parts.build, path);
+                string key = file.ReadLine();
+                string path = file.ReadLine();
+                while (key != null && path != null)
+                {
+                    VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
+                    _ROM.AddVersion(parts.version, parts.isCSharp, parts.build, path);
 
-                key = file.ReadLine();
-                path = file.ReadLine();
+                    key = file.ReadLine();
+                    path = file.ReadLine();
+                }
             }
         }
 

@@ -48,9 +48,12 @@ public partial class TemplateCache : Cache
         ReadAssetFile();
         OverWrite(_RAM, _ROM);
 
-        string[] files = Directory.GetFiles(_TEMPLATE_DIRECTORY);
-        foreach (string filePath in files)
-            ReadTemplateFile(filePath);
+        if (Directory.Exists(_TEMPLATE_DIRECTORY))
+        {
+            string[] files = Directory.GetFiles(_TEMPLATE_DIRECTORY);
+            foreach (string filePath in files)
+                ReadTemplateFile(filePath);
+        }
         OverWrite(_ROM, _RAM);
 
         return true;
@@ -159,7 +162,8 @@ public partial class TemplateCache : Cache
         string path = file.ReadLine();
         while (name != null && path != null)
         {
-            _fileDatabase.Add(name, path);
+            if (name != "icon.svg")
+                _fileDatabase.Add(name, path);
             name = file.ReadLine();
             path = file.ReadLine();
         }
