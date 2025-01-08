@@ -34,7 +34,11 @@ public partial class ProjectDataState
     public bool IsFavorited
     {
         get => _RAM.IsFavorited;
-        set => _RAM.IsFavorited = value;
+        set
+        {
+            _RAM.IsFavorited = value;
+            _isDirty = true;
+        }
     }
 
     public void CreateProject(string versionStr, string renderer, string folderPath, string gdExtPath, string[] projectTags, string[] softwareTags, VersionData.BuildType build, bool isCSharp)
