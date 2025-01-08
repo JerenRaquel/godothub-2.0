@@ -4,11 +4,13 @@ using System;
 public partial class BuildPrompt : WindowBase
 {
     [Signal] public delegate void BuildUpdatedEventHandler(string projectName);
+    [Signal] public delegate void LaunchConfirmedEventHandler(string projectName);
     [Signal] public delegate void GoToVersionRequestedEventHandler();
 
     private RichTextLabel _projectLabel;
     private VBoxContainer _mainContainer;
     private OptionButton _buildOptionButton;
+    private CheckButton _launchOnConfirmCheckButton;
     private Label _errorLabel;
     private Button _goToVersionsButton;
 
@@ -17,12 +19,19 @@ public partial class BuildPrompt : WindowBase
     public override void _Ready()
     {
         _projectLabel = GetNode<RichTextLabel>("%ProjectLabel");
+
         _mainContainer = GetNode<VBoxContainer>("%MainContainer");
+
         _buildOptionButton = GetNode<OptionButton>("%BuildOptionButton");
         _buildOptionButton.ItemSelected += OnBuildOptionChanged;
+
+        _launchOnConfirmCheckButton = GetNode<CheckButton>("%LaunchOnConfirmCheckButton");
+
         _errorLabel = GetNode<Label>("%ErrorLabel");
+
         _goToVersionsButton = GetNode<Button>("%VersionGotoButton");
         _goToVersionsButton.Pressed += OnGoToVersionsPressed;
+
         base._Ready();
     }
 
@@ -71,15 +80,25 @@ public partial class BuildPrompt : WindowBase
 
     protected override void OnConfirmPressed()
     {
+        bool buildSet = false;
         if (Validate())
         {
             VersionData.BuildType build = VersionData.StringToBuildEnum(_buildOptionButton.GetItemText(_buildOptionButton.Selected));
-            ProjectCache.Instance.SetBuild(_projectName, build);
-            EmitSignal(SignalName.BuildUpdated, _projectName);
+            buildSet = ProjectCache.Instance.SetBuild(_projectName, build);
         }
 
+        string projectName = _projectName;
         ClearWindowData();
         Hide();
+
+        if (buildSet)
+        {
+            EmitSignal(SignalName.BuildUpdated, projectName);
+            if (_launchOnConfirmCheckButton.ButtonPressed)
+                EmitSignal(SignalName.LaunchConfirmed, projectName);
+        }
+        else
+            NotifcationManager.Instance.NotifyError("Build was not able to be updated.");
     }
 
     private void OnBuildOptionChanged(long index) => Validate();

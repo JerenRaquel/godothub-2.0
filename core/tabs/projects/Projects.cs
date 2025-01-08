@@ -67,6 +67,7 @@ public partial class Projects : TabBase
 
         _buildPrompt = GetNode<BuildPrompt>("%BuildPrompt");
         _buildPrompt.BuildUpdated += OnBuildUpdated;
+        _buildPrompt.LaunchConfirmed += OnLaunchOnConfirm;
         _buildPrompt.GoToVersionRequested += () => EmitSignal(SignalName.GoToVersionsRequested);
 
         _newProjectPrompt = GetNode<NewProjectWindow>("%NewProjectWindow");
@@ -211,25 +212,7 @@ public partial class Projects : TabBase
             _buildPrompt.Open(projectName);
             return;
         }
-
-        //? Is there a better way to fetch this key?
-        int runInstruction = SettingsCache.Instance.GetData("Project Settings/Defaults/launch_behavior/LONG");
-        if (runInstruction == 2)  // Run
-        {
-            ProjectSidePanel.RunProject(projectName);
-            return;
-        }
-
-        if (ProjectSidePanel.OpenProject(projectName, runInstruction == 1))
-        {
-            if (SettingsCache.Instance.GetData("Application/Config/HUB_behavior/LONG") == 0)
-            {
-                // Resort
-                CallDeferred("FillProjectContainer");
-                return; //* Success
-            }
-            GetTree().Quit();
-        }
+        OnLaunchOnConfirm(projectName);
     }
 
     private void OnToggled(string projectName, bool state)
@@ -270,6 +253,28 @@ public partial class Projects : TabBase
     }
 
     private void OnBuildUpdated(string projectName) => _projectEntries[projectName].UpdateProjectLabel();
+
+    private void OnLaunchOnConfirm(string projectName)
+    {
+        //? Is there a better way to fetch this key?
+        int runInstruction = SettingsCache.Instance.GetData("Project Settings/Defaults/launch_behavior/LONG");
+        if (runInstruction == 2)  // Run
+        {
+            ProjectSidePanel.RunProject(projectName);
+            return;
+        }
+
+        if (ProjectSidePanel.OpenProject(projectName, runInstruction == 1))
+        {
+            if (SettingsCache.Instance.GetData("Application/Config/HUB_behavior/LONG") == 0)
+            {
+                // Resort
+                CallDeferred("FillProjectContainer");
+                return; //* Success
+            }
+            GetTree().Quit();
+        }
+    }
 
     private void OnNewProjectPressed() => _newProjectPrompt.Show();
 
