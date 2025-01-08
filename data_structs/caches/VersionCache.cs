@@ -26,6 +26,7 @@ public partial class VersionCache : Cache
     public string[] Keys => _RAM.Keys;
     public string[] SortedKeys => _RAM.SortedKeys;
     public string[] Versions => _RAM.Versions;
+    public int Count => _RAM.Keys.Length;
 
     public override bool LoadData()
     {

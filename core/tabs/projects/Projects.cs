@@ -19,6 +19,11 @@ public partial class Projects : TabBase
     private LineEdit _filterLineEdit;
     private OptionButton _versionOptionButton;
     private VBoxContainer _projectEntryContainer;
+
+    private VBoxContainer _labelContainer;
+    private Label _noGodotVersionLabel;
+    private Label _noProjectLabel;
+
     private ProjectSidePanel _sidePanel;
     private BuildPrompt _buildPrompt;
     private NewProjectWindow _newProjectPrompt;
@@ -60,6 +65,12 @@ public partial class Projects : TabBase
         _versionOptionButton.ItemSelected += OnVersionChanged;
 
         _projectEntryContainer = GetNode<VBoxContainer>("%ProjectEntryContainer");
+
+        _labelContainer = GetNode<VBoxContainer>("%LabelContainer");
+
+        _noGodotVersionLabel = GetNode<Label>("%NoGodotVersionLabel");
+
+        _noProjectLabel = GetNode<Label>("%NoProjectsLabel");
 
         _sidePanel = GetNode<ProjectSidePanel>("%ProjectSidePanel");
         _sidePanel.EditProject += OnEditProjectPressed;
@@ -113,9 +124,27 @@ public partial class Projects : TabBase
         }
         _projectEntries.Clear();
 
-        List<string> projectNames = ProjectCache.Instance.ProjectNames;
-        projectNames.Sort(CompareFunc);
+        if (VersionCache.Instance.Count == 0)
+        {
+            _labelContainer.Show();
+            _noGodotVersionLabel.Show();
+            _noProjectLabel.Hide();
+            ToggleToolBar(false);
+            return;
+        }
 
+        ToggleToolBar(true);
+        List<string> projectNames = ProjectCache.Instance.ProjectNames;
+        if (projectNames.Count == 0)
+        {
+            _labelContainer.Show();
+            _noGodotVersionLabel.Hide();
+            _noProjectLabel.Show();
+            return;
+        }
+
+        _labelContainer.Hide();
+        projectNames.Sort(CompareFunc);
         foreach (string projectName in projectNames)
         {
             ProjectEntry entryInstance = _projectEntryPackedScene.Instantiate<ProjectEntry>();
@@ -146,6 +175,13 @@ public partial class Projects : TabBase
                 }
             entry.Value.Hide();
         }
+    }
+
+    private void ToggleToolBar(bool state)
+    {
+        _newButton.Disabled = !state;
+        _importButton.Disabled = !state;
+        _scanButton.Disabled = !state;
     }
 
     private int CompareFunc(string lhs, string rhs)
