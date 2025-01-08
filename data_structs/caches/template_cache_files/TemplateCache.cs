@@ -45,22 +45,6 @@ public partial class TemplateCache : Cache
         template.AddFile(path, fileTag);
     }
 
-    public bool CopyFileToPath(string fileTag, string absPath)
-    {
-        if (AUTO_CREATED.Contains(fileTag))
-        {
-            // TODO: Create at destination
-
-            return true;
-        }
-        // Couldn't find file to copy over
-        if (!_fileDatabase.ContainsKey(fileTag)) return false;
-
-        // TODO: Copy file over
-
-        return true;    // Success
-    }
-
     public TemplateStructure.Folder GetTemplateRootFolder(string templateName)
     {
         if (templateName == null) return new();
