@@ -95,6 +95,10 @@ mouse_filter = 2
 [node name="Defaults" parent="HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Project Settings" index="0" instance=ExtResource("5_47ky8")]
 layout_mode = 0
 anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="Paths" parent="HBoxContainer/PanelContainer2/MarginContainer/Panel/MarginContainer/Project Settings" index="1" instance=ExtResource("5_waqhd")]
 visible = false

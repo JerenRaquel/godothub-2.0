@@ -13,7 +13,7 @@ public partial class Master : Node
         VersionCache.Initialize(userDirectory);
         TagCache.Initialize(userDirectory);
         ProjectCache.Initialize(userDirectory);
-        TemplateCache.Initialize(userDirectory, ProjectSettings.GlobalizePath("res://icon.svg"));
+        TemplateCache.Initialize(userDirectory);
     }
 
     // TEMP: Replace with Normal Write once Done
