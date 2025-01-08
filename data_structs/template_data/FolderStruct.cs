@@ -40,7 +40,11 @@ public partial class TemplateStructure
             _isNull = false;
         }
 
-        public readonly void LoadData(string fileName, string fileTag) => _files.Add(fileName, fileTag);
+        public readonly void LoadData(string fileName, string fileTag)
+        {
+            if (_files.ContainsKey(fileName)) return;
+            _files.Add(fileName, fileTag);
+        }
 
         public readonly string GetFileTag(string fileName)
         {

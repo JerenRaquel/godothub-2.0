@@ -19,6 +19,7 @@ layout_mode = 2
 
 [node name="Button" type="Button" parent="HBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "New"
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer"]
@@ -28,6 +29,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_685c0")
 
 [node name="DeleteButton" parent="HBoxContainer" instance=ExtResource("1_mr6cj")]
 layout_mode = 2
+disabled = true
 
 [node name="HSeparator2" type="HSeparator" parent="."]
 custom_minimum_size = Vector2(0, 4)
