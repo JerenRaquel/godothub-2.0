@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://xmnb7y2krvm4"]
+[gd_scene load_steps=11 format=3 uid="uid://xmnb7y2krvm4"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_pbyxy"]
 [ext_resource type="Script" path="res://core/tabs/projects/Projects.cs" id="2_rwuvn"]
@@ -15,6 +15,11 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 anti_aliasing = false
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8gav4"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_sl466"]
+font_size = 20
 
 [node name="Projects" instance=ExtResource("1_pbyxy")]
 script = ExtResource("2_rwuvn")
@@ -105,29 +110,50 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2/PanelContainer" index="1"]
+[node name="LabelContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2/PanelContainer" index="1"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2/PanelContainer/VBoxContainer" index="0"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer2/PanelContainer/LabelContainer" index="0"]
 layout_mode = 2
-text = "No Projects Added.
-Import them one by one 
-or 
-add the path to the directory containing them in Settings > Project Settings > Path and Scan."
-horizontal_alignment = 1
-vertical_alignment = 1
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_8gav4")
 
-[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer2/PanelContainer/VBoxContainer" index="1"]
+[node name="NoGodotVersionLabel" type="Label" parent="VBoxContainer/HBoxContainer2/PanelContainer/LabelContainer" index="1"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "No Godot versions added.
 Please add at least one before adding projects."
+label_settings = SubResource("LabelSettings_sl466")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="NoProjectsLabel" type="Label" parent="VBoxContainer/HBoxContainer2/PanelContainer/LabelContainer" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "No Projects Added.
+Create a new one,
+import them one by one, 
+or 
+add the path to the directory containing them in 
+Settings > Project Settings > Path 
+and Scan."
+label_settings = SubResource("LabelSettings_sl466")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer/HBoxContainer2/PanelContainer/LabelContainer" index="3"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_8gav4")
 
 [node name="ProjectSidePanel" parent="VBoxContainer/HBoxContainer2" index="1" instance=ExtResource("3_176p4")]
 unique_name_in_owner = true
