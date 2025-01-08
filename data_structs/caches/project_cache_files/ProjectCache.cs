@@ -7,6 +7,7 @@ using System.Linq;
 public partial class ProjectCache : Cache
 {
     private readonly int[] READABLE_CONFIG_VERSIONS = [5];
+    public enum ImportError { OK, PROJECT_READ_FAIL, PROJECT_DUPLICATE };
 
     private Dictionary<string, ProjectDataState> _projects = [];
 
@@ -80,6 +81,19 @@ public partial class ProjectCache : Cache
         }
         _projects.Clear();
         _projects = tempProjects;
+    }
+
+    public ImportError ImportProject(string path)
+    {
+        string sanitizedPath = SanitizeProjectPath(path);
+        ProjectDataState project = CreateProjectFromConfig(sanitizedPath);
+        if (project == null) return ImportError.PROJECT_READ_FAIL;  // Skip non project folders
+
+        // Skip dupes
+        if (_projects.ContainsKey(project.projectName)) return ImportError.PROJECT_DUPLICATE;
+
+        _projects.Add(project.projectName, project);
+        return ImportError.OK;
     }
 
     public override bool LoadData()
@@ -181,5 +195,16 @@ public partial class ProjectCache : Cache
 
         GD.PushError("Couldn't locate project.godot using path: ", projectPath);
         return null;
+    }
+
+    private static string SanitizeProjectPath(string path)
+    {
+        string unixPath = path.Replace("\\", "/");
+        if (unixPath.EndsWith(".gdhub"))
+            return unixPath.Replace("/.gdhub", "");
+        else if (unixPath.EndsWith("project.godot"))
+            return unixPath.Replace("/project.godot", "");
+
+        return unixPath;
     }
 }

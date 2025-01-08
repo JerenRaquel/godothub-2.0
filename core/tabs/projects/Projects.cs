@@ -248,8 +248,21 @@ public partial class Projects : TabBase
 
     private void OnImportFileLocated(string path)
     {
-        // TODO: Verify and add project
-        GD.Print(path);
+        switch (ProjectCache.Instance.ImportProject(path))
+        {
+            case ProjectCache.ImportError.OK:
+                FillProjectContainer();
+                NotifcationManager.Instance.NotifyValid("Project imported!");
+                break;
+            case ProjectCache.ImportError.PROJECT_DUPLICATE:
+                NotifcationManager.Instance.NotifyError("Project is already imported.");
+                break;
+            case ProjectCache.ImportError.PROJECT_READ_FAIL:
+            default:
+                NotifcationManager.Instance.NotifyError("Unable to import project.");
+                break;
+
+        }
         FileDialogManager.Instance.DataCompiled -= OnImportFileLocated;
     }
 
