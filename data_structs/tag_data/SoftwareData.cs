@@ -79,9 +79,7 @@ public partial class TagData
 
         private static CommandParts SplitCommand(string path, string argStr)
         {
-            // TODO: Santized for '\ ' chars and mid spaces withing params
             string[] parts = argStr.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-
             return new(path, parts);
         }
 

@@ -50,10 +50,11 @@ public partial class SoftwareLocator : WindowBase
             return false;
         }
 
-        // TODO: Revisit this with actual file testing
+        //? Is there really a way to test if a path points to an execuable?
+        //? I guess its an user error in this case ¯\_(ツ)_/¯
         if (!File.Exists(_pathLineEdit.Text))
         {
-            DisplayError("Software path is not an executable file...");
+            DisplayError("Software path is does not point to a file...");
             return false;
         }
 
