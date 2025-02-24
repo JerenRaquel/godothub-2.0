@@ -94,7 +94,7 @@ fill=""#414042""><circle cx=""307"" cy=""532"" r=""60""/><circle cx=""717"" cy="
             iconCreated = true;
         }
 
-        if (!_fileDatabase.ContainsKey("icon.svg") && iconCreated)
+        if (!_fileDatabase.ContainsKey("icon.svg"))
             _fileDatabase.Add("icon.svg", iconPath);
 
         if (iconCreated)
