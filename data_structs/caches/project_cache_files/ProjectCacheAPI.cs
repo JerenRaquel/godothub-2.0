@@ -10,7 +10,9 @@ public partial class ProjectCache : Cache
         TemplateStructure template = TemplateCache.Instance.GetTemplate(templateName);
 
         project.CreateProject(data.Version, data.Renderer, path, "", template.ProjectTags, template.SoftwareTags, build, data.IsCSharp);
+        project.projectName = data.Name;
         _projects.Add(data.Name, project);
+        _isDirty = true;
     }
 
     public void DeleteProject(string projectName)
@@ -18,6 +20,7 @@ public partial class ProjectCache : Cache
         if (!_projects.ContainsKey(projectName)) return;
 
         _projects.Remove(projectName);
+        _isDirty = true;
     }
 
     public void ToggleFavorite(string projectName, bool state)
