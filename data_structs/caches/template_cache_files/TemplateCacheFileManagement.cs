@@ -170,7 +170,7 @@ fill=""#414042""><circle cx=""307"" cy=""532"" r=""60""/><circle cx=""717"" cy="
         string path = file.ReadLine();
         while (name != null && path != null)
         {
-            if (name != "icon.svg")
+            if (!_fileDatabase.ContainsKey(name))
                 _fileDatabase.Add(name, path);
             name = file.ReadLine();
             path = file.ReadLine();
