@@ -87,18 +87,7 @@ layout_mode = 2
 [node name="VersionOptionButton" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/VBoxContainer2" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
-selected = 1
 allow_reselect = true
-item_count = 5
-popup/item_0/text = "4.4"
-popup/item_1/text = "4.3"
-popup/item_1/id = 1
-popup/item_2/text = "4.2"
-popup/item_2/id = 2
-popup/item_3/text = "4.1"
-popup/item_3/id = 3
-popup/item_4/text = "4.0"
-popup/item_4/id = 4
 
 [node name="BuildOptionButton" type="OptionButton" parent="MarginContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/ContentContainer/HBoxContainer2/VBoxContainer2" index="1"]
 unique_name_in_owner = true

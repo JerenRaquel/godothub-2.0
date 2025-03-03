@@ -4,6 +4,9 @@ using System.IO;
 
 public partial class LocateGodotWindow : WindowBase
 {
+    private readonly string[] VERSIONS = ["4.6", "4.5", "4.4", "4.3", "4.2", "4.1", "4.0"];
+    private const int DEFAULT_VERSION = 2;
+
     private readonly VersionData.BuildType[] BUILD_MAP = [
         VersionData.BuildType.STABLE,
         VersionData.BuildType.RELEASE_CANDIDATE,
@@ -33,6 +36,7 @@ public partial class LocateGodotWindow : WindowBase
         _netSupportCheckButton.Toggled += OnToggleUpdated;
 
         base._Ready();
+        LoadVersionsIntoButton();
         Validate();
     }
 
@@ -86,6 +90,16 @@ public partial class LocateGodotWindow : WindowBase
 
         EmitSignal(SignalName.VersionLocated, key);
         Hide();
+    }
+
+    private void LoadVersionsIntoButton()
+    {
+        _versionOptionButton.Clear();
+        foreach (string version in VERSIONS)
+        {
+            _versionOptionButton.AddItem(version);
+        }
+        _versionOptionButton.Select(DEFAULT_VERSION);
     }
 
     private void OnChooseLocationPressed()
