@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c3llqp83tpk3l"]
 
 [ext_resource type="PackedScene" uid="uid://dsnnuiiwm8vo3" path="res://core/tabs/settings/interfaces/base/interface_base.tscn" id="1_k5xc8"]
-[ext_resource type="Script" path="res://core/tabs/settings/interfaces/project_defaults/ProjectPathDefaults.cs" id="2_kiowv"]
+[ext_resource type="Script" uid="uid://ssd3rsfob6sp" path="res://core/tabs/settings/interfaces/project_defaults/ProjectPathDefaults.cs" id="2_kiowv"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_hbv63"]
 
 [node name="Defaults" instance=ExtResource("1_k5xc8")]

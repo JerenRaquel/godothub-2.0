@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://jjhubcradv16"]
 
 [ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_c3st5"]
-[ext_resource type="Script" path="res://core/windows/build_prompt/BuildPrompt.cs" id="2_1lnp4"]
+[ext_resource type="Script" uid="uid://t7rvyrxblaqm" path="res://core/windows/build_prompt/BuildPrompt.cs" id="2_1lnp4"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_ns7rd"]
 [ext_resource type="PackedScene" uid="uid://bmwtlbhmxv28n" path="res://core/components/project_label/project_label.tscn" id="3_nslon"]
 [ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_iuglv"]

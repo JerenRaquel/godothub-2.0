@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://dxspjvt4dym1w"]
 
 [ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_temdt"]
-[ext_resource type="Script" path="res://core/windows/locate_godot_window/LocateGodotWindow.cs" id="2_slmry"]
+[ext_resource type="Script" uid="uid://bfbvycqdk7dso" path="res://core/windows/locate_godot_window/LocateGodotWindow.cs" id="2_slmry"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_hkqww"]
 [ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_iuw32"]
 

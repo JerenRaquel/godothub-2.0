@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://d0g1tsm7kaj1d"]
 
 [ext_resource type="PackedScene" uid="uid://b21kjgs0nm751" path="res://core/components/tag/tag.tscn" id="1_8b8w0"]
-[ext_resource type="Script" path="res://core/components/clickable_tag/ClickableTag.cs" id="2_4lv68"]
+[ext_resource type="Script" uid="uid://dmaoxdlqqgi4l" path="res://core/components/clickable_tag/ClickableTag.cs" id="2_4lv68"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_axk68"]
 

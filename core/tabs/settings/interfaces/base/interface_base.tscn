@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dsnnuiiwm8vo3"]
 
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_stfkm"]
-[ext_resource type="Script" path="res://core/tabs/settings/interfaces/base/InterfaceBase.cs" id="2_gtwxr"]
+[ext_resource type="Script" uid="uid://bdbfwsnlwmkaw" path="res://core/tabs/settings/interfaces/base/InterfaceBase.cs" id="2_gtwxr"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_r7ch3"]
 color = Color(0.145098, 0.145098, 0.145098, 1)

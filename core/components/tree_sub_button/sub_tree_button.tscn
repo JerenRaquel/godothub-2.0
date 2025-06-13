@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://drnt75rrklefd"]
 
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_yxxqn"]
-[ext_resource type="Script" path="res://core/components/tree_sub_button/SubTreeButton.cs" id="2_r4bp0"]
+[ext_resource type="Script" uid="uid://dx3ck00e6nnpq" path="res://core/components/tree_sub_button/SubTreeButton.cs" id="2_r4bp0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2lrjo"]
 

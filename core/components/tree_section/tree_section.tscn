@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhuwv5aw8o6sg"]
 
-[ext_resource type="Script" path="res://core/components/tree_section/TreeSection.cs" id="1_k0own"]
+[ext_resource type="Script" uid="uid://b766qoo0aedn8" path="res://core/components/tree_section/TreeSection.cs" id="1_k0own"]
 [ext_resource type="PackedScene" uid="uid://drnt75rrklefd" path="res://core/components/tree_sub_button/sub_tree_button.tscn" id="2_uq3l1"]
 
 [node name="TreeSection" type="VBoxContainer"]

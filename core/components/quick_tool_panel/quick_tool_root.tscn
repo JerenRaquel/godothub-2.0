@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://caado17xlpf1q"]
 
-[ext_resource type="Script" path="res://core/components/quick_tool_panel/QuickToolRoot.cs" id="1_4rivy"]
+[ext_resource type="Script" uid="uid://oognhuu8i3rj" path="res://core/components/quick_tool_panel/QuickToolRoot.cs" id="1_4rivy"]
 
 [node name="QuickToolRoot" type="VBoxContainer"]
 size_flags_vertical = 3

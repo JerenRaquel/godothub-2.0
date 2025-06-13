@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://xqittib5imjh" path="res://core/components/version_entries/base/version_entry_base.tscn" id="1_c3nax"]
 [ext_resource type="Texture2D" uid="uid://dse6oyduac3oo" path="res://icon.svg" id="2_68apc"]
-[ext_resource type="Script" path="res://core/components/version_entries/list_entry/VersionListEntry.cs" id="2_f58f4"]
+[ext_resource type="Script" uid="uid://hut24up6tv2w" path="res://core/components/version_entries/list_entry/VersionListEntry.cs" id="2_f58f4"]
 [ext_resource type="LabelSettings" uid="uid://cx6pgc316ggpk" path="res://resources/CSharpLabelSettings.tres" id="3_ibrhk"]
 [ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="4_bqcmp"]
 

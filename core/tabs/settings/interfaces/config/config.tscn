@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dsnnuiiwm8vo3" path="res://core/tabs/settings/interfaces/base/interface_base.tscn" id="1_nqwc5"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="1_qsuhr"]
-[ext_resource type="Script" path="res://core/tabs/settings/interfaces/config/Config.cs" id="2_01lrs"]
+[ext_resource type="Script" uid="uid://w36nqgrv6bgy" path="res://core/tabs/settings/interfaces/config/Config.cs" id="2_01lrs"]
 [ext_resource type="PackedScene" uid="uid://ina126gq7w7x" path="res://core/components/buttons/settings_button.tscn" id="4_i13io"]
 
 [node name="Config" instance=ExtResource("1_nqwc5")]

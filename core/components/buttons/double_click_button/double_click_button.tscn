@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://chee4vtrhibsa"]
 
-[ext_resource type="Script" path="res://core/components/buttons/double_click_button/DoubleClickButton.cs" id="1_bo5ef"]
+[ext_resource type="Script" uid="uid://bilfa2l16ydv7" path="res://core/components/buttons/double_click_button/DoubleClickButton.cs" id="1_bo5ef"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4yo4"]
 bg_color = Color(0.133333, 0.164706, 0.207843, 1)

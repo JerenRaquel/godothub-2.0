@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://drrdbffd8u2ph"]
 
 [ext_resource type="PackedScene" uid="uid://duq3gfi0ooci4" path="res://core/tabs/base/tab_base.tscn" id="1_imrn2"]
-[ext_resource type="Script" path="res://core/tabs/godot_versions/GodotVersions.cs" id="2_6f2n1"]
+[ext_resource type="Script" uid="uid://dcjc5un4h4twl" path="res://core/tabs/godot_versions/GodotVersions.cs" id="2_6f2n1"]
 [ext_resource type="PackedScene" uid="uid://dk3rdnvsyqws8" path="res://core/components/buttons/delete_button.tscn" id="2_sj8r8"]
 [ext_resource type="PackedScene" uid="uid://bqi2m2i746sf7" path="res://core/components/version_entries/card/card_entry.tscn" id="3_lpsmo"]
 [ext_resource type="PackedScene" uid="uid://3a2q6a20ckmq" path="res://core/components/version_entries/list_entry/list_entry.tscn" id="4_fa531"]

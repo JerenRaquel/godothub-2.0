@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://y3qk7slv58hk"]
 
 [ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_a4ph5"]
-[ext_resource type="Script" path="res://core/windows/delete_prompt/DeletePrompt.cs" id="2_0phrv"]
+[ext_resource type="Script" uid="uid://dobvvvaaqbejr" path="res://core/windows/delete_prompt/DeletePrompt.cs" id="2_0phrv"]
 [ext_resource type="PackedScene" uid="uid://bmwtlbhmxv28n" path="res://core/components/project_label/project_label.tscn" id="2_pyo1h"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_cyoec"]
 

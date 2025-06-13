@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bi47wwkat4hc3"]
 
 [ext_resource type="PackedScene" uid="uid://dsnnuiiwm8vo3" path="res://core/tabs/settings/interfaces/base/interface_base.tscn" id="1_jtk3x"]
-[ext_resource type="Script" path="res://core/tabs/settings/interfaces/project_paths/ProjectPathInterface.cs" id="2_jc0o7"]
+[ext_resource type="Script" uid="uid://cgegpvt757kxw" path="res://core/tabs/settings/interfaces/project_paths/ProjectPathInterface.cs" id="2_jc0o7"]
 [ext_resource type="PackedScene" uid="uid://o56sw6m1aryb" path="res://core/components/project_paths/project_path.tscn" id="3_1wlgt"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="4_cp0qi"]
 

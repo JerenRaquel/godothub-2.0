@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://b6h8vrtke4bck"]
 
 [ext_resource type="Theme" uid="uid://bjconh6xv0htm" path="res://resources/Default.tres" id="1_fwxbr"]
-[ext_resource type="Script" path="res://core/windows/base/WindowBase.cs" id="2_r54tg"]
+[ext_resource type="Script" uid="uid://bxpaadljhu0fm" path="res://core/windows/base/WindowBase.cs" id="2_r54tg"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_p08fv"]
 [ext_resource type="Texture2D" uid="uid://cbas6pqh4jh17" path="res://assets/art/Warning.svg" id="4_fd015"]
 [ext_resource type="Texture2D" uid="uid://cr0rkjah0myld" path="res://assets/art/Error.svg" id="4_sjwtw"]

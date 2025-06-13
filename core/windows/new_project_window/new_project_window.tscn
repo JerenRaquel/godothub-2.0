@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_y3j0y"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="2_2u3wl"]
-[ext_resource type="Script" path="res://core/windows/new_project_window/NewProjectWindow.cs" id="2_5gdqw"]
+[ext_resource type="Script" uid="uid://dgn8wvgp7rbk1" path="res://core/windows/new_project_window/NewProjectWindow.cs" id="2_5gdqw"]
 [ext_resource type="LabelSettings" uid="uid://c7fm37ottcis2" path="res://resources/SubLabelSettings.tres" id="3_pm6av"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_na5i5"]

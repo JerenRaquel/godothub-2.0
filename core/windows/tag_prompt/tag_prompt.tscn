@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dmxwaxokr5keq"]
 
 [ext_resource type="PackedScene" uid="uid://b6h8vrtke4bck" path="res://core/windows/base/window_base.tscn" id="1_lybrd"]
-[ext_resource type="Script" path="res://core/windows/tag_prompt/TagPrompt.cs" id="2_7rs42"]
+[ext_resource type="Script" uid="uid://c0v0fhvkfpm6a" path="res://core/windows/tag_prompt/TagPrompt.cs" id="2_7rs42"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="3_eqop5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g2yvf"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dvuebtf2144vv"]
 
-[ext_resource type="Script" path="res://core/tabs/templates/tree_display/TreeDisplay.cs" id="1_pum4g"]
+[ext_resource type="Script" uid="uid://bdw4qaxwm15ef" path="res://core/tabs/templates/tree_display/TreeDisplay.cs" id="1_pum4g"]
 [ext_resource type="LabelSettings" uid="uid://sv84nqyr4uv" path="res://resources/MainLabelSettings.tres" id="1_tsrof"]
 [ext_resource type="PackedScene" uid="uid://ch5o1bnp8mh0m" path="res://core/tabs/templates/template_display/template_display.tscn" id="2_q7ano"]
 
