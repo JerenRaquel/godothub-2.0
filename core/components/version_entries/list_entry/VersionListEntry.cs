@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 
@@ -29,6 +30,7 @@ public partial class VersionListEntry : VersionEntryBase
         _titleLabel.Text = $"Version {version} ".BBCodeColor(ColorTheme.BaseBlue)
             + $"[{VersionData.BuildEnumToString(build)}]".BBCodeColor(ColorTheme.GetColorFromBuild(build));
 
-        _pathLabel.Text = $"Path: {VersionCache.Instance.GetPath(VersionData.GenerateKey(version, isCSharp, build))}";
+        VersionKey key = new(new(version), isCSharp, VersionDatabase.ConvertToNewBuildType(build));
+        _pathLabel.Text = $"Path: {VersionDatabase.Instance.GetPath(key)}";
     }
 }

@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 using System.IO;
@@ -7,11 +8,11 @@ public partial class LocateGodotWindow : WindowBase
     private readonly string[] VERSIONS = ["4.6", "4.5", "4.4", "4.3", "4.2", "4.1", "4.0"];
     private const int DEFAULT_VERSION = 2;
 
-    private readonly VersionData.BuildType[] BUILD_MAP = [
-        VersionData.BuildType.STABLE,
-        VersionData.BuildType.RELEASE_CANDIDATE,
-        VersionData.BuildType.BETA,
-        VersionData.BuildType.DEV,
+    private readonly VersionDatabase.BuildType[] BUILD_MAP = [
+        VersionDatabase.BuildType.STABLE,
+        VersionDatabase.BuildType.RELEASE_CANDIDATE,
+        VersionDatabase.BuildType.BETA,
+        VersionDatabase.BuildType.DEV,
     ];
 
     [Signal] public delegate void VersionLocatedEventHandler(string key);
@@ -48,18 +49,19 @@ public partial class LocateGodotWindow : WindowBase
             return false;
         }
 
-        if (VersionCache.Instance.HasPath(_pathLineEdit.Text))
+        if (VersionDatabase.Instance.HasKey(new(_pathLineEdit.Text)))
         {
             DisplayError("Path is being used.");
             return false;
         }
 
-        string key = VersionData.GenerateKey(
-            new Version(_versionOptionButton.GetItemText(_versionOptionButton.Selected)),
+        string selectedVersion = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
+        VersionKey key = new(
+            new(selectedVersion),
             _netSupportCheckButton.ButtonPressed,
             BUILD_MAP[_buildOptionButton.Selected]
         );
-        if (VersionCache.Instance.HasKey(key))
+        if (VersionDatabase.Instance.HasKey(key))
         {
             DisplayError("Version already exists.");
             return false;
@@ -79,16 +81,16 @@ public partial class LocateGodotWindow : WindowBase
     {
         if (!File.Exists(_pathLineEdit.Text)) return;
 
-        string key = VersionCache.Instance.AddVersion(
-            new Version(_versionOptionButton.GetItemText(_versionOptionButton.Selected)),
+        VersionKey key = VersionDatabase.Instance.AddVersion(
+            new(_versionOptionButton.GetItemText(_versionOptionButton.Selected)),
             _netSupportCheckButton.ButtonPressed,
             BUILD_MAP[_buildOptionButton.Selected],
             _pathLineEdit.Text
         );
 
-        if (key.Length == 0) return;
+        if (key.IsValid) return;
 
-        EmitSignal(SignalName.VersionLocated, key);
+        EmitSignal(SignalName.VersionLocated, key.FullKey);
         Hide();
     }
 

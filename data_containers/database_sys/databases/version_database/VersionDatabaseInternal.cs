@@ -34,7 +34,7 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
         public static VersionDatabase Instance => _instance;
 
         private VersionDatabase(string userDirectory)
-            : base(userDirectory, "VersionCache - Copy.gdhub")
+            : base(userDirectory, "VersionDatabase.gdhub")
                 => LoadData();
 
         public static VersionDatabase Initialize(string userDirectory)
@@ -91,6 +91,13 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
                 file.WriteLine((string)pair.Key);
                 file.WriteLine(pair.Value);
             }
+        }
+
+        //! TEMP
+        // TODO: Remove after integration
+        public static BuildType ConvertToNewBuildType(VersionData.BuildType type)
+        {
+            return (BuildType)type;
         }
 
         public static string BuildEnumToString(BuildType type)

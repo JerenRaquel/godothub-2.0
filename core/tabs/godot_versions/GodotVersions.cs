@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -101,8 +102,8 @@ public partial class GodotVersions : TabBase
             _cardView.Hide();
         }
 
-        foreach (string key in VersionCache.Instance.SortedKeys)
-            OnVersionLocated(key);
+        foreach (VersionKey key in VersionDatabase.Instance.SortedKeys)
+            OnVersionLocated((string)key);
         Filter();
     }
 
@@ -178,8 +179,9 @@ public partial class GodotVersions : TabBase
 
     private void OnDeletePressed()
     {
+        // TODO: Look into storing the key as VersionKey instead of string
         string key = _versions[_currentlySelected];
-        if (!VersionCache.Instance.RemoveVersion(key)) return;  // Fail removal
+        if (!VersionDatabase.Instance.RemoveVersion(new(key))) return;
 
         // Success
         _versions.Remove(_currentlySelected);
@@ -202,15 +204,17 @@ public partial class GodotVersions : TabBase
 
     private void OnLaunchPressed()
     {
+        // TODO: Look into storing the key as VersionKey instead of string
         string key = _versions[_currentlySelected];
-        string path = VersionCache.Instance.GetPath(key);
+        string path = VersionDatabase.Instance.GetPath(new(key));
         OSAPI.RunGodotExe(path);
     }
 
     private void OnFolderOpenPressed()
     {
+        // TODO: Look into storing the key as VersionKey instead of string
         string key = _versions[_currentlySelected];
-        string path = VersionCache.Instance.GetPath(key);
+        string path = VersionDatabase.Instance.GetPath(new(key));
         OSAPI.OpenFolder(path);
     }
 

@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 using System.IO;
@@ -62,11 +63,10 @@ public partial class NewProjectWindow : WindowBase
     public void RefreshVersionOptions()
     {
         _versionOptionButton.Clear();
-        foreach (string key in VersionCache.Instance.SortedKeys)
+        foreach (VersionKey key in VersionDatabase.Instance.SortedKeys)
         {
-            VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
-            string optionStr = $"v{parts.version} [{VersionData.BuildEnumToString(parts.build)}]";
-            if (parts.isCSharp)
+            string optionStr = $"v{key.version} [{key.BuildTypeStr}]";
+            if (key.isDotNet)
                 optionStr += $" [.Net]";
 
             _versionOptionButton.AddItem(optionStr);

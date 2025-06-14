@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 
 public partial class ProjectSidePanel : MarginContainer
@@ -102,7 +103,7 @@ public partial class ProjectSidePanel : MarginContainer
             return;
         }
 
-        string godotExe = VersionCache.Instance.GetPath(key);
+        string godotExe = VersionDatabase.Instance.GetPath(new(key));
         if (godotExe.Length == 0)
         {
             // Failed
@@ -129,7 +130,7 @@ public partial class ProjectSidePanel : MarginContainer
             return false;
         }
 
-        string godotExe = VersionCache.Instance.GetPath(key);
+        string godotExe = VersionDatabase.Instance.GetPath(new(key));
         if (godotExe.Length == 0)
         {
             // Failed

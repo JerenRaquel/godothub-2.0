@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -124,7 +125,7 @@ public partial class Projects : TabBase
         }
         _projectEntries.Clear();
 
-        if (VersionCache.Instance.Count == 0)
+        if (VersionDatabase.Instance.Count == 0)
         {
             _labelContainer.Show();
             _noGodotVersionLabel.Show();

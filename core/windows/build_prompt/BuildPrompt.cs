@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 
@@ -40,13 +41,14 @@ public partial class BuildPrompt : WindowBase
         _projectName = projectName;
         _projectLabel.Text = ProjectCache.Instance.GenerateProjectMetadataString(projectName, true);
         string partialKey = ProjectCache.Instance.ProjectNameToPartialKey(projectName);
-        if (VersionCache.Instance.HasPartialKey(partialKey))
+        if (VersionDatabase.Instance.HasPartialKey(partialKey))
         {
             _mainContainer.Show();
             _errorLabel.Hide();
-            VersionData.BuildType[] types = VersionCache.Instance.GetAvailableBuilds(partialKey);
-            foreach (VersionData.BuildType type in types)
-                _buildOptionButton.AddItem(VersionData.BuildEnumToString(type));
+            VersionDatabase.BuildType[] types
+                = VersionDatabase.Instance.GetAvaliableBuilds(partialKey);
+            foreach (VersionDatabase.BuildType type in types)
+                _buildOptionButton.AddItem(VersionDatabase.BuildEnumToString(type));
             _buildOptionButton.Select(0);
             Validate();
         }

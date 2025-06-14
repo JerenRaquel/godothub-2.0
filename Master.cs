@@ -11,12 +11,11 @@ public partial class Master : Node
         OSAPI.Initialize();
         string userDirectory = ProjectSettings.GlobalizePath("user://");
         SettingsCache.Initialize(userDirectory);
-        VersionCache.Initialize(userDirectory);
+        VersionDatabase.Initialize(userDirectory);
         TagCache.Initialize(userDirectory);
         ProjectCache.Initialize(userDirectory);
         TemplateCache.Initialize(userDirectory);
 
-        VersionDatabase.Initialize(userDirectory);
     }
 
     // TEMP: Replace with Normal Write once Done
@@ -25,10 +24,9 @@ public partial class Master : Node
         ProjectCache.Instance.ForceWrite();
         SettingsCache.Instance.ForceWrite();
         TagCache.Instance.ForceWrite();
-        VersionCache.Instance.ForceWrite();
+        VersionDatabase.Instance.ForceWrite();
         TemplateCache.Instance.ForceWrite();
 
-        VersionDatabase.Instance.ForceWrite();
     }
 
     public override void _Ready()
