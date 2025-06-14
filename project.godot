@@ -32,6 +32,7 @@ project/assembly_name="GodotHUB-2.0"
 folder_colors={
 "res://assets/": "red",
 "res://core/": "blue",
+"res://data_containers/": "purple",
 "res://data_structs/": "purple",
 "res://resources/": "purple"
 }
