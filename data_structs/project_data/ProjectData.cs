@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 
 public partial class ProjectData
 {
@@ -11,7 +11,7 @@ public partial class ProjectData
 
     public List<string> projectTags;
     public List<string> softwareTags;
-    public Version version;
+    public DataContainer.DatabaseSys.Databases.VersionDatabase.Version version;
     public Renderer renderer;
 
     public string RootPath => _path;
@@ -33,7 +33,7 @@ public partial class ProjectData
         _ => "Unknown"
     };
     public bool IsFavorited { get; set; } = false;
-    public VersionData.BuildType Build { get; set; } = VersionData.BuildType.UNKNOWN;
+    public VersionDatabase.BuildType Build { get; set; } = VersionDatabase.BuildType.UNKNOWN;
 
     public ProjectData(string version, string renderer, string path, string gdextPathExtra,
         bool isFavorited, string[] projectTags, string[] softwareTags)

@@ -16,21 +16,20 @@ public partial class VersionListEntry : VersionEntryBase
         _pathLabel = GetNode<Label>("%PathLabel");
     }
 
-    public override void SetData(string version, VersionData.BuildType build, bool isCSharp)
+    public override void SetData(in VersionKey versionKey)
     {
-        IsCSharp = isCSharp;
-        Build = build;
-        _versionStr = version;
+        IsCSharp = versionKey.isDotNet;
+        Build = versionKey.buildType;
+        _versionStr = versionKey.VersionStr;
 
-        if (isCSharp)
+        if (IsCSharp)
             _cSharpLabel.Show();
         else
             _cSharpLabel.Hide();
 
-        _titleLabel.Text = $"Version {version} ".BBCodeColor(ColorTheme.BaseBlue)
-            + $"[{VersionData.BuildEnumToString(build)}]".BBCodeColor(ColorTheme.GetColorFromBuild(build));
+        _titleLabel.Text = $"Version {_versionStr} ".BBCodeColor(ColorTheme.BaseBlue)
+            + $"[{versionKey.BuildTypeStr}]".BBCodeColor(ColorTheme.GetColorFromBuild(versionKey.buildType));
 
-        VersionKey key = new(new(version), isCSharp, VersionDatabase.ConvertToNewBuildType(build));
-        _pathLabel.Text = $"Path: {VersionDatabase.Instance.GetPath(key)}";
+        _pathLabel.Text = $"Path: {VersionDatabase.Instance.GetPath(versionKey)}";
     }
 }

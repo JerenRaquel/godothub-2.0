@@ -10,12 +10,12 @@ public partial class GodotVersions : TabBase
     public const string LANGUAGE_TAG = "GLOBAL/GodotVersion/lang_support_mode/LONG";
     public const string RELEASE_TAG = "GLOBAL/GodotVersion/release_mode/LONG";
 
-    private readonly VersionData.BuildType[] BUILD_MAP = [
-        VersionData.BuildType.UNKNOWN,
-        VersionData.BuildType.DEV,
-        VersionData.BuildType.BETA,
-        VersionData.BuildType.RELEASE_CANDIDATE,
-        VersionData.BuildType.STABLE
+    private readonly VersionDatabase.BuildType[] BUILD_MAP = [
+        VersionDatabase.BuildType.UNKNOWN,
+        VersionDatabase.BuildType.DEV,
+        VersionDatabase.BuildType.BETA,
+        VersionDatabase.BuildType.RELEASE_CANDIDATE,
+        VersionDatabase.BuildType.STABLE
     ];
 
     [Export] private PackedScene cardEntry;
@@ -133,7 +133,7 @@ public partial class GodotVersions : TabBase
         }
     }
 
-    private VersionEntryBase AddVersionEntry(bool isCard, string version, VersionData.BuildType build, bool isCSharp)
+    private VersionEntryBase AddVersionEntry(bool isCard, in VersionKey versionKey)
     {
         VersionEntryBase entry;
         if (isCard)
@@ -149,7 +149,7 @@ public partial class GodotVersions : TabBase
             entry = versionListEntry;
         }
 
-        entry.SetData(version, build, isCSharp);
+        entry.SetData(in versionKey);
         entry.DoubleClickButton.StateToggled += (bool state) => OnEntryToggled(state, entry);
         entry.DoubleClickButton.LaunchRequested += OnFolderOpenPressed;
         return entry;
@@ -166,8 +166,8 @@ public partial class GodotVersions : TabBase
 
     private void OnVersionLocated(string key)
     {
-        VersionData.ParsedVersionKey parts = VersionData.ParseKey(key);
-        VersionEntryBase entry = AddVersionEntry(SettingsCache.Instance.GetData(VIEW_TAG), parts.version.ToString(), parts.build, parts.isCSharp);
+        VersionKey versionKey = new(key);
+        VersionEntryBase entry = AddVersionEntry(SettingsCache.Instance.GetData(VIEW_TAG), in versionKey);
         _versions.Add(entry, key);
     }
 

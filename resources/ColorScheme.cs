@@ -1,3 +1,5 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
+
 public static class ColorTheme
 {
     public static readonly string BaseBlue = "478cbf";
@@ -16,14 +18,14 @@ public static class ColorTheme
 
     public static string BBCodeColor(this string str, string colorCode) => $"[color='{colorCode}']{str}[/color]";
 
-    public static string GetColorFromBuild(VersionData.BuildType build)
+    public static string GetColorFromBuild(VersionDatabase.BuildType build)
     {
         return build switch
         {
-            VersionData.BuildType.STABLE => Stable,
-            VersionData.BuildType.RELEASE_CANDIDATE => ReleaseCandidate,
-            VersionData.BuildType.BETA => Beta,
-            VersionData.BuildType.DEV => Dev,
+            VersionDatabase.BuildType.STABLE => Stable,
+            VersionDatabase.BuildType.RELEASE_CANDIDATE => ReleaseCandidate,
+            VersionDatabase.BuildType.BETA => Beta,
+            VersionDatabase.BuildType.DEV => Dev,
             _ => Unknown
         };
     }

@@ -1,10 +1,11 @@
 using System.IO;
 using System.Collections.Generic;
 using Godot;
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 
 public partial class ProjectCache : Cache
 {
-    public void AddProject(ProjectCreator.ProjectCreationData data, string path, string templateName, VersionData.BuildType build)
+    public void AddProject(ProjectCreator.ProjectCreationData data, string path, string templateName, VersionDatabase.BuildType build)
     {
         ProjectDataState project = new();
         TemplateStructure template = TemplateCache.Instance.GetTemplate(templateName);
@@ -30,7 +31,7 @@ public partial class ProjectCache : Cache
         project.IsFavorited = state;
     }
 
-    public bool SetBuild(string projectName, VersionData.BuildType build)
+    public bool SetBuild(string projectName, VersionDatabase.BuildType build)
     {
         ProjectDataState project = GetProject(projectName);
         if (project == null) return false;
@@ -39,7 +40,7 @@ public partial class ProjectCache : Cache
         return true;
     }
 
-    public bool UpdateProjectData(string projectName, VersionData.BuildType build, ProjectData.Renderer renderer, string version)
+    public bool UpdateProjectData(string projectName, VersionDatabase.BuildType build, ProjectData.Renderer renderer, string version)
     {
         ProjectDataState project = GetProject(projectName);
         if (project == null) return false;
@@ -58,7 +59,7 @@ public partial class ProjectCache : Cache
         return true;
     }
 
-    public VersionData.BuildType GetBuild(string projectName) => GetProject(projectName)?.Build ?? VersionData.BuildType.UNKNOWN;
+    public VersionDatabase.BuildType GetBuild(string projectName) => GetProject(projectName)?.Build ?? VersionDatabase.BuildType.UNKNOWN;
 
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
@@ -67,7 +68,7 @@ public partial class ProjectCache : Cache
         ProjectDataState projectData = GetProject(projectName);
         if (projectData == null) return null;
 
-        string versionBuild = $"v{projectData.VersionStr ?? "Unknown"} [{VersionData.BuildEnumToString(projectData.Build)}]";
+        string versionBuild = $"v{projectData.VersionStr ?? "Unknown"} [{VersionDatabase.BuildEnumToString(projectData.Build)}]";
         if (projectData.IsDotNet)
             versionBuild += $" [.Net]";
 
@@ -113,7 +114,7 @@ public partial class ProjectCache : Cache
 
     public string[] GetSoftwareTags(string projectName) => GetProject(projectName)?.SoftwareTags;
 
-    public bool HasBuildSelected(string projectName) => GetProject(projectName)?.Build != VersionData.BuildType.UNKNOWN;
+    public bool HasBuildSelected(string projectName) => GetProject(projectName)?.Build != VersionDatabase.BuildType.UNKNOWN;
 
     public bool HasTags(string projectName) => GetProject(projectName)?.HasTags ?? false;
 
@@ -141,16 +142,17 @@ public partial class ProjectCache : Cache
     public string ProjectNameToPartialKey(string projectName)
     {
         ProjectDataState data = GetProject(projectName);
-        return VersionData.GeneratePartialKey(data.VersionData, data.IsDotNet);
+        return VersionKey.GeneratePartialKey(data.VersionData, data.IsDotNet);
     }
 
     public string ProjectNameToKey(string projectName)
     {
         ProjectDataState data = GetProject(projectName);
         if (data == null) return null;
-        if (data.Build == VersionData.BuildType.UNKNOWN) return null;
+        if (data.Build == VersionDatabase.BuildType.UNKNOWN) return null;
 
-        return VersionData.GenerateKey(data.VersionData, data.IsDotNet, data.Build);
+        VersionKey key = new(data.VersionData, data.IsDotNet, data.Build);
+        return (string)key;
     }
 
     public string GenerateProjectMetadataString(string projectName, bool center = false)
@@ -158,8 +160,8 @@ public partial class ProjectCache : Cache
         ProjectDataState data = GetProject(projectName);
         if (data == null) return "";
 
-        VersionData.BuildType buildType = data.Build;
-        string buildStr = VersionData.BuildEnumToString(buildType);
+        VersionDatabase.BuildType buildType = data.Build;
+        string buildStr = VersionDatabase.BuildEnumToString(buildType);
         string versionStr = data.VersionStr ?? "Unknown";
         string renderStr = GetRenderer(projectName);
         string colorCode = renderStr switch

@@ -62,8 +62,8 @@ public partial class BuildPrompt : WindowBase
 
     protected override bool Validate()
     {
-        VersionData.BuildType build = VersionData.StringToBuildEnum(_buildOptionButton.GetItemText(_buildOptionButton.Selected));
-        if (build == VersionData.BuildType.UNKNOWN)
+        VersionDatabase.BuildType build = VersionDatabase.StringToBuildEnum(_buildOptionButton.GetItemText(_buildOptionButton.Selected));
+        if (build == VersionDatabase.BuildType.UNKNOWN)
         {
             DisplayError("HUHH???? HOW??? -- Please report... idk how that happened");
             return false;
@@ -85,7 +85,7 @@ public partial class BuildPrompt : WindowBase
         bool buildSet = false;
         if (Validate())
         {
-            VersionData.BuildType build = VersionData.StringToBuildEnum(_buildOptionButton.GetItemText(_buildOptionButton.Selected));
+            VersionDatabase.BuildType build = VersionDatabase.StringToBuildEnum(_buildOptionButton.GetItemText(_buildOptionButton.Selected));
             buildSet = ProjectCache.Instance.SetBuild(_projectName, build);
         }
 

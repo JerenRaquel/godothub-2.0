@@ -9,6 +9,7 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
         public string PartialKey { get; private set; }
         public string FullKey { get; private set; }
         public bool IsValid { get; private set; } = true;
+        public string VersionStr => (string)version;
         public string BuildTypeStr => VersionDatabase.BuildEnumToString(buildType);
 
         public VersionKey() => IsValid = false;
@@ -56,6 +57,20 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
         public static explicit operator string(VersionKey key) => key.FullKey;
 
         public static explicit operator VersionKey(string rawKey) => new(rawKey);
+
+        public static bool operator ==(VersionKey x, VersionKey y) => x.FullKey == y.FullKey;
+
+        public static bool operator !=(VersionKey x, VersionKey y) => x.FullKey != y.FullKey;
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is VersionKey)) return false;
+
+            VersionKey other = (VersionKey)obj;
+            return FullKey == other.FullKey;
+        }
+
+        public override int GetHashCode() => FullKey.GetHashCode();
 
         private void GenerateKeys()
         {

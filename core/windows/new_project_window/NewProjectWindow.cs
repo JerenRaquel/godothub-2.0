@@ -151,7 +151,7 @@ public partial class NewProjectWindow : WindowBase
 
         string godotVersionStrData = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
         bool isCSharp = godotVersionStrData.Contains("[.Net]");
-        string versionStr = Version.ParseVersionStr(godotVersionStrData);
+        string versionStr = DataContainer.DatabaseSys.Databases.VersionDatabase.Version.ParseVersionStr(godotVersionStrData);
         if (versionStr == null)
         {
             NotifcationManager.Instance.NotifyError("Could not determine version...");
@@ -175,8 +175,8 @@ public partial class NewProjectWindow : WindowBase
             return;
         }
 
-        VersionData.BuildType buildType = VersionData.ParseBuildStr(godotVersionStrData);
-        if (buildType == VersionData.BuildType.UNKNOWN)
+        VersionDatabase.BuildType buildType = VersionDatabase.ParseBuildStr(godotVersionStrData);
+        if (buildType == VersionDatabase.BuildType.UNKNOWN)
         {
             NotifcationManager.Instance.NotifyError("Build type not valid. Some how this got past the validation step...");
             Hide();

@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 
@@ -15,19 +16,19 @@ public partial class Card : VersionEntryBase
         _build = GetNode<Label>("%Build");
     }
 
-    public override void SetData(string version, VersionData.BuildType build, bool isCSharp)
+    public override void SetData(in VersionKey versionKey)
     {
-        IsCSharp = isCSharp;
-        Build = build;
-        _versionStr = version;
+        IsCSharp = versionKey.isDotNet;
+        Build = versionKey.buildType;
+        _versionStr = versionKey.VersionStr;
 
-        if (isCSharp)
+        if (IsCSharp)
             _cSharpLabel.Show();
         else
             _cSharpLabel.Hide();
 
-        _version.Text = $"Version {version}";
-        _build.Text = VersionData.BuildEnumToString(build);
-        _build.AddThemeColorOverride("font_color", new Color(ColorTheme.GetColorFromBuild(build)));
+        _version.Text = $"Version {_versionStr}";
+        _build.Text = versionKey.BuildTypeStr;
+        _build.AddThemeColorOverride("font_color", new Color(ColorTheme.GetColorFromBuild(Build)));
     }
 }

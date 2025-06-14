@@ -22,8 +22,17 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
             // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
             int IComparer.Compare(object x, object y)
             {
-                string lhs = (string)(VersionKey)x;
-                string rhs = (string)(VersionKey)y;
+                string lhs, rhs;
+                if (x is VersionKey)
+                {
+                    lhs = (string)(VersionKey)x;
+                    rhs = (string)(VersionKey)y;
+                }
+                else
+                {
+                    lhs = (string)x;
+                    rhs = (string)y;
+                }
                 return new CaseInsensitiveComparer().Compare(rhs, lhs);
             }
         }
@@ -64,8 +73,6 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
             string path = fileData.file.ReadLine();
             while (key != null && path != null)
             {
-                Console.WriteLine($"{key} : {path}");
-
                 VersionKey versionKey = (VersionKey)key;
                 AddVersion(versionKey, path);
 
@@ -93,13 +100,6 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
             }
         }
 
-        //! TEMP
-        // TODO: Remove after integration
-        public static BuildType ConvertToNewBuildType(VersionData.BuildType type)
-        {
-            return (BuildType)type;
-        }
-
         public static string BuildEnumToString(BuildType type)
         {
             return type switch
@@ -122,6 +122,17 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
                 "Dev" => BuildType.DEV,
                 _ => BuildType.UNKNOWN
             };
+        }
+
+        public static BuildType ParseBuildStr(string dataStr)
+        {
+            string[] parts = dataStr.Split(" [", StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0) return BuildType.UNKNOWN;
+
+            string newDataStr = parts[1];
+            string[] newParts = newDataStr.Split("]", StringSplitOptions.RemoveEmptyEntries);
+            string buildStr = newParts[0];
+            return StringToBuildEnum(buildStr);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using Newtonsoft.Json;
 
@@ -19,9 +20,9 @@ public partial class ProjectDataState
 
     public string projectName;
 
-    public Version VersionData => _RAM.version;
+    public DataContainer.DatabaseSys.Databases.VersionDatabase.Version VersionData => _RAM.version;
     public string VersionStr => _RAM.version.ToString();
-    public VersionData.BuildType Build => _RAM.Build;
+    public VersionDatabase.BuildType Build => _RAM.Build;
     public ProjectData.Renderer Renderer => _RAM.renderer;
     public string[] ProjectTags => [.. _RAM.projectTags];
     public string[] SoftwareTags => [.. _RAM.softwareTags];
@@ -41,7 +42,7 @@ public partial class ProjectDataState
         }
     }
 
-    public void CreateProject(string versionStr, string renderer, string folderPath, string gdExtPath, string[] projectTags, string[] softwareTags, VersionData.BuildType build, bool isCSharp)
+    public void CreateProject(string versionStr, string renderer, string folderPath, string gdExtPath, string[] projectTags, string[] softwareTags, VersionDatabase.BuildType build, bool isCSharp)
     {
         _ROM = new ProjectData(versionStr, renderer, folderPath, gdExtPath, false, projectTags, softwareTags);
         _ROM.Build = build;
@@ -62,7 +63,7 @@ public partial class ProjectDataState
         return _RAM.projectTags.Contains(tagName);
     }
 
-    public void SetBuild(VersionData.BuildType build)
+    public void SetBuild(VersionDatabase.BuildType build)
     {
         _isDirty = true;
         _RAM.Build = build;
@@ -75,7 +76,7 @@ public partial class ProjectDataState
         _RAM.renderer = renderer;
     }
 
-    public void SetVersion(Version version)
+    public void SetVersion(DataContainer.DatabaseSys.Databases.VersionDatabase.Version version)
     {
         _isDirty = true;
         _isConfigDirty = true;
@@ -103,7 +104,7 @@ public partial class ProjectDataState
         // Version
         WriteEntry(writer, "Version", _ROM.version.ToString());
         // Build
-        WriteEntry(writer, "Build", global::VersionData.BuildEnumToString(Build));
+        WriteEntry(writer, "Build", VersionDatabase.BuildEnumToString(Build));
         // Renderer
         WriteEntry(writer, "Renderer", _ROM.RendererString);
         // Project Name
@@ -221,7 +222,7 @@ public partial class ProjectDataState
 
 
         _ROM = new(versionStr, renderer, rootPath, pathAdditions, favorited, [.. projectTags], [.. softwareTags])
-        { Build = global::VersionData.StringToBuildEnum(buildStr) };
+        { Build = VersionDatabase.StringToBuildEnum(buildStr) };
 
         _RAM = new(_ROM);
         _lastEdited = File.GetLastWriteTime(_ROM.ProjectGodotPath);

@@ -92,7 +92,7 @@ public partial class Projects : TabBase
         _deletePrompt.ProjectDeletedSuccessfully += OnProjectDeletedSuccessfully;
 
         string[] versions = ProjectCache.Instance.GetVersions();
-        Array.Sort(versions, VersionData.reverseComparer);
+        Array.Sort(versions, VersionDatabase.reverseComparer);
         foreach (string version in versions)
             _versionOptionButton.AddItem(version);
 
@@ -244,7 +244,7 @@ public partial class Projects : TabBase
 
     private void OnLaunchRequested(string projectName)
     {
-        if (ProjectCache.Instance.GetBuild(projectName) == VersionData.BuildType.UNKNOWN)
+        if (ProjectCache.Instance.GetBuild(projectName) == VersionDatabase.BuildType.UNKNOWN)
         {
             _buildPrompt.Open(projectName);
             return;

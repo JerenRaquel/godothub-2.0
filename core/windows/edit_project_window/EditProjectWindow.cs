@@ -56,7 +56,7 @@ public partial class EditProjectWindow : WindowBase
 
         RefreshVersionOptions();
 
-        if (ProjectCache.Instance.GetBuild(projectName) == VersionData.BuildType.UNKNOWN)
+        if (ProjectCache.Instance.GetBuild(projectName) == VersionDatabase.BuildType.UNKNOWN)
         {
             _cachedVersionBuildIndex = -1;
             _versionOptionButton.Select(0);
@@ -107,7 +107,7 @@ public partial class EditProjectWindow : WindowBase
         if (Validate())
         {
             string selectedVersionMetaString = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
-            VersionData.BuildType build = VersionData.ParseBuildStr(selectedVersionMetaString);
+            VersionDatabase.BuildType build = VersionDatabase.ParseBuildStr(selectedVersionMetaString);
             ProjectData.Renderer renderer = ProjectData.Renderer.INVALID;
             if (_compatCheckBox.ButtonPressed)
                 renderer = ProjectData.Renderer.COMPAT;
@@ -116,7 +116,12 @@ public partial class EditProjectWindow : WindowBase
             else if (_forwardCheckBox.ButtonPressed)
                 renderer = ProjectData.Renderer.FORWARD;
 
-            bool state = ProjectCache.Instance.UpdateProjectData(_cachedProjectName, build, renderer, Version.ParseVersionStr(selectedVersionMetaString));
+            bool state = ProjectCache.Instance.UpdateProjectData(
+                _cachedProjectName,
+                build,
+                renderer,
+                DataContainer.DatabaseSys.Databases.VersionDatabase.Version.ParseVersionStr(selectedVersionMetaString)
+            );
             if (state)
                 NotifcationManager.Instance.NotifyValid("Project Updated.");
             else
