@@ -79,6 +79,9 @@ namespace DataContainer.DatabaseSys.Databases.SettingDatabase
         #region Overloaded Functions
         public static bool operator ==(SettingsData x, SettingsData y)
         {
+            if (x is null && y is not null) return false;
+            if (x is not null && y is null) return false;
+
             if (x._type != y._type) return false;
 
             return x._type switch

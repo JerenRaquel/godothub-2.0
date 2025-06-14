@@ -1,5 +1,5 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
-using System;
 
 public partial class ProjectPathDefaults : InterfaceBase
 {
@@ -24,20 +24,21 @@ public partial class ProjectPathDefaults : InterfaceBase
 
     public override string[] GetAllSettingTags() => [RENDERING_DEVICE_TAG, NAMING_SCHEME_TAG, LAUNCH_BEHAVIOR_TAG];
 
-    public override SettingsData.Data GetData(string settingTag)
+    public override SettingsData GetData(string settingTag)
     {
         return settingTag switch
         {
             RENDERING_DEVICE_TAG => _renderingDeviceOptionButton.Selected,
             NAMING_SCHEME_TAG => _namingSchemeOptionButton.Selected,
             LAUNCH_BEHAVIOR_TAG => _launchBehaviorOptionButton.Selected,
-            _ => new()
+            _ => null
         };
     }
 
-    public override void SetData(string settingTag, SettingsData.Data data)
+    public override void SetData(SettingsTag tagKey)
     {
-        switch (settingTag)
+        SettingsData data = SettingsDatabase.Instance.GetData(tagKey);
+        switch (tagKey.Tag)
         {
             case RENDERING_DEVICE_TAG:
                 _renderingDeviceOptionButton.Select(data);

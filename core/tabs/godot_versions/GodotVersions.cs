@@ -1,14 +1,14 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public partial class GodotVersions : TabBase
 {
-    public const string VIEW_TAG = "GLOBAL/GodotVersion/view_mode/BOOL";
-    public const string LANGUAGE_TAG = "GLOBAL/GodotVersion/lang_support_mode/LONG";
-    public const string RELEASE_TAG = "GLOBAL/GodotVersion/release_mode/LONG";
+    //? Should these be in the SettingsTag struct?
+    public readonly SettingsTag VIEW_KEY = new("GLOBAL/GodotVersion/view_mode/BOOL");
+    public readonly SettingsTag LANGUAGE_KEY = new("GLOBAL/GodotVersion/lang_support_mode/LONG");
+    public readonly SettingsTag RELEASE_KEY = new("GLOBAL/GodotVersion/release_mode/LONG");
 
     private readonly VersionDatabase.BuildType[] BUILD_MAP = [
         VersionDatabase.BuildType.UNKNOWN,
@@ -39,9 +39,9 @@ public partial class GodotVersions : TabBase
 
     public override void _ExitTree()
     {
-        SettingsCache.Instance.AddOrUpdate(VIEW_TAG, _viewCheckButton.ButtonPressed);
-        SettingsCache.Instance.AddOrUpdate(LANGUAGE_TAG, _languageOptionButton.Selected);
-        SettingsCache.Instance.AddOrUpdate(RELEASE_TAG, _buildOptionButton.Selected);
+        SettingsDatabase.Instance.AddOrUpdate(VIEW_KEY, _viewCheckButton.ButtonPressed);
+        SettingsDatabase.Instance.AddOrUpdate(LANGUAGE_KEY, _languageOptionButton.Selected);
+        SettingsDatabase.Instance.AddOrUpdate(RELEASE_KEY, _buildOptionButton.Selected);
     }
 
     public override void _Ready()
@@ -53,9 +53,9 @@ public partial class GodotVersions : TabBase
         _runButton = GetNode<Button>("%RunButton");
         _runButton.Pressed += OnLaunchPressed;
         _languageOptionButton = GetNode<OptionButton>("%LangOptionButton");
-        _languageOptionButton.ItemSelected += index => OnOptionChanged(index, LANGUAGE_TAG);
+        _languageOptionButton.ItemSelected += OnOptionLanguageChanged;
         _buildOptionButton = GetNode<OptionButton>("%BuildOptionButton");
-        _buildOptionButton.ItemSelected += index => OnOptionChanged(index, RELEASE_TAG);
+        _buildOptionButton.ItemSelected += OnOptionReleaseChanged;
         _viewCheckButton = GetNode<CheckButton>("%ViewCheckButton");
         _viewCheckButton.Toggled += OnViewToggled;
         _deleteButton = GetNode<Button>("%DeleteButton");
@@ -72,9 +72,9 @@ public partial class GodotVersions : TabBase
 
     public override void LoadData()
     {
-        _viewCheckButton.SetPressedNoSignal(SettingsCache.Instance.GetDataOrSetDefault(VIEW_TAG, new(true)));
-        _languageOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(LANGUAGE_TAG, new(0));
-        _buildOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(RELEASE_TAG, new(0));
+        _viewCheckButton.SetPressedNoSignal(SettingsDatabase.Instance.GetDataOrSetDefault(VIEW_KEY, new(true)));
+        _languageOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(LANGUAGE_KEY, new(0));
+        _buildOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(RELEASE_KEY, new(0));
 
         RefreshEntries();
     }
@@ -91,7 +91,7 @@ public partial class GodotVersions : TabBase
         _currentlySelected?.DoubleClickButton.ToggleOff();
         _currentlySelected = null;
 
-        if (SettingsCache.Instance.GetData(VIEW_TAG))
+        if (SettingsDatabase.Instance.GetData(VIEW_KEY))
         {
             _listView.Hide();
             _cardView.Show();
@@ -167,13 +167,19 @@ public partial class GodotVersions : TabBase
     private void OnVersionLocated(string key)
     {
         VersionKey versionKey = new(key);
-        VersionEntryBase entry = AddVersionEntry(SettingsCache.Instance.GetData(VIEW_TAG), in versionKey);
+        VersionEntryBase entry = AddVersionEntry(SettingsDatabase.Instance.GetData(VIEW_KEY), in versionKey);
         _versions.Add(entry, versionKey);
     }
 
-    private void OnOptionChanged(long index, string tag)
+    private void OnOptionLanguageChanged(long index)
     {
-        SettingsCache.Instance.AddOrUpdate(tag, new(index));
+        SettingsDatabase.Instance.AddOrUpdate(in LANGUAGE_KEY, new(index));
+        Filter();
+    }
+
+    private void OnOptionReleaseChanged(long index)
+    {
+        SettingsDatabase.Instance.AddOrUpdate(in RELEASE_KEY, new(index));
         Filter();
     }
 
@@ -210,7 +216,7 @@ public partial class GodotVersions : TabBase
 
     private void OnViewToggled(bool toggled)
     {
-        SettingsCache.Instance.AddOrUpdate(VIEW_TAG, new(toggled));
+        SettingsDatabase.Instance.AddOrUpdate(VIEW_KEY, new(toggled));
         RefreshEntries();
     }
 }

@@ -1,5 +1,5 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
-using System;
 
 public partial class TabManager : TabContainer
 {
@@ -17,7 +17,7 @@ public partial class TabManager : TabContainer
         _settingsTab.SettingUpdated += OnSettingUpdated;
 
         //* Load Data
-        SettingsCache.Instance.LoadData();
+        SettingsDatabase.Instance.LoadData();
         _projectTab.LoadData();
         _templateTab.LoadData();
         _versionsTab.LoadData();

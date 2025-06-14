@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
@@ -45,8 +46,7 @@ public partial class NewProjectWindow : WindowBase
 
     public void RefreshKnownImportPaths()
     {
-        //? Is there a better way?
-        string[] paths = SettingsCache.Instance.GetData("Project Settings/Paths/project_paths/STRING_LIST");
+        string[] paths = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_PATH_TAG_KEY);
         if (paths.Length == 0)
         {
             _pathOptionButton.Hide();
@@ -128,7 +128,7 @@ public partial class NewProjectWindow : WindowBase
 
     protected override void OnOpened()
     {
-        int idx = SettingsCache.Instance.GetData("Project Settings/Defaults/rendering_device/LONG");
+        int idx = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_RENDERING);
         switch (idx)
         {
             case 0: OnCheckBoxToggled(true, _forwardCheckBox); break;
@@ -257,9 +257,10 @@ public partial class NewProjectWindow : WindowBase
         Validate();
     }
 
+    //? Should this be in OSAPI?
     private static string FormatFolderName(string name)
     {
-        int idx = SettingsCache.Instance.GetData("Project Settings/Defaults/naming_scheme/LONG");
+        int idx = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_NAMING);
         string folderName = idx switch
         {
             0 => name.Replace("-", " ").Replace("_", " ").ToPascalCase(),  // PascalCase

@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,11 +60,8 @@ public partial class Settings : TabBase
 
     public override void LoadData()
     {
-        foreach (string key in SettingsCache.Instance.Keys)
-        {
-            SettingsData.ParsedKeyData data = SettingsData.ParseKey(key);
-            GetInterface(data.group, data.name)?.SetData(data.tag, SettingsCache.Instance.GetData(key));
-        }
+        foreach (SettingsTag key in SettingsDatabase.Instance.Keys)
+            GetInterface(key.Group, key.Section)?.SetData(key);
     }
 
     private void SaveSettings()
@@ -105,10 +103,10 @@ public partial class Settings : TabBase
     private void OnSettingChanged(string group, string section, string settingTag)
     {
         InterfaceBase interfaceControl = GetInterface(group, section);
-        SettingsData.Data data = interfaceControl.GetData(settingTag);
-        string key = SettingsData.GenerateKey(group, section, settingTag, data.DataType);
-        SettingsCache.Instance.AddOrUpdate(key, data);
-        EmitSignal(SignalName.SettingUpdated, key);
+        SettingsData data = interfaceControl.GetData(settingTag);
+        SettingsTag key = new(group, section, settingTag, data.DataType);
+        SettingsDatabase.Instance.AddOrUpdate(key, data);
+        EmitSignal(SignalName.SettingUpdated, key.Key);
     }
 
 }

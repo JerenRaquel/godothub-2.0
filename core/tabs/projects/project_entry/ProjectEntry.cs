@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
 
 public partial class ProjectEntry : PanelContainer
@@ -66,10 +67,9 @@ public partial class ProjectEntry : PanelContainer
     public void UpdatePath()
     {
         string projectPath = ProjectCache.Instance.GetProjectPath(_projectName, true);
-        if (SettingsCache.Instance.GetData("Application/Config/abs_proj_path/BOOL"))
+        if (SettingsDatabase.Instance.GetData(SettingsDatabase.APPLICATION_ABS_PROJ_PATH))
         {
-            //? Is there a better way than hard coding this?
-            string[] paths = SettingsCache.Instance.GetData("Project Settings/Paths/project_paths/STRING_LIST");
+            string[] paths = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_PATH_TAG_KEY);
             foreach (string path in paths)
             {
                 if (projectPath.Contains(path))

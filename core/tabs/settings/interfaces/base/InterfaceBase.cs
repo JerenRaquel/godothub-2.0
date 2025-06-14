@@ -1,4 +1,4 @@
-using System;
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
 
 [GlobalClass]
@@ -11,6 +11,6 @@ public partial class InterfaceBase : HBoxContainer
     public override void _Ready() => _contentContainer = GetNode<VBoxContainer>("%ContentPanel");
 
     public virtual string[] GetAllSettingTags() => [];
-    public virtual SettingsData.Data GetData(string settingTag) => new();
-    public virtual void SetData(string settingTag, SettingsData.Data data) { }
+    public virtual SettingsData GetData(string settingTag) => null;
+    public virtual void SetData(SettingsTag tagKey) { }
 }

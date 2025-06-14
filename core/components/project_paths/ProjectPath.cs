@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
 using System;
 using System.IO;
@@ -41,7 +42,10 @@ public partial class ProjectPath : HBoxContainer
 
     private void OnDeletePressed()
     {
-        SettingsCache.Instance.RemoveEntryFromDataList("Project Settings/Paths/project_paths/STRING_LIST", Path);
+        SettingsDatabase.Instance.RemoveEntryFromDataList(
+            SettingsDatabase.PROJECT_PATH_TAG_KEY,
+            Path
+        );
         QueueFree();
     }
 }

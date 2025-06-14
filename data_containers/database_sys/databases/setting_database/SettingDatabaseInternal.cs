@@ -10,22 +10,22 @@ namespace DataContainer.DatabaseSys.Databases.SettingDatabase
     ///     - Overrided Functions
     ///     - Static Functions
     /// </summary>
-    public partial class SettingDatabase : Database<SettingsTag, SettingsData>
+    public partial class SettingsDatabase : Database<SettingsTag, SettingsData>
     {
         #region Singleton Instance
-        private static SettingDatabase _instance;
+        private static SettingsDatabase _instance;
 
-        public static SettingDatabase Instance => _instance;
+        public static SettingsDatabase Instance => _instance;
 
-        private SettingDatabase(string userDirectory)
+        private SettingsDatabase(string userDirectory)
             : base(userDirectory, "SettingsDatabase.gdhub")
                 => LoadData();
 
-        public static SettingDatabase Initialize(string userDirectory)
+        public static SettingsDatabase Initialize(string userDirectory)
         {
             lock (padlock)
             {
-                _instance ??= new SettingDatabase(userDirectory);
+                _instance ??= new SettingsDatabase(userDirectory);
                 return _instance;
             }
         }

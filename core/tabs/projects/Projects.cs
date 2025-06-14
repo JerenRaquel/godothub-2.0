@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
@@ -5,9 +6,10 @@ using System.Collections.Generic;
 
 public partial class Projects : TabBase
 {
-    public const string VERSION_TAG = "GLOBAL/Projects/version_mode/LONG";
-    public const string SORT_TAG = "GLOBAL/Projects/sort_mode/LONG";
-    public const string SORT_MODIFIER_TAG = "GLOBAL/Projects/sort_modifier_mode/BOOL";
+    //? Should these be in the SettingsTag struct?
+    public readonly SettingsTag VERSION_KEY = new("GLOBAL/Projects/version_mode/LONG");
+    public readonly SettingsTag SORT_KEY = new("GLOBAL/Projects/sort_mode/LONG");
+    public readonly SettingsTag SORT_MODIFIER_KEY = new("GLOBAL/Projects/sort_modifier_mode/BOOL");
 
     [Signal] public delegate void GoToVersionsRequestedEventHandler();
 
@@ -35,9 +37,9 @@ public partial class Projects : TabBase
 
     public override void _ExitTree()
     {
-        SettingsCache.Instance.AddOrUpdate(VERSION_TAG, _versionOptionButton.Selected);
-        SettingsCache.Instance.AddOrUpdate(SORT_TAG, _sortOptionButton.Selected);
-        SettingsCache.Instance.AddOrUpdate(SORT_MODIFIER_TAG, _checkBox.ButtonPressed);
+        SettingsDatabase.Instance.AddOrUpdate(VERSION_KEY, _versionOptionButton.Selected);
+        SettingsDatabase.Instance.AddOrUpdate(SORT_KEY, _sortOptionButton.Selected);
+        SettingsDatabase.Instance.AddOrUpdate(SORT_MODIFIER_KEY, _checkBox.ButtonPressed);
     }
 
     public override void _Ready()
@@ -95,15 +97,15 @@ public partial class Projects : TabBase
         Array.Sort(versions, VersionDatabase.reverseComparer);
         foreach (string version in versions)
             _versionOptionButton.AddItem(version);
-
-        FillProjectContainer();
     }
 
     public override void LoadData()
     {
-        _versionOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(VERSION_TAG, new(0));
-        _sortOptionButton.Selected = SettingsCache.Instance.GetDataOrSetDefault(SORT_TAG, new(0));
-        _checkBox.ButtonPressed = SettingsCache.Instance.GetDataOrSetDefault(SORT_MODIFIER_TAG, new(false));
+        _versionOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(VERSION_KEY, new(0));
+        _sortOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(SORT_KEY, new(0));
+        _checkBox.ButtonPressed = SettingsDatabase.Instance.GetDataOrSetDefault(SORT_MODIFIER_KEY, new(false));
+
+        FillProjectContainer();
     }
 
     public void UpdatePaths()
@@ -213,7 +215,7 @@ public partial class Projects : TabBase
 
     private void OnScanButtonPressed()
     {
-        string[] paths = SettingsCache.Instance.GetData("Project Settings/Paths/project_paths/STRING_LIST");
+        string[] paths = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_PATH_TAG_KEY);
         ProjectCache.Instance.ScanProjects(paths);
         FillProjectContainer();
     }
@@ -222,13 +224,13 @@ public partial class Projects : TabBase
 
     private void OnVersionChanged(long index)
     {
-        SettingsCache.Instance.AddOrUpdate(VERSION_TAG, index);
+        SettingsDatabase.Instance.AddOrUpdate(VERSION_KEY, index);
         Filter();
     }
 
     private void OnSortChanged(long index)
     {
-        SettingsCache.Instance.AddOrUpdate(SORT_TAG, index);
+        SettingsDatabase.Instance.AddOrUpdate(SORT_KEY, index);
         FillProjectContainer();
     }
 
@@ -238,7 +240,7 @@ public partial class Projects : TabBase
             _checkBox.Text = "Descending";
         else
             _checkBox.Text = "Ascending";
-        SettingsCache.Instance.AddOrUpdate(SORT_MODIFIER_TAG, toggled);
+        SettingsDatabase.Instance.AddOrUpdate(SORT_MODIFIER_KEY, toggled);
         FillProjectContainer();
     }
 
@@ -293,8 +295,7 @@ public partial class Projects : TabBase
 
     private void OnLaunchOnConfirm(string projectName)
     {
-        //? Is there a better way to fetch this key?
-        int runInstruction = SettingsCache.Instance.GetData("Project Settings/Defaults/launch_behavior/LONG");
+        int runInstruction = SettingsDatabase.Instance.GetData(in SettingsDatabase.PROJECT_LAUNCH);
         if (runInstruction == 2)  // Run
         {
             ProjectSidePanel.RunProject(projectName);
@@ -303,7 +304,7 @@ public partial class Projects : TabBase
 
         if (ProjectSidePanel.OpenProject(projectName, runInstruction == 1))
         {
-            if (SettingsCache.Instance.GetData("Application/Config/HUB_behavior/LONG") == 0)
+            if (SettingsDatabase.Instance.GetData(in SettingsDatabase.APPLICATION_HUB_BEHAVIOR) == 0)
             {
                 // Resort
                 CallDeferred("FillProjectContainer");

@@ -1,5 +1,5 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,20 +28,20 @@ public partial class ProjectPathInterface : InterfaceBase
 
     public override string[] GetAllSettingTags() => [PATH_TAG];
 
-    public override SettingsData.Data GetData(string settingTag)
+    public override SettingsData GetData(string settingTag)
     {
-        if (settingTag != PATH_TAG) return new();
+        if (settingTag != PATH_TAG) return null;
 
 
         if (_count == 1)
         {
             ProjectPath projPath = LastPathEntry();
             if (projPath.IsValid) return new([projPath.Path]);
-            return new();
+            return null;
         }
 
         List<string> data = [];
-        foreach (Control projectPath in _contentContainer.GetChildren())
+        foreach (Control projectPath in _contentContainer.GetChildren().Cast<Control>())
         {
             if (projectPath is ProjectPath)
             {
@@ -54,9 +54,10 @@ public partial class ProjectPathInterface : InterfaceBase
         return new([.. data]);
     }
 
-    public override void SetData(string settingTag, SettingsData.Data data)
+    public override void SetData(SettingsTag tagKey)
     {
-        if (settingTag != PATH_TAG) return;
+        SettingsData data = SettingsDatabase.Instance.GetData(tagKey);
+        if (tagKey.Tag != PATH_TAG) return;
 
         foreach (string path in (string[])data)
             LoadPath(path);
@@ -109,7 +110,10 @@ public partial class ProjectPathInterface : InterfaceBase
         if (path.Length > 0)
         {
             _awaitingInstance.Path = path;
-            SettingsCache.Instance.AddEntryToDataList("Project Settings/Paths/project_paths/STRING_LIST", path);
+            SettingsDatabase.Instance.AddEntryToDataList(
+                in SettingsDatabase.PROJECT_PATH_TAG_KEY,
+                path
+            );
         }
         _awaitingInstance = null;
         FileDialogManager.Instance.DataCompiled -= OnFileSelected;

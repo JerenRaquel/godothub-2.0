@@ -1,6 +1,6 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
-using System;
 
 public partial class Master : Node
 {
@@ -10,23 +10,22 @@ public partial class Master : Node
     {
         OSAPI.Initialize();
         string userDirectory = ProjectSettings.GlobalizePath("user://");
-        SettingsCache.Initialize(userDirectory);
+
+        SettingsDatabase.Initialize(userDirectory);
         VersionDatabase.Initialize(userDirectory);
         TagCache.Initialize(userDirectory);
         ProjectCache.Initialize(userDirectory);
         TemplateCache.Initialize(userDirectory);
-
     }
 
     // TEMP: Replace with Normal Write once Done
     public override void _ExitTree()
     {
         ProjectCache.Instance.ForceWrite();
-        SettingsCache.Instance.ForceWrite();
+        SettingsDatabase.Instance.WriteData();
         TagCache.Instance.ForceWrite();
-        VersionDatabase.Instance.ForceWrite();
+        VersionDatabase.Instance.WriteData();
         TemplateCache.Instance.ForceWrite();
-
     }
 
     public override void _Ready()

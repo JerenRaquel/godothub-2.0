@@ -1,5 +1,5 @@
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using Godot;
-using System;
 
 public partial class Config : InterfaceBase
 {
@@ -28,20 +28,21 @@ public partial class Config : InterfaceBase
 
     public override string[] GetAllSettingTags() => [FULL_EXEC_PATH_TAG, ABS_PROJ_PATH_TAG, HUB_BEHAVIOR_TAG];
 
-    public override SettingsData.Data GetData(string settingTag)
+    public override SettingsData GetData(string settingTag)
     {
         return settingTag switch
         {
             FULL_EXEC_PATH_TAG => _fullExecPathCheckButton.ButtonPressed,
             ABS_PROJ_PATH_TAG => _absProjPathCheckButton.ButtonPressed,
             HUB_BEHAVIOR_TAG => _HUBBehaviorOptionButton.Selected,
-            _ => new()
+            _ => null
         };
     }
 
-    public override void SetData(string settingTag, SettingsData.Data data)
+    public override void SetData(SettingsTag tagKey)
     {
-        switch (settingTag)
+        SettingsData data = SettingsDatabase.Instance.GetData(tagKey);
+        switch (tagKey.Tag)
         {
             case FULL_EXEC_PATH_TAG:
                 _fullExecPathCheckButton.SetPressedNoSignal(data);
