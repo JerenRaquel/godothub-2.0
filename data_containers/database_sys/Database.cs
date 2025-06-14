@@ -27,12 +27,17 @@ namespace DataContainer.DatabaseSys
         public bool IsDirty { get; protected set; } = false;
 
         public abstract bool LoadData();
-        public abstract void WriteData();
         public abstract void ForceWrite();
+
+        public void WriteData()
+        {
+            if (!IsDirty) return;
+            ForceWrite();
+        }
 
         public virtual bool HasKey(K key) => _data.ContainsKey(key);
 
-        protected FileData OpenFile()
+        protected FileData OpenReadableFile()
         {
             if (!File.Exists(SAVE_LOCATION)) return new(ImportError.READ_FAIL, null);
 
@@ -48,6 +53,13 @@ namespace DataContainer.DatabaseSys
                 return new(ImportError.OK, file);
 
             return new(ImportError.INVALID_CONFIG_VERSION, null);
+        }
+
+        protected StreamWriter OpenWritableFile()
+        {
+            StreamWriter file = new(SAVE_LOCATION, false);
+            file.WriteLine($"Version: {READABLE_VERSION}");
+            return file;
         }
 
         #region JsonText Helper Functions

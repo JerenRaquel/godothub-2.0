@@ -58,10 +58,10 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
 
         public override bool LoadData()
         {
-            FileData fileData = OpenFile();
+            FileData fileData = OpenReadableFile();
             if (fileData.file == null)
             {
-                // Replace with Logger
+                // TODO: Replace with Logger
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Failed to load data from {SAVE_LOCATION}.");
                 Console.WriteLine($"Error: {fileData.error}.");
@@ -83,21 +83,15 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
             return true;
         }
 
-        public override void WriteData()
-        {
-            if (!IsDirty) return;
-            ForceWrite();
-        }
-
         public override void ForceWrite()
         {
-            using StreamWriter file = new(SAVE_LOCATION);
-            file.WriteLine($"Version: {READABLE_VERSION}");
+            StreamWriter file = OpenWritableFile();
             foreach (KeyValuePair<VersionKey, string> pair in _data)
             {
                 file.WriteLine((string)pair.Key);
                 file.WriteLine(pair.Value);
             }
+            file.Close();
         }
 
         public static string BuildEnumToString(BuildType type)
