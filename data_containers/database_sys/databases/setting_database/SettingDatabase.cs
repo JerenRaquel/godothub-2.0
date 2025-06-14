@@ -4,6 +4,13 @@ namespace DataContainer.DatabaseSys.Databases.SettingDatabase
     {
         //? May want to re-think this at some point
         #region Constant SettingsTags
+        public readonly static SettingsTag VERSION_KEY = new("GLOBAL/Projects/version_mode/LONG");
+        public readonly static SettingsTag SORT_KEY = new("GLOBAL/Projects/sort_mode/LONG");
+        public readonly static SettingsTag SORT_MODIFIER_KEY = new("GLOBAL/Projects/sort_modifier_mode/BOOL");
+        public readonly static SettingsTag VIEW_KEY = new("GLOBAL/GodotVersion/view_mode/BOOL");
+        public readonly static SettingsTag LANGUAGE_KEY = new("GLOBAL/GodotVersion/lang_support_mode/LONG");
+        public readonly static SettingsTag RELEASE_KEY = new("GLOBAL/GodotVersion/release_mode/LONG");
+
         public readonly static SettingsTag PROJECT_PATH_TAG_KEY = new("Project Settings/Paths/project_paths/STRING_LIST");
         public readonly static SettingsTag PROJECT_RENDERING = new("Project Settings/Defaults/rendering_device/LONG");
         public readonly static SettingsTag PROJECT_NAMING = new("Project Settings/Defaults/naming_scheme/LONG");

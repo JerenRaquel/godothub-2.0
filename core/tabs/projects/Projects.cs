@@ -6,11 +6,6 @@ using System.Collections.Generic;
 
 public partial class Projects : TabBase
 {
-    //? Should these be in the SettingsTag struct?
-    public readonly SettingsTag VERSION_KEY = new("GLOBAL/Projects/version_mode/LONG");
-    public readonly SettingsTag SORT_KEY = new("GLOBAL/Projects/sort_mode/LONG");
-    public readonly SettingsTag SORT_MODIFIER_KEY = new("GLOBAL/Projects/sort_modifier_mode/BOOL");
-
     [Signal] public delegate void GoToVersionsRequestedEventHandler();
 
     private PackedScene _projectEntryPackedScene;
@@ -37,9 +32,9 @@ public partial class Projects : TabBase
 
     public override void _ExitTree()
     {
-        SettingsDatabase.Instance.AddOrUpdate(VERSION_KEY, _versionOptionButton.Selected);
-        SettingsDatabase.Instance.AddOrUpdate(SORT_KEY, _sortOptionButton.Selected);
-        SettingsDatabase.Instance.AddOrUpdate(SORT_MODIFIER_KEY, _checkBox.ButtonPressed);
+        SettingsDatabase.Instance.AddOrUpdate(SettingsDatabase.VERSION_KEY, _versionOptionButton.Selected);
+        SettingsDatabase.Instance.AddOrUpdate(SettingsDatabase.SORT_KEY, _sortOptionButton.Selected);
+        SettingsDatabase.Instance.AddOrUpdate(SettingsDatabase.SORT_MODIFIER_KEY, _checkBox.ButtonPressed);
     }
 
     public override void _Ready()
@@ -101,9 +96,9 @@ public partial class Projects : TabBase
 
     public override void LoadData()
     {
-        _versionOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(VERSION_KEY, new(0));
-        _sortOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(SORT_KEY, new(0));
-        _checkBox.ButtonPressed = SettingsDatabase.Instance.GetDataOrSetDefault(SORT_MODIFIER_KEY, new(false));
+        _versionOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(SettingsDatabase.VERSION_KEY, new(0));
+        _sortOptionButton.Selected = SettingsDatabase.Instance.GetDataOrSetDefault(SettingsDatabase.SORT_KEY, new(0));
+        _checkBox.ButtonPressed = SettingsDatabase.Instance.GetDataOrSetDefault(SettingsDatabase.SORT_MODIFIER_KEY, new(false));
 
         FillProjectContainer();
     }
@@ -224,13 +219,13 @@ public partial class Projects : TabBase
 
     private void OnVersionChanged(long index)
     {
-        SettingsDatabase.Instance.AddOrUpdate(VERSION_KEY, index);
+        SettingsDatabase.Instance.AddOrUpdate(SettingsDatabase.VERSION_KEY, index);
         Filter();
     }
 
     private void OnSortChanged(long index)
     {
-        SettingsDatabase.Instance.AddOrUpdate(SORT_KEY, index);
+        SettingsDatabase.Instance.AddOrUpdate(SettingsDatabase.SORT_KEY, index);
         FillProjectContainer();
     }
 
@@ -240,7 +235,7 @@ public partial class Projects : TabBase
             _checkBox.Text = "Descending";
         else
             _checkBox.Text = "Ascending";
-        SettingsDatabase.Instance.AddOrUpdate(SORT_MODIFIER_KEY, toggled);
+        SettingsDatabase.Instance.AddOrUpdate(SettingsDatabase.SORT_MODIFIER_KEY, toggled);
         FillProjectContainer();
     }
 
