@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
 
@@ -14,6 +15,8 @@ public partial class Master : Node
         TagCache.Initialize(userDirectory);
         ProjectCache.Initialize(userDirectory);
         TemplateCache.Initialize(userDirectory);
+
+        VersionDatabase.Initialize(userDirectory);
     }
 
     // TEMP: Replace with Normal Write once Done
@@ -24,6 +27,8 @@ public partial class Master : Node
         TagCache.Instance.ForceWrite();
         VersionCache.Instance.ForceWrite();
         TemplateCache.Instance.ForceWrite();
+
+        VersionDatabase.Instance.ForceWrite();
     }
 
     public override void _Ready()
