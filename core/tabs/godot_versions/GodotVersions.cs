@@ -34,7 +34,7 @@ public partial class GodotVersions : TabBase
     private GridContainer _cardGrid;
     private LocateGodotWindow _locateWindow;
 
-    private Dictionary<VersionEntryBase, string> _versions = [];
+    private Dictionary<VersionEntryBase, VersionKey> _versions = [];
     private VersionEntryBase _currentlySelected = null;
 
     public override void _ExitTree()
@@ -53,9 +53,9 @@ public partial class GodotVersions : TabBase
         _runButton = GetNode<Button>("%RunButton");
         _runButton.Pressed += OnLaunchPressed;
         _languageOptionButton = GetNode<OptionButton>("%LangOptionButton");
-        _languageOptionButton.ItemSelected += (long index) => OnOptionChanged(index, LANGUAGE_TAG);
+        _languageOptionButton.ItemSelected += index => OnOptionChanged(index, LANGUAGE_TAG);
         _buildOptionButton = GetNode<OptionButton>("%BuildOptionButton");
-        _buildOptionButton.ItemSelected += (long index) => OnOptionChanged(index, RELEASE_TAG);
+        _buildOptionButton.ItemSelected += index => OnOptionChanged(index, RELEASE_TAG);
         _viewCheckButton = GetNode<CheckButton>("%ViewCheckButton");
         _viewCheckButton.Toggled += OnViewToggled;
         _deleteButton = GetNode<Button>("%DeleteButton");
@@ -81,7 +81,7 @@ public partial class GodotVersions : TabBase
 
     private void RefreshEntries()
     {
-        foreach (KeyValuePair<VersionEntryBase, string> entry in _versions)
+        foreach (KeyValuePair<VersionEntryBase, VersionKey> entry in _versions)
         {
             if (entry.Key.IsQueuedForDeletion()) continue;
 
@@ -109,7 +109,7 @@ public partial class GodotVersions : TabBase
 
     private void Filter()
     {
-        foreach (KeyValuePair<VersionEntryBase, string> entry in _versions)
+        foreach (KeyValuePair<VersionEntryBase, VersionKey> entry in _versions)
         {
             if (_languageOptionButton.Selected == 1 && entry.Key.IsCSharp)    // Only GDScript
             {
@@ -150,7 +150,7 @@ public partial class GodotVersions : TabBase
         }
 
         entry.SetData(in versionKey);
-        entry.DoubleClickButton.StateToggled += (bool state) => OnEntryToggled(state, entry);
+        entry.DoubleClickButton.StateToggled += state => OnEntryToggled(state, entry);
         entry.DoubleClickButton.LaunchRequested += OnFolderOpenPressed;
         return entry;
     }
@@ -168,7 +168,7 @@ public partial class GodotVersions : TabBase
     {
         VersionKey versionKey = new(key);
         VersionEntryBase entry = AddVersionEntry(SettingsCache.Instance.GetData(VIEW_TAG), in versionKey);
-        _versions.Add(entry, key);
+        _versions.Add(entry, versionKey);
     }
 
     private void OnOptionChanged(long index, string tag)
@@ -179,9 +179,8 @@ public partial class GodotVersions : TabBase
 
     private void OnDeletePressed()
     {
-        // TODO: Look into storing the key as VersionKey instead of string
-        string key = _versions[_currentlySelected];
-        if (!VersionDatabase.Instance.RemoveVersion(new(key))) return;
+        VersionKey key = _versions[_currentlySelected];
+        if (!VersionDatabase.Instance.RemoveVersion(key)) return;
 
         // Success
         _versions.Remove(_currentlySelected);
@@ -193,28 +192,19 @@ public partial class GodotVersions : TabBase
     private void OnEntryToggled(bool state, VersionEntryBase entry)
     {
         _currentlySelected?.DoubleClickButton.ToggleOff();
-
-        if (state)
-            _currentlySelected = entry;
-        else
-            _currentlySelected = null;
-
+        _currentlySelected = state ? entry : null;
         ToggleEntryButtons(!state);
     }
 
     private void OnLaunchPressed()
     {
-        // TODO: Look into storing the key as VersionKey instead of string
-        string key = _versions[_currentlySelected];
-        string path = VersionDatabase.Instance.GetPath(new(key));
+        string path = VersionDatabase.Instance.GetPath(_versions[_currentlySelected]);
         OSAPI.RunGodotExe(path);
     }
 
     private void OnFolderOpenPressed()
     {
-        // TODO: Look into storing the key as VersionKey instead of string
-        string key = _versions[_currentlySelected];
-        string path = VersionDatabase.Instance.GetPath(new(key));
+        string path = VersionDatabase.Instance.GetPath(_versions[_currentlySelected]);
         OSAPI.OpenFolder(path);
     }
 
