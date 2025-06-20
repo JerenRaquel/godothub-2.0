@@ -9,7 +9,7 @@ namespace DataContainer.DatabaseSys
     // C for container type; ie. project, settings, tags, etc.
     public abstract partial class Database<K, C>(string userDirectory, string saveFolder)
     {
-        public enum ImportError { OK, READ_FAIL, INVALID_CONFIG_VERSION }
+        public enum ImportError { OK, OK_EMPTY_FILE, READ_FAIL, INVALID_CONFIG_VERSION }
 
         protected readonly struct FileData(ImportError error, StreamReader file)
         {
@@ -42,6 +42,9 @@ namespace DataContainer.DatabaseSys
         {
             if (data.file == null)
             {
+                // No Errors, but don't allow reading... file is empty
+                if (data.error == ImportError.OK_EMPTY_FILE) return false;
+
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Failed to load data from {SAVE_LOCATION}.");
                 Console.WriteLine($"Error: {data.error}.");
@@ -54,6 +57,9 @@ namespace DataContainer.DatabaseSys
         protected FileData OpenReadableFile()
         {
             if (!File.Exists(SAVE_LOCATION)) return new(ImportError.READ_FAIL, null);
+
+            if (new FileInfo(SAVE_LOCATION).Length <= 0)
+                return new(ImportError.OK_EMPTY_FILE, null);
 
             StreamReader file = new(SAVE_LOCATION);
             string versionFlag = file.ReadLine();
