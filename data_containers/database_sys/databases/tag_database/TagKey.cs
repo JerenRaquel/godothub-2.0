@@ -12,7 +12,7 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
 
         public static TagKey? ParseRawKey(string rawKey)
         {
-            string[] parts = rawKey.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = rawKey.Split('_', System.StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < 2) return null;
             return new(parts[0], parts[1] == "software");
         }

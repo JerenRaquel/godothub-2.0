@@ -43,7 +43,13 @@ namespace DataContainer.DatabaseSys
             if (data.file == null)
             {
                 // No Errors, but don't allow reading... file is empty
-                if (data.error == ImportError.OK_EMPTY_FILE) return false;
+                if (data.error == ImportError.OK_EMPTY_FILE)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"Attempted Read on Empty File: {SAVE_LOCATION}");
+                    Console.ResetColor();
+                    return false;
+                }
 
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Failed to load data from {SAVE_LOCATION}.");

@@ -38,8 +38,8 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
             JsonTextWriter writer = new(sw);
 
             writer.WriteStartObject();
-            TagDatabase.WriteEntry(writer, "favorited", IsFavorited);
             TagDatabase.WriteEntry(writer, "color", HTMLColor);
+            TagDatabase.WriteEntry(writer, "favorited", IsFavorited);
             if (IsSoftware)
             {
                 TagDatabase.WriteEntry(writer, "path", CommandData.Path);
@@ -56,8 +56,8 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
             JsonTextReader reader = new(sr);
 
             reader.Read();
-            bool favorited = Cache.ReadEntry(reader, false);
             string color = Cache.ReadEntry<string>(reader, null);
+            bool favorited = Cache.ReadEntry(reader, false);
 
             TagData data = new(isSoftware, color, favorited);
             if (isSoftware)

@@ -60,10 +60,6 @@ namespace DataContainer.DatabaseSys.Databases.SettingDatabase
                 data = fileData.file.ReadLine();
             }
             fileData.file.Close();
-
-            foreach (KeyValuePair<SettingsTag, SettingsData> entry in _data)
-                Console.WriteLine($"{entry.Key} : {entry.Value}");
-
             return true;
         }
 
