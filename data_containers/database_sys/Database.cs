@@ -37,6 +37,20 @@ namespace DataContainer.DatabaseSys
 
         public virtual bool HasKey(K key) => _data.ContainsKey(key);
 
+        // TODO: Replace with connection to Logger
+        protected bool LogReadableFileAccess(in FileData data)
+        {
+            if (data.file == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Failed to load data from {SAVE_LOCATION}.");
+                Console.WriteLine($"Error: {data.error}.");
+                Console.ResetColor();
+                return false;
+            }
+            return true;
+        }
+
         protected FileData OpenReadableFile()
         {
             if (!File.Exists(SAVE_LOCATION)) return new(ImportError.READ_FAIL, null);

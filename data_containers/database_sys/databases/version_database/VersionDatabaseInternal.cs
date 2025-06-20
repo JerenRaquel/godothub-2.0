@@ -59,15 +59,7 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
         public override bool LoadData()
         {
             FileData fileData = OpenReadableFile();
-            if (fileData.file == null)
-            {
-                // TODO: Replace with Logger
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Failed to load data from {SAVE_LOCATION}.");
-                Console.WriteLine($"Error: {fileData.error}.");
-                Console.ResetColor();
-                return false;
-            }
+            if (!LogReadableFileAccess(in fileData)) return false;
 
             string key = fileData.file.ReadLine();
             string path = fileData.file.ReadLine();
