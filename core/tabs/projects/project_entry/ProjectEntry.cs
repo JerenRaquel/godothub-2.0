@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 
 public partial class ProjectEntry : PanelContainer
@@ -53,13 +54,17 @@ public partial class ProjectEntry : PanelContainer
 
         foreach (string tag in ProjectCache.Instance.GetProjectTags(projectName))
         {
-            Tag tagInstance = SpawnTag(tag, TagCache.Instance.GetColor(false, tag));
+            // TODO: Replace with tagKey
+            string htmlColor = TagDatabase.Instance.GetHTMLColor(new(tag, false));
+            Tag tagInstance = SpawnTag(tag, htmlColor);
             _projectTags.Add(tag, tagInstance);
         }
 
         foreach (string tag in ProjectCache.Instance.GetSoftwareTags(projectName))
         {
-            Tag tagInstance = SpawnTag(tag, TagCache.Instance.GetColor(true, tag));
+            // TODO: Replace with tagKey
+            string htmlColor = TagDatabase.Instance.GetHTMLColor(new(tag, true));
+            Tag tagInstance = SpawnTag(tag, htmlColor);
             _softwareTags.Add(tag, tagInstance);
         }
     }

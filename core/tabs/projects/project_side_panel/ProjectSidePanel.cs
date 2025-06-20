@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 
@@ -145,8 +146,9 @@ public partial class ProjectSidePanel : MarginContainer
             if (withTools)
             {
                 NotifcationManager.Instance.NotifyValid("Software Launching");
+                // TODO: Replace with TagKey
                 foreach (string toolName in ProjectCache.Instance.GetSoftwareTags(projectName))
-                    OSAPI.RunTool(toolName, projectName);
+                    OSAPI.RunTool(new(toolName, true), projectName);
             }
             return true;
         }

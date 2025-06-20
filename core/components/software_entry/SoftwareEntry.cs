@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 using System;
 
@@ -12,7 +13,7 @@ public partial class SoftwareEntry : MarginContainer
     private Label _commandLabel;
 
     public DoubleClickButton MainButton { get; private set; }
-    public string SoftwareTag { get; private set; }
+    public TagKey SoftwareTagKey { get; private set; }
 
     public override void _Ready()
     {
@@ -25,24 +26,25 @@ public partial class SoftwareEntry : MarginContainer
         _commandLabel = GetNode<Label>("%CommandLabel");
     }
 
-    public void SetData(string name)
+    public void SetData(in TagKey tagKey)
     {
-        string path = TagCache.Instance.GetPath(name);
-        string command = TagCache.Instance.GetRAWCommand(name, false);
-        string colorCode = TagCache.Instance.GetColor(true, name);
-        bool favorited = TagCache.Instance.IsFavorited(name);
+        TagCommand commandData = TagDatabase.Instance.GetCommandData(tagKey);
+        string path = commandData.Path;
+        string command = commandData.PrettyCommand;
+        string htmlColor = TagDatabase.Instance.GetHTMLColor(tagKey);
+        bool IsFavorited = TagDatabase.Instance.IsFavorited(tagKey);
 
-        _nameLabel.Text = name;
-        SoftwareTag = name;
+        SoftwareTagKey = tagKey;
+        _nameLabel.Text = tagKey.TagName;
         _pathLabel.Text = $"└─> Path: {path}";
         _commandLabel.Text = $"       └─> CLI: {command}";
-        _colorTab.Modulate = new(colorCode);
-        _favoriteButton.SetPressedNoSignal(favorited);
+        _colorTab.Modulate = new(htmlColor);
+        _favoriteButton.SetPressedNoSignal(IsFavorited);
     }
 
     private void OnFavoriteToggled(bool state)
     {
-        TagCache.Instance.SetFavorited(SoftwareTag, state);
+        TagDatabase.Instance.SetFavorited(SoftwareTagKey, state);
         EmitSignal(SignalName.FavoriteToggled);
     }
 }

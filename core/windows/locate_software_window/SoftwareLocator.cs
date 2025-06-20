@@ -1,5 +1,5 @@
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
-using System;
 using System.IO;
 
 public partial class SoftwareLocator : WindowBase
@@ -32,13 +32,16 @@ public partial class SoftwareLocator : WindowBase
 
     protected override bool Validate()
     {
-        if (_tagLineEdit.Text.Length == 0)
+        // TODO: Santize Text
+        TagKey tagKey = new(_tagLineEdit.Text, true);
+
+        if (tagKey.TagName.Length == 0)
         {
             DisplayError("Tag name can't be empty...");
             return false;
         }
 
-        if (TagCache.Instance.HasSoftwareTag(_tagLineEdit.Text))
+        if (TagDatabase.Instance.HasKey(tagKey))
         {
             DisplayError("Tag name already exists...");
             return false;
@@ -73,16 +76,13 @@ public partial class SoftwareLocator : WindowBase
 
     protected override void OnConfirmPressed()
     {
-        TagCache.Instance.AddOrUpdateSoftwareTag(
-            _tagLineEdit.Text, new(
-                _colorPickerButton.Color.ToHtml(),
-                _pathLineEdit.Text,
-                _argsLineEdit.Text,
-                false
-            )
-        );
+        TagKey key = new(_tagLineEdit.Text, true);
+        DataContainer.DatabaseSys.Databases.TagDatabase.TagData data
+            = new(true, _colorPickerButton.Color.ToHtml());
+        data.SetCommandData(_pathLineEdit.Text, _argsLineEdit.Text, false);
+        TagDatabase.Instance.AddOrUpdate(key, data);
 
-        EmitSignal(SignalName.SoftwareLocated, _tagLineEdit.Text);
+        EmitSignal(SignalName.SoftwareLocated, key.TagName);
         Hide();
     }
 

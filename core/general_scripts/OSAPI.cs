@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 
 public static partial class OSAPI
@@ -79,11 +80,12 @@ public static partial class OSAPI
         return processID;
     }
 
-    public static long RunTool(string toolName, string projectName = "")
+    public static long RunTool(in TagKey toolKey, string projectName = "")
     {
-        TagData.CommandParts executableCommand = TagCache.Instance.GetExecutableCommand(toolName, projectName);
+        TagCommand commandData
+            = TagDatabase.Instance.GetExecutableCommand(in toolKey, in projectName);
 
-        long processID = OS.CreateProcess(executableCommand.Command, executableCommand.Args);
+        long processID = OS.CreateProcess(commandData.Path, commandData.Args);
         if (processID == -1) return -1; // Failed
 
         return processID;

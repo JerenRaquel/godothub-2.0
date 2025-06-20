@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -94,7 +95,8 @@ public partial class TagDisplay : VBoxContainer
             _tagContainer.AddChild(tagInstance);
             tagInstance.SetData(
                 tagName,
-                TagCache.Instance.GetColor(isSoftware, tagName),
+                // TODO: Replace with tagKey
+                TagDatabase.Instance.GetHTMLColor(new(tagName, isSoftware)),
                 true
             );
             tagInstance.IsSoftware = isSoftware;

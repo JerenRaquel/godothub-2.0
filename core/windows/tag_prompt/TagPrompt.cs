@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 using System;
 
@@ -34,14 +35,16 @@ public partial class TagPrompt : WindowBase
         }
 
         bool tagExists = false;
-        if (TagCache.Instance.HasProjectTag(text))
+        TagKey projectTag = new(text, false);
+        TagKey softwareTag = new(text, false);
+        if (TagDatabase.Instance.HasKey(projectTag))
         {
-            _colorPickerButton.Color = GetColor(false, text);
+            _colorPickerButton.Color = GetColor(projectTag);
             tagExists = true;
         }
-        else if (TagCache.Instance.HasSoftwareTag(text))
+        else if (TagDatabase.Instance.HasKey(softwareTag))
         {
-            _colorPickerButton.Color = GetColor(true, text);
+            _colorPickerButton.Color = GetColor(softwareTag);
             tagExists = true;
         }
 
@@ -58,27 +61,26 @@ public partial class TagPrompt : WindowBase
         if (!Validate()) return;
 
         string text = _lineEdit.Text;
+        TagKey projectTag = new(text, false);
+        TagKey softwareTag = new(text, false);
         Color color;
-        if (TagCache.Instance.HasProjectTag(text))
-            color = GetColor(false, text);
-        else if (TagCache.Instance.HasSoftwareTag(text))
-            color = GetColor(true, text);
+        if (TagDatabase.Instance.HasKey(projectTag))
+            color = GetColor(projectTag);
+        else if (TagDatabase.Instance.HasKey(softwareTag))
+            color = GetColor(softwareTag);
         else    // Requires new Project Tag
         {
             color = _colorPickerButton.Color;
-            TagCache.Instance.AddOrUpdateProjectTag(
-                text,
-                color.ToHtml()
-            );
+            TagDatabase.Instance.AddOrUpdate(in projectTag, new(false, color.ToHtml()));
         }
 
         EmitSignal(SignalName.TagAdded, text, color);
         Hide();
     }
 
-    private static Color GetColor(bool isSoftwareTag, string tag)
+    private static Color GetColor(in TagKey key)
     {
-        string colorCode = TagCache.Instance.GetColor(isSoftwareTag, tag);
-        return new(colorCode);
+        string htmlColor = TagDatabase.Instance.GetHTMLColor(key);
+        return new(htmlColor);
     }
 }

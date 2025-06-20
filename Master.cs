@@ -14,7 +14,6 @@ public partial class Master : Node
 
         SettingsDatabase.Initialize(userDirectory);
         VersionDatabase.Initialize(userDirectory);
-        TagCache.Initialize(userDirectory); // TEMP
         TagDatabase.Initialize(userDirectory);
         ProjectCache.Initialize(userDirectory);
         TemplateCache.Initialize(userDirectory);
@@ -25,7 +24,6 @@ public partial class Master : Node
     {
         ProjectCache.Instance.ForceWrite();
         SettingsDatabase.Instance.WriteData();
-        TagCache.Instance.ForceWrite(); // TEMP
         TagDatabase.Instance.WriteData();
         VersionDatabase.Instance.WriteData();
         TemplateCache.Instance.ForceWrite();

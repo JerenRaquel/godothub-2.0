@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 using System;
 
@@ -33,8 +34,8 @@ public partial class Software : TabBase
         _softwareLocateWindow.SoftwareLocated += AddEntry;
 
         ToggleEntryButtons(true);
-        foreach (string tag in TagCache.Instance.SoftwareTags)
-            AddEntry(tag);
+        foreach (TagKey tagKey in TagDatabase.Instance.GetSoftwareTags())
+            AddEntry(tagKey);
     }
 
     private void ToggleEntryButtons(bool disabled)
@@ -44,12 +45,15 @@ public partial class Software : TabBase
         _deleteButton.Disabled = disabled;
     }
 
-    private void AddEntry(string name)
+    private void AddEntry(string softwareName)
+        => AddEntry(new TagKey(softwareName, true));
+
+    private void AddEntry(in TagKey tagKey)
     {
         SoftwareEntry entryInstance = entryScene.Instantiate<SoftwareEntry>();
         _container.AddChild(entryInstance);
-        entryInstance.SetData(name);
-        entryInstance.MainButton.StateToggled += (bool state) => OnStateToggled(state, entryInstance);
+        entryInstance.SetData(tagKey);
+        entryInstance.MainButton.StateToggled += state => OnStateToggled(state, entryInstance);
         entryInstance.MainButton.LaunchRequested += OnLaunchRequested;
         entryInstance.FavoriteToggled += () => EmitSignal(SignalName.EntryFavorited);
     }
@@ -68,12 +72,10 @@ public partial class Software : TabBase
 
     private void OnLaunchRequested()
     {
-        string key = _currentlySelected.SoftwareTag;
-        long processID = OSAPI.RunTool(key);
+        long processID = OSAPI.RunTool(_currentlySelected.SoftwareTagKey);
         if (processID == -1)
             NotifcationManager.Instance.NotifyError("Could not run software");
     }
 
     private void OnSoftwareAddPressed() => _softwareLocateWindow.Show();
-
 }

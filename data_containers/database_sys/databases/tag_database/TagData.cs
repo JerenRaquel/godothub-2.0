@@ -13,22 +13,23 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
 
         private TagData() { }
 
-        public TagData(in bool isSoftware, in string htmlColor, in bool favorited)
+        public TagData(in bool isSoftware, in string htmlColor)
         {
             IsSoftware = isSoftware;
             HTMLColor = htmlColor;
-            IsFavorited = favorited;
         }
 
-        public void SetCommandData(string path, string argStr)
+        public void SetCommandData(string path, string argStr, in bool favorited)
         {
             if (!IsSoftware) return;
+            IsFavorited = favorited;
             CommandData = new(path, argStr);
         }
 
-        public void SetCommandData(string path, string[] args)
+        public void SetCommandData(string path, string[] args, in bool favorited)
         {
             if (!IsSoftware) return;
+            IsFavorited = favorited;
             CommandData = new(path, args);
         }
 
@@ -39,9 +40,9 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
 
             writer.WriteStartObject();
             TagDatabase.WriteEntry(writer, "color", HTMLColor);
-            TagDatabase.WriteEntry(writer, "favorited", IsFavorited);
             if (IsSoftware)
             {
+                TagDatabase.WriteEntry(writer, "favorited", IsFavorited);
                 TagDatabase.WriteEntry(writer, "path", CommandData.Path);
                 TagDatabase.WriterEntries(writer, "args", [.. CommandData.Args]);
             }
@@ -57,15 +58,15 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
 
             reader.Read();
             string color = Cache.ReadEntry<string>(reader, null);
-            bool favorited = Cache.ReadEntry(reader, false);
 
-            TagData data = new(isSoftware, color, favorited);
+            TagData data = new(isSoftware, color);
             if (isSoftware)
             {
+                bool favorited = Cache.ReadEntry(reader, false);
                 string path = Cache.ReadEntry<string>(reader, null);
                 string[] args = [.. Cache.ReadEntries<string>(reader)];
 
-                data.SetCommandData(path, args);
+                data.SetCommandData(path, args, favorited);
             }
             reader.Read();
 

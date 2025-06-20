@@ -21,11 +21,10 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
             IsDirty = true;
         }
 
-        public string GetCommandString(in TagKey key, in bool isPretty)
+        public TagCommand GetCommandData(in TagKey key)
         {
             if (!_data.TryGetValue(key, out TagData data)) return null;
-            if (isPretty) return data.CommandData.PrettyCommand;
-            else return data.CommandData.FullCommand;
+            return data.CommandData;
         }
 
         public TagCommand GetExecutableCommand(in TagKey key, in string projectName)
@@ -64,6 +63,32 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
             foreach (KeyValuePair<TagKey, TagData> entry in _data)
             {
                 if (!entry.Value.IsFavorited) continue;
+
+                results.Add(entry.Key);
+            }
+
+            return [.. results];
+        }
+
+        public TagKey[] GetSoftwareTags()
+        {
+            List<TagKey> results = [];
+            foreach (KeyValuePair<TagKey, TagData> entry in _data)
+            {
+                if (!entry.Key.IsSoftware) continue;
+
+                results.Add(entry.Key);
+            }
+
+            return [.. results];
+        }
+
+        public TagKey[] GetProjectTags()
+        {
+            List<TagKey> results = [];
+            foreach (KeyValuePair<TagKey, TagData> entry in _data)
+            {
+                if (entry.Key.IsSoftware) continue;
 
                 results.Add(entry.Key);
             }

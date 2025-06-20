@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ public partial class QuickToolRoot : VBoxContainer
 {
     private VBoxContainer _container;
 
-    private Dictionary<string, Button> _buttons = [];
+    private Dictionary<TagKey, Button> _buttons = [];
 
     public override void _Ready()
     {
@@ -15,7 +16,7 @@ public partial class QuickToolRoot : VBoxContainer
 
     public void SetQuickToolList()
     {
-        foreach (KeyValuePair<string, Button> entry in _buttons)
+        foreach (KeyValuePair<TagKey, Button> entry in _buttons)
         {
             if (entry.Value.IsQueuedForDeletion()) continue;
 
@@ -23,20 +24,20 @@ public partial class QuickToolRoot : VBoxContainer
         }
         _buttons.Clear();
 
-        string[] tags = TagCache.Instance.FavoritedSoftwareTags;
-        if (tags.Length == 0)
+        TagKey[] tagKeys = TagDatabase.Instance.GetFavoritedSoftwareTags();
+        if (tagKeys.Length == 0)
         {
             _container.Hide();
             return;
         }
 
-        foreach (string tag in tags)
+        foreach (TagKey tagKey in tagKeys)
         {
             Button buttonInstance = new();
-            buttonInstance.Text = tag;
+            buttonInstance.Text = tagKey.TagName;
             _container.AddChild(buttonInstance);
-            buttonInstance.Pressed += () => OSAPI.RunTool(tag, "");
-            _buttons.Add(tag, buttonInstance);
+            buttonInstance.Pressed += () => OSAPI.RunTool(tagKey, "");
+            _buttons.Add(tagKey, buttonInstance);
         }
         _container.Show();
     }
