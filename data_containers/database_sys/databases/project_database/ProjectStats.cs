@@ -1,0 +1,71 @@
+using DataContainer.DatabaseSys.Databases.TagDatabase;
+using DataContainer.DatabaseSys.Databases.VersionDatabase;
+
+namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
+{
+    public class ProjectStats
+    {
+        private ProjectData _loadedData = null;
+        private ProjectData _modifiedData = null;
+
+        public string ProjectName { get; private set; }
+        public ProjectIconData IconData { get; private set; }
+        public System.DateTime LastEdited { get; private set; }
+
+        public Version VersionData => GetProjectData().version;
+        public VersionDatabase.VersionDatabase.BuildType BuildType
+            => GetProjectData().buildType;
+        public Renderer Renderer => GetProjectData().renderer;
+        public TagKey[] SoftwareTagKeys => GetProjectData().GetSoftwareTags();
+        public TagKey[] ProjectTagKeys => GetProjectData().GetProjectTags();
+        public bool HasTags => GetProjectData().TagCount > 0;
+        public bool UsesDotNet => GetProjectData().usesDotNet;
+        public bool UsesGDExt => GetProjectData().UsesGDExt;
+        public ProjectPathData PathData => GetProjectData().PathData;
+        public bool IsFavorited => GetProjectData().isFavorited;
+
+        private ProjectStats() { }
+
+        public ProjectStats(in string projectName, in ProjectIconData iconData,
+            in Version version, in ProjectPathData pathData, in Renderer renderer,
+            in VersionDatabase.VersionDatabase.BuildType buildType, in bool isDotNet,
+            in TagKey[] tagKeys)
+        {
+            ProjectName = projectName;
+            IconData = iconData;
+            _loadedData = new(pathData, version, buildType, renderer, isDotNet, false);
+            foreach (TagKey key in tagKeys)
+                _loadedData.AddTag(key);
+        }
+
+        public void SetBuild(in VersionDatabase.VersionDatabase.BuildType buildType)
+        {
+            _modifiedData ??= _loadedData.Copy();
+            _modifiedData.buildType = buildType;
+        }
+
+        public void SetRenderer(in Renderer renderer)
+        {
+            _modifiedData ??= _loadedData.Copy();
+            _modifiedData.renderer = renderer;
+        }
+
+        public void SetVersion(in Version version)
+        {
+            _modifiedData ??= _loadedData.Copy();
+            _modifiedData.version = version;
+        }
+
+        public void SetFavorite(in bool state)
+        {
+            _modifiedData ??= _loadedData.Copy();
+            _modifiedData.isFavorited = state;
+        }
+
+        private ProjectData GetProjectData()
+        {
+            if (_modifiedData != null) return _modifiedData;
+            return _loadedData;
+        }
+    }
+}
