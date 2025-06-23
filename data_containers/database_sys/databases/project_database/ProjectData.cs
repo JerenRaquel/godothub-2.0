@@ -67,6 +67,36 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             return true;
         }
 
+        public TagKey[] GetTags(in TagDatabase.TagDatabase.TagFlag tagFlag)
+        {
+            if (_tags.Count == 0) return [];
+
+            List<TagKey> results = [];
+            foreach (TagKey key in _tags)
+            {
+                switch (tagFlag)
+                {
+                    case TagDatabase.TagDatabase.TagFlag.PROJECT:
+                        if (key.IsSoftware) continue;
+                        results.Add(key);
+                        break;
+
+                    case TagDatabase.TagDatabase.TagFlag.SOFTWARE:
+                        if (!key.IsSoftware) continue;
+                        results.Add(key);
+                        break;
+
+                    case TagDatabase.TagDatabase.TagFlag.ANY:
+                        results.Add(key);
+                        break;
+
+                    default:
+                        continue;
+                }
+            }
+            return [.. results];
+        }
+
         public ProjectData Copy()
         {
             ProjectData copy

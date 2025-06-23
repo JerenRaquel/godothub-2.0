@@ -9,6 +9,7 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
         public string PartialKey { get; private set; }
         public string FullKey { get; private set; }
         public bool IsValid { get; private set; } = true;
+        public bool IsFull => buildType.Type != BuildType.FlagType.UNKNOWN;
         public string VersionStr => (string)version;
 
         public VersionKey() => IsValid = false;

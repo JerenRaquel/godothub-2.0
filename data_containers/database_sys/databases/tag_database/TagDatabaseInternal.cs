@@ -12,6 +12,13 @@ namespace DataContainer.DatabaseSys.Databases.TagDatabase
     /// </summary>
     public partial class TagDatabase : Database<TagKey, TagData>
     {
+        public enum TagFlag
+        {
+            PROJECT = 0b01,
+            SOFTWARE = 0b10,
+            ANY = PROJECT | SOFTWARE
+        }
+
         #region Singleton Instance
         private static TagDatabase _instance;
 

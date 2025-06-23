@@ -62,7 +62,7 @@ public partial class ProjectCache : Cache
 
     public BuildType GetBuild(string projectName) => GetProject(projectName)?.Build ?? BuildType.FlagType.UNKNOWN;
 
-    public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
+    // public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
     public string GetProjectVersionBuild(string projectName)
     {
@@ -115,15 +115,15 @@ public partial class ProjectCache : Cache
 
     public string[] GetSoftwareTags(string projectName) => GetProject(projectName)?.SoftwareTags;
 
-    public bool HasBuildSelected(string projectName) => GetProject(projectName)?.Build.Type != BuildType.FlagType.UNKNOWN;
+    // public bool HasBuildSelected(string projectName) => GetProject(projectName)?.Build.Type != BuildType.FlagType.UNKNOWN;
 
     public bool HasTags(string projectName) => GetProject(projectName)?.HasTags ?? false;
 
     public bool IsFavorited(string projectName) => GetProject(projectName)?.IsFavorited ?? false;
 
-    public bool UsesDotNet(string projectName) => GetProject(projectName)?.IsDotNet ?? false;
+    // public bool UsesDotNet(string projectName) => GetProject(projectName)?.IsDotNet ?? false;
 
-    public bool UsesGDExt(string projectName) => GetProject(projectName)?.IsGDExt ?? false;
+    // public bool UsesGDExt(string projectName) => GetProject(projectName)?.IsGDExt ?? false;
 
     public string[] GetVersions()
     {
@@ -178,10 +178,10 @@ public partial class ProjectCache : Cache
             + buildStr.BBCodeColor(buildType.HTMLColor) + " ] ".BBCodeColor(ColorTheme.BaseBlue)
             + $"[{renderStr}]".BBCodeColor(colorCode);
 
-        if (UsesGDExt(projectName))
+        if (data.IsGDExt)
             mainTextMETA += " [Uses GDExtension]".BBCodeColor(ColorTheme.HighlightBlue);
 
-        if (UsesDotNet(projectName))
+        if (data.IsDotNet)
             mainTextMETA += " [Uses .NET]".BBCodeColor(ColorTheme.CSharp);
 
         if (center)

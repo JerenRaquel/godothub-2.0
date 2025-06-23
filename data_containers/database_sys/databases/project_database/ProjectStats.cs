@@ -36,6 +36,11 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 _loadedData.AddTag(key);
         }
 
+        public void UpdateTimeAccessed() => LastEdited = System.DateTime.Now;
+
+        public TagKey[] GetTags(in TagDatabase.TagDatabase.TagFlag flag)
+            => GetProjectData().GetTags(flag);
+
         public void SetBuild(in BuildType buildType)
         {
             _modifiedData ??= _loadedData.Copy();
