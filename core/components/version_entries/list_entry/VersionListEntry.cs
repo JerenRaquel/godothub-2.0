@@ -28,7 +28,7 @@ public partial class VersionListEntry : VersionEntryBase
             _cSharpLabel.Hide();
 
         _titleLabel.Text = $"Version {_versionStr} ".BBCodeColor(ColorTheme.BaseBlue)
-            + $"[{versionKey.BuildTypeStr}]".BBCodeColor(ColorTheme.GetColorFromBuild(versionKey.buildType));
+            + $"[{versionKey.buildType}]".BBCodeColor(versionKey.buildType.HTMLColor);
 
         _pathLabel.Text = $"Path: {VersionDatabase.Instance.GetPath(versionKey)}";
     }

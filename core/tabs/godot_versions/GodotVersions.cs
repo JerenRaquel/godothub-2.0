@@ -1,3 +1,4 @@
+using DataContainer;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
@@ -5,12 +6,12 @@ using System.Collections.Generic;
 
 public partial class GodotVersions : TabBase
 {
-    private readonly VersionDatabase.BuildType[] BUILD_MAP = [
-        VersionDatabase.BuildType.UNKNOWN,
-        VersionDatabase.BuildType.DEV,
-        VersionDatabase.BuildType.BETA,
-        VersionDatabase.BuildType.RELEASE_CANDIDATE,
-        VersionDatabase.BuildType.STABLE
+    private readonly BuildType[] BUILD_MAP = [
+        BuildType.FlagType.UNKNOWN,
+        BuildType.FlagType.DEV,
+        BuildType.FlagType.BETA,
+        BuildType.FlagType.RELEASE_CANDIDATE,
+        BuildType.FlagType.STABLE
     ];
 
     [Export] private PackedScene cardEntry;

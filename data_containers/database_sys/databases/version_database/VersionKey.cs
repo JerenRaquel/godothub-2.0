@@ -4,13 +4,12 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
     {
         public Version version;
         public bool isDotNet;
-        public VersionDatabase.BuildType buildType;
+        public BuildType buildType;
 
         public string PartialKey { get; private set; }
         public string FullKey { get; private set; }
         public bool IsValid { get; private set; } = true;
         public string VersionStr => (string)version;
-        public string BuildTypeStr => VersionDatabase.BuildEnumToString(buildType);
 
         public VersionKey() => IsValid = false;
 
@@ -28,13 +27,14 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
             // Check if we can create a partial key
             if (data.Length == 2)
             {
-                buildType = VersionDatabase.BuildType.UNKNOWN;
+                buildType = BuildType.FlagType.UNKNOWN;
                 GenerateKeys();
                 return;
             }
 
             // Create the full key + partial
-            buildType = VersionDatabase.StringToBuildEnum(data[2]);
+            buildType = (BuildType)data[2];
+
             GenerateKeys();
         }
 
@@ -42,11 +42,11 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
         {
             this.version = version;
             this.isDotNet = isDotNet;
-            buildType = VersionDatabase.BuildType.UNKNOWN;
+            buildType = BuildType.FlagType.UNKNOWN;
             GenerateKeys();
         }
 
-        public VersionKey(Version version, bool isDotNet, VersionDatabase.BuildType type)
+        public VersionKey(Version version, bool isDotNet, BuildType type)
         {
             this.version = version;
             this.isDotNet = isDotNet;
@@ -75,7 +75,7 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
         private void GenerateKeys()
         {
             PartialKey = GeneratePartialKey(version, isDotNet);
-            FullKey = $"{PartialKey}_{VersionDatabase.BuildEnumToString(buildType)}";
+            FullKey = $"{PartialKey}_{buildType}";
         }
 
         public static string GeneratePartialKey(Version version, bool isDotNet)

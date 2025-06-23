@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DataContainer;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 
 public partial class ProjectData
@@ -33,7 +34,7 @@ public partial class ProjectData
         _ => "Unknown"
     };
     public bool IsFavorited { get; set; } = false;
-    public VersionDatabase.BuildType Build { get; set; } = VersionDatabase.BuildType.UNKNOWN;
+    public BuildType Build { get; set; } = BuildType.FlagType.UNKNOWN;
 
     public ProjectData(string version, string renderer, string path, string gdextPathExtra,
         bool isFavorited, string[] projectTags, string[] softwareTags)

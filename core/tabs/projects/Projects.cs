@@ -1,3 +1,4 @@
+using DataContainer;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
@@ -241,7 +242,7 @@ public partial class Projects : TabBase
 
     private void OnLaunchRequested(string projectName)
     {
-        if (ProjectCache.Instance.GetBuild(projectName) == VersionDatabase.BuildType.UNKNOWN)
+        if (ProjectCache.Instance.GetBuild(projectName).Type == BuildType.FlagType.UNKNOWN)
         {
             _buildPrompt.Open(projectName);
             return;

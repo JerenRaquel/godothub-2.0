@@ -2,10 +2,11 @@ using System.IO;
 using System.Collections.Generic;
 using Godot;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
+using DataContainer;
 
 public partial class ProjectCache : Cache
 {
-    public void AddProject(ProjectCreator.ProjectCreationData data, string path, string templateName, VersionDatabase.BuildType build)
+    public void AddProject(ProjectCreator.ProjectCreationData data, string path, string templateName, BuildType build)
     {
         ProjectDataState project = new();
         TemplateStructure template = TemplateCache.Instance.GetTemplate(templateName);
@@ -31,7 +32,7 @@ public partial class ProjectCache : Cache
         project.IsFavorited = state;
     }
 
-    public bool SetBuild(string projectName, VersionDatabase.BuildType build)
+    public bool SetBuild(string projectName, in BuildType build)
     {
         ProjectDataState project = GetProject(projectName);
         if (project == null) return false;
@@ -40,7 +41,7 @@ public partial class ProjectCache : Cache
         return true;
     }
 
-    public bool UpdateProjectData(string projectName, VersionDatabase.BuildType build, ProjectData.Renderer renderer, string version)
+    public bool UpdateProjectData(string projectName, in BuildType build, ProjectData.Renderer renderer, string version)
     {
         ProjectDataState project = GetProject(projectName);
         if (project == null) return false;
@@ -59,7 +60,7 @@ public partial class ProjectCache : Cache
         return true;
     }
 
-    public VersionDatabase.BuildType GetBuild(string projectName) => GetProject(projectName)?.Build ?? VersionDatabase.BuildType.UNKNOWN;
+    public BuildType GetBuild(string projectName) => GetProject(projectName)?.Build ?? BuildType.FlagType.UNKNOWN;
 
     public string GetProjectVersion(string projectName) => GetProject(projectName)?.VersionStr ?? "Unknown";
 
@@ -68,7 +69,7 @@ public partial class ProjectCache : Cache
         ProjectDataState projectData = GetProject(projectName);
         if (projectData == null) return null;
 
-        string versionBuild = $"v{projectData.VersionStr ?? "Unknown"} [{VersionDatabase.BuildEnumToString(projectData.Build)}]";
+        string versionBuild = $"v{projectData.VersionStr ?? "Unknown"} [{projectData.Build}]";
         if (projectData.IsDotNet)
             versionBuild += $" [.Net]";
 
@@ -114,7 +115,7 @@ public partial class ProjectCache : Cache
 
     public string[] GetSoftwareTags(string projectName) => GetProject(projectName)?.SoftwareTags;
 
-    public bool HasBuildSelected(string projectName) => GetProject(projectName)?.Build != VersionDatabase.BuildType.UNKNOWN;
+    public bool HasBuildSelected(string projectName) => GetProject(projectName)?.Build.Type != BuildType.FlagType.UNKNOWN;
 
     public bool HasTags(string projectName) => GetProject(projectName)?.HasTags ?? false;
 
@@ -149,7 +150,7 @@ public partial class ProjectCache : Cache
     {
         ProjectDataState data = GetProject(projectName);
         if (data == null) return null;
-        if (data.Build == VersionDatabase.BuildType.UNKNOWN) return null;
+        if (data.Build.Type == BuildType.FlagType.UNKNOWN) return null;
 
         VersionKey key = new(data.VersionData, data.IsDotNet, data.Build);
         return (string)key;
@@ -160,8 +161,8 @@ public partial class ProjectCache : Cache
         ProjectDataState data = GetProject(projectName);
         if (data == null) return "";
 
-        VersionDatabase.BuildType buildType = data.Build;
-        string buildStr = VersionDatabase.BuildEnumToString(buildType);
+        BuildType buildType = data.Build;
+        string buildStr = buildType;
         string versionStr = data.VersionStr ?? "Unknown";
         string renderStr = GetRenderer(projectName);
         string colorCode = renderStr switch
@@ -174,7 +175,7 @@ public partial class ProjectCache : Cache
 
         string mainTextMETA = projectName.BBCodeColor(ColorTheme.BaseBlue)
             + $" [ v{versionStr} | ".BBCodeColor(ColorTheme.BaseBlue)
-            + buildStr.BBCodeColor(ColorTheme.GetColorFromBuild(buildType)) + " ] ".BBCodeColor(ColorTheme.BaseBlue)
+            + buildStr.BBCodeColor(buildType.HTMLColor) + " ] ".BBCodeColor(ColorTheme.BaseBlue)
             + $"[{renderStr}]".BBCodeColor(colorCode);
 
         if (UsesGDExt(projectName))

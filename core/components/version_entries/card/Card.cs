@@ -28,7 +28,7 @@ public partial class Card : VersionEntryBase
             _cSharpLabel.Hide();
 
         _version.Text = $"Version {_versionStr}";
-        _build.Text = versionKey.BuildTypeStr;
-        _build.AddThemeColorOverride("font_color", new Color(ColorTheme.GetColorFromBuild(Build)));
+        _build.Text = versionKey.buildType;
+        _build.AddThemeColorOverride("font_color", new Color(Build.HTMLColor));
     }
 }

@@ -1,6 +1,6 @@
+using DataContainer;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
-using System;
 using System.IO;
 
 public partial class LocateGodotWindow : WindowBase
@@ -8,11 +8,11 @@ public partial class LocateGodotWindow : WindowBase
     private readonly string[] VERSIONS = ["4.6", "4.5", "4.4", "4.3", "4.2", "4.1", "4.0"];
     private const int DEFAULT_VERSION = 2;
 
-    private readonly VersionDatabase.BuildType[] BUILD_MAP = [
-        VersionDatabase.BuildType.STABLE,
-        VersionDatabase.BuildType.RELEASE_CANDIDATE,
-        VersionDatabase.BuildType.BETA,
-        VersionDatabase.BuildType.DEV,
+    private readonly BuildType[] BUILD_MAP = [
+        BuildType.FlagType.STABLE,
+        BuildType.FlagType.RELEASE_CANDIDATE,
+        BuildType.FlagType.BETA,
+        BuildType.FlagType.DEV,
     ];
 
     [Signal] public delegate void VersionLocatedEventHandler(string key);

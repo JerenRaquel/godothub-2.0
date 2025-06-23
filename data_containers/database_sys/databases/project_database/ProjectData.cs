@@ -12,7 +12,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         public Renderer renderer;
         public bool usesDotNet;
         public bool isFavorited;
-        public VersionDatabase.VersionDatabase.BuildType buildType;
+        public BuildType buildType;
 
         public ProjectPathData PathData { get; private set; }
 
@@ -23,8 +23,8 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         private ProjectData() { }
 
         public ProjectData(in ProjectPathData pathData, in Version version,
-            in VersionDatabase.VersionDatabase.BuildType buildType,
-            in Renderer renderer, in bool usesDotNet, in bool isFavorited)
+            in BuildType buildType, in Renderer renderer, in bool usesDotNet,
+            in bool isFavorited)
         {
             PathData = pathData;
             this.version = version;

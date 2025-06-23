@@ -46,8 +46,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             project.SetFavorite(state);
         }
 
-        private void SetBuild(in ProjectStats project,
-            in VersionDatabase.VersionDatabase.BuildType buildType)
+        private void SetBuild(in ProjectStats project, in BuildType buildType)
         {
             if (buildType == project.BuildType) return;
 

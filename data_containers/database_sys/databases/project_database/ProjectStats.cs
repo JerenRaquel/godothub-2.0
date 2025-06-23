@@ -13,8 +13,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         public System.DateTime LastEdited { get; private set; }
 
         public Version VersionData => GetProjectData().version;
-        public VersionDatabase.VersionDatabase.BuildType BuildType
-            => GetProjectData().buildType;
+        public BuildType BuildType => GetProjectData().buildType;
         public Renderer Renderer => GetProjectData().renderer;
         public TagKey[] SoftwareTagKeys => GetProjectData().GetSoftwareTags();
         public TagKey[] ProjectTagKeys => GetProjectData().GetProjectTags();
@@ -28,8 +27,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 
         public ProjectStats(in string projectName, in ProjectIconData iconData,
             in Version version, in ProjectPathData pathData, in Renderer renderer,
-            in VersionDatabase.VersionDatabase.BuildType buildType, in bool isDotNet,
-            in TagKey[] tagKeys)
+            in BuildType buildType, in bool isDotNet, in TagKey[] tagKeys)
         {
             ProjectName = projectName;
             IconData = iconData;
@@ -38,7 +36,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 _loadedData.AddTag(key);
         }
 
-        public void SetBuild(in VersionDatabase.VersionDatabase.BuildType buildType)
+        public void SetBuild(in BuildType buildType)
         {
             _modifiedData ??= _loadedData.Copy();
             _modifiedData.buildType = buildType;

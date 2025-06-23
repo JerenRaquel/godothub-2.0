@@ -1,3 +1,4 @@
+using DataContainer;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
@@ -56,7 +57,7 @@ public partial class EditProjectWindow : WindowBase
 
         RefreshVersionOptions();
 
-        if (ProjectCache.Instance.GetBuild(projectName) == VersionDatabase.BuildType.UNKNOWN)
+        if (ProjectCache.Instance.GetBuild(projectName).Type == BuildType.FlagType.UNKNOWN)
         {
             _cachedVersionBuildIndex = -1;
             _versionOptionButton.Select(0);
@@ -107,7 +108,7 @@ public partial class EditProjectWindow : WindowBase
         if (Validate())
         {
             string selectedVersionMetaString = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
-            VersionDatabase.BuildType build = VersionDatabase.ParseBuildStr(selectedVersionMetaString);
+            BuildType build = BuildType.ParseBuildString(selectedVersionMetaString);
             ProjectData.Renderer renderer = ProjectData.Renderer.INVALID;
             if (_compatCheckBox.ButtonPressed)
                 renderer = ProjectData.Renderer.COMPAT;
@@ -138,7 +139,7 @@ public partial class EditProjectWindow : WindowBase
         _versionOptionButton.Clear();
         foreach (VersionKey key in VersionDatabase.Instance.SortedKeys)
         {
-            string optionStr = $"v{key.version} [{key.BuildTypeStr}]";
+            string optionStr = $"v{key.version} [{key.buildType}]";
             if (key.isDotNet)
                 optionStr += $" [.Net]";
 

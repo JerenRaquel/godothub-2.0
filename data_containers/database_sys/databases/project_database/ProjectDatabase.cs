@@ -14,8 +14,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             IsDirty = true;
         }
 
-        public bool UpdateProjectData(in string projectKey,
-            VersionDatabase.VersionDatabase.BuildType buildType,
+        public bool UpdateProjectData(in string projectKey, BuildType buildType,
             Renderer renderer, in Version version)
         {
             ProjectStats project = GetProject(projectKey);
@@ -33,8 +32,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             SetFavorite(in project, in state);
         }
 
-        public void SetBuild(in string projectKey,
-            VersionDatabase.VersionDatabase.BuildType buildType)
+        public void SetBuild(in string projectKey, BuildType buildType)
         {
             ProjectStats project = GetProject(projectKey);
             SetBuild(in project, in buildType);
@@ -42,7 +40,25 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 
         public string GenerateProjectMetadataString(in string projectKey, bool center = false)
         {
+            ProjectStats project = GetProject(projectKey);
+            if (project == null) return null;
 
+            string metaStr = project.ProjectName.BBCodeColor(ColorTheme.BaseBlue)
+                + $" [ v{project.VersionData} | ".BBCodeColor(ColorTheme.BaseBlue)
+                + ((string)project.BuildType).BBCodeColor(project.BuildType.HTMLColor)
+                + " ] ".BBCodeColor(ColorTheme.BaseBlue)
+                + $"{project.Renderer}".BBCodeColor(project.Renderer.HTMLColor);
+
+            if (project.UsesGDExt)
+                metaStr += " [Uses GDExtension]".BBCodeColor(ColorTheme.HighlightBlue);
+
+            if (project.UsesDotNet)
+                metaStr += " [Uses .NET]".BBCodeColor(ColorTheme.CSharp);
+
+            if (center)
+                return $"[center]{metaStr}[/center]";
+            else
+                return metaStr;
         }
     }
 }

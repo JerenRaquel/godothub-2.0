@@ -1,5 +1,3 @@
-using DataContainer.DatabaseSys.Databases.VersionDatabase;
-
 public static class ColorTheme
 {
     public static readonly string BaseBlue = "478cbf";
@@ -16,17 +14,6 @@ public static class ColorTheme
     public static readonly string Forward = "6aff7c";
     public static readonly string CSharp = "5529cf";
 
-    public static string BBCodeColor(this string str, string colorCode) => $"[color='{colorCode}']{str}[/color]";
-
-    public static string GetColorFromBuild(VersionDatabase.BuildType build)
-    {
-        return build switch
-        {
-            VersionDatabase.BuildType.STABLE => Stable,
-            VersionDatabase.BuildType.RELEASE_CANDIDATE => ReleaseCandidate,
-            VersionDatabase.BuildType.BETA => Beta,
-            VersionDatabase.BuildType.DEV => Dev,
-            _ => Unknown
-        };
-    }
+    public static string BBCodeColor(this string str, string colorCode)
+        => $"[color='{colorCode}']{str}[/color]";
 }

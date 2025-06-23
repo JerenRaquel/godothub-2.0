@@ -1,3 +1,4 @@
+using DataContainer;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 using System;
@@ -45,10 +46,9 @@ public partial class BuildPrompt : WindowBase
         {
             _mainContainer.Show();
             _errorLabel.Hide();
-            VersionDatabase.BuildType[] types
-                = VersionDatabase.Instance.GetAvaliableBuilds(partialKey);
-            foreach (VersionDatabase.BuildType type in types)
-                _buildOptionButton.AddItem(VersionDatabase.BuildEnumToString(type));
+            BuildType[] types = VersionDatabase.Instance.GetAvaliableBuilds(partialKey);
+            foreach (BuildType type in types)
+                _buildOptionButton.AddItem(type.ToString());
             _buildOptionButton.Select(0);
             Validate();
         }
@@ -62,8 +62,8 @@ public partial class BuildPrompt : WindowBase
 
     protected override bool Validate()
     {
-        VersionDatabase.BuildType build = VersionDatabase.StringToBuildEnum(_buildOptionButton.GetItemText(_buildOptionButton.Selected));
-        if (build == VersionDatabase.BuildType.UNKNOWN)
+        BuildType build = (BuildType)_buildOptionButton.GetItemText(_buildOptionButton.Selected);
+        if (build.Type == BuildType.FlagType.UNKNOWN)
         {
             DisplayError("HUHH???? HOW??? -- Please report... idk how that happened");
             return false;
@@ -85,7 +85,8 @@ public partial class BuildPrompt : WindowBase
         bool buildSet = false;
         if (Validate())
         {
-            VersionDatabase.BuildType build = VersionDatabase.StringToBuildEnum(_buildOptionButton.GetItemText(_buildOptionButton.Selected));
+            BuildType build
+                = (BuildType)_buildOptionButton.GetItemText(_buildOptionButton.Selected);
             buildSet = ProjectCache.Instance.SetBuild(_projectName, build);
         }
 

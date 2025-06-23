@@ -4,6 +4,7 @@ using Godot;
 using System;
 using System.Linq;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
+using DataContainer;
 
 public partial class ProjectCache : Cache
 {
@@ -47,7 +48,7 @@ public partial class ProjectCache : Cache
 
         List<string> cachedProjects = [];
         foreach (KeyValuePair<string, ProjectDataState> projectEntry in _projects)
-            if (projectEntry.Value.Build != VersionDatabase.BuildType.UNKNOWN)
+            if (projectEntry.Value.Build.Type != BuildType.FlagType.UNKNOWN)
                 cachedProjects.Add(projectEntry.Key);
 
         Dictionary<string, ProjectDataState> tempProjects = [];

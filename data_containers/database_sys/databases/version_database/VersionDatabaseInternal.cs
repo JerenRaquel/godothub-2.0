@@ -13,8 +13,7 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
     /// </summary>
     public partial class VersionDatabase : Database<VersionKey, string>
     {
-        public enum BuildType { UNKNOWN, STABLE, RELEASE_CANDIDATE, BETA, DEV }
-
+        #region Compare Class
         public static readonly ReverseComparer reverseComparer = new();
         // https://learn.microsoft.com/en-us/dotnet/api/system.array.sort?view=net-8.0
         public class ReverseComparer : IComparer
@@ -36,6 +35,7 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
                 return new CaseInsensitiveComparer().Compare(rhs, lhs);
             }
         }
+        #endregion
 
         #region Singleton Instance
         private static VersionDatabase _instance;
@@ -84,41 +84,6 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
                 file.WriteLine(pair.Value);
             }
             file.Close();
-        }
-
-        public static string BuildEnumToString(BuildType type)
-        {
-            return type switch
-            {
-                BuildType.STABLE => "Stable",
-                BuildType.RELEASE_CANDIDATE => "Release Candidate",
-                BuildType.BETA => "Beta",
-                BuildType.DEV => "Dev",
-                _ => "Unknown"
-            };
-        }
-
-        public static BuildType StringToBuildEnum(string str)
-        {
-            return str switch
-            {
-                "Stable" => BuildType.STABLE,
-                "Release Candidate" => BuildType.RELEASE_CANDIDATE,
-                "Beta" => BuildType.BETA,
-                "Dev" => BuildType.DEV,
-                _ => BuildType.UNKNOWN
-            };
-        }
-
-        public static BuildType ParseBuildStr(string dataStr)
-        {
-            string[] parts = dataStr.Split(" [", StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 0) return BuildType.UNKNOWN;
-
-            string newDataStr = parts[1];
-            string[] newParts = newDataStr.Split("]", StringSplitOptions.RemoveEmptyEntries);
-            string buildStr = newParts[0];
-            return StringToBuildEnum(buildStr);
         }
     }
 }

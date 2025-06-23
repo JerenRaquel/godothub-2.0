@@ -1,3 +1,4 @@
+using DataContainer;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
@@ -65,7 +66,7 @@ public partial class NewProjectWindow : WindowBase
         _versionOptionButton.Clear();
         foreach (VersionKey key in VersionDatabase.Instance.SortedKeys)
         {
-            string optionStr = $"v{key.version} [{key.BuildTypeStr}]";
+            string optionStr = $"v{key.version} [{key.buildType}]";
             if (key.isDotNet)
                 optionStr += $" [.Net]";
 
@@ -175,8 +176,8 @@ public partial class NewProjectWindow : WindowBase
             return;
         }
 
-        VersionDatabase.BuildType buildType = VersionDatabase.ParseBuildStr(godotVersionStrData);
-        if (buildType == VersionDatabase.BuildType.UNKNOWN)
+        BuildType buildType = BuildType.ParseBuildString(godotVersionStrData);
+        if (buildType.Type == BuildType.FlagType.UNKNOWN)
         {
             NotifcationManager.Instance.NotifyError("Build type not valid. Some how this got past the validation step...");
             Hide();
