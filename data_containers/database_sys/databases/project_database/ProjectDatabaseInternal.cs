@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 {
-    public partial class ProjectDatabase : Database<string, ProjectStats>
+    public partial class ProjectDatabase : Database<string, ProjectData>
     {
         #region Singleton Instance
         private static ProjectDatabase _instance;
@@ -33,12 +33,12 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             if (_data.Count == 0) return;
 
             StreamWriter file = OpenWritableFile();
-            foreach (KeyValuePair<string, ProjectStats> entry in _data)
+            foreach (KeyValuePair<string, ProjectData> entry in _data)
             {
-                ProjectStats project = entry.Value;
+                ProjectData project = entry.Value;
 
                 //* Update config is possible
-                ProjectStats.DirtyFlag flag = project.GetConfigDirtyFlag();
+                ProjectData.DirtyFlag flag = project.GetConfigDirtyFlag();
                 if (flag > 0) UpdateConfig(project, flag);
 
                 //* Write to file
@@ -109,7 +109,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 index++;
             }
 
-            ProjectStats project = new(
+            ProjectData project = new(
                 projectName,
                 new(iconPath),
                 new(versionStr),
@@ -123,15 +123,15 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         }
 
         // TODO: Uncomment code once integration tests are done -- Not updating config rn
-        private static bool UpdateConfig(in ProjectStats project, in ProjectStats.DirtyFlag flag)
+        private static bool UpdateConfig(in ProjectData project, in ProjectData.DirtyFlag flag)
         {
-            if (flag == ProjectStats.DirtyFlag.NONE) return true;
+            if (flag == ProjectData.DirtyFlag.NONE) return true;
 
             // ConfigFile configFile = new();
             // if (configFile.Load(project.PathData.ProjectGodotFile) != Error.Ok) return false;
 
             //* Update Features
-            if ((flag & ProjectStats.DirtyFlag.FEATURE_DATA) > 0)
+            if ((flag & ProjectData.DirtyFlag.FEATURE_DATA) > 0)
             {
                 System.Console.WriteLine("--- Updating Feature Data ---");
                 // List<string> featureData = [];
@@ -142,7 +142,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             }
 
             //* Set Tags
-            if ((flag & ProjectStats.DirtyFlag.TAGS) > 0)
+            if ((flag & ProjectData.DirtyFlag.TAGS) > 0)
             {
                 System.Console.WriteLine("--- Updating Tags ---");
                 // TagKey[] tagKeys = project.GetTags(TagDatabase.TagDatabase.TagFlag.PROJECT);
@@ -158,7 +158,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             return true;
         }
 
-        private static string WriteProjectToJSON(in ProjectStats project)
+        private static string WriteProjectToJSON(in ProjectData project)
         {
             StringWriter sw = new();
             JsonTextWriter writer = new(sw);
@@ -205,13 +205,13 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         #endregion
 
         #region Getters/Setters
-        private ProjectStats GetProject(in string projectKey)
+        private ProjectData GetProject(in string projectKey)
         {
-            if (_data.TryGetValue(projectKey, out ProjectStats data)) return data;
+            if (_data.TryGetValue(projectKey, out ProjectData data)) return data;
             return null;
         }
 
-        private void SetFavorite(in ProjectStats project, in bool state)
+        private void SetFavorite(in ProjectData project, in bool state)
         {
             if (state == project.IsFavorited) return;
 
@@ -219,7 +219,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             project.IsFavorited = state;
         }
 
-        private void SetBuild(in ProjectStats project, in BuildType buildType)
+        private void SetBuild(in ProjectData project, in BuildType buildType)
         {
             if (buildType == project.BuildType) return;
 
@@ -227,7 +227,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             project.BuildType = buildType;
         }
 
-        private void SetRenderer(in ProjectStats project, in Renderer renderer)
+        private void SetRenderer(in ProjectData project, in Renderer renderer)
         {
             if (renderer == project.Renderer) return;
 
@@ -235,7 +235,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             project.SetRenderer(renderer);
         }
 
-        private void SetVersion(in ProjectStats project, in Version version)
+        private void SetVersion(in ProjectData project, in Version version)
         {
             if (version == project.VersionData) return;
 

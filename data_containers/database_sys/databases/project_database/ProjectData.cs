@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 
@@ -6,100 +5,80 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 {
     public class ProjectData
     {
-        //* These are the 
-        private HashSet<TagKey> _projectTags = [];
-        private HashSet<TagKey> _softwareTags = [];
-        public Version version;
-        public Renderer renderer;
-        public bool usesDotNet;
+        public enum DirtyFlag
+        {
+            NONE = 0,
+            FEATURE_DATA = 0b01,
+            TAGS = 0b10,
+        }
 
+        private ProjectConfigData _loadedData = null;
+        private ProjectConfigData _modifiedData = null;
+
+        public string ProjectName { get; private set; }
+        public IconData IconData { get; private set; }
+        public bool IsFavorited { get; set; } = false;
+        public BuildType BuildType { get; set; }
+        public System.DateTime LastEdited { get; private set; }
         public ProjectPathData PathData { get; private set; }
 
-        public long TagCount => _projectTags.Count + _softwareTags.Count;
+        public Version VersionData => GetProjectData().version;
+        public Renderer Renderer => GetProjectData().renderer;
+        public bool HasTags => GetProjectData().TagCount > 0;
+        public bool UsesDotNet => GetProjectData().usesDotNet;
         public bool UsesGDExt
             => PathData.ProjectGodotFile != null && PathData.ProjectGodotFile.Length > 0;
 
         private ProjectData() { }
 
-        public ProjectData(in ProjectPathData pathData, in Version version,
-            in Renderer renderer, in bool usesDotNet)
+        public ProjectData(in string projectName, in IconData iconData,
+            in Version version, in ProjectPathData pathData, in Renderer renderer,
+            in BuildType buildType, in bool isDotNet, in TagKey[] tagKeys)
         {
+            ProjectName = projectName;
+            IconData = iconData;
+            BuildType = buildType;
             PathData = pathData;
-            this.version = version;
-            this.renderer = renderer;
-            this.usesDotNet = usesDotNet;
+            _loadedData = new(version, renderer, isDotNet);
+            foreach (TagKey key in tagKeys)
+                _loadedData.AddTag(key);
         }
 
-        public void AddTag(in TagKey tagKey)
+        public void UpdateTimeAccessed() => LastEdited = System.DateTime.Now;
+
+        public bool HasTag(in TagKey tagKey) => GetProjectData().HasTag(tagKey);
+
+        public DirtyFlag GetConfigDirtyFlag()
         {
-            if (tagKey.IsSoftware)
-                _softwareTags.Add(tagKey);
-            else
-                _projectTags.Add(tagKey);
+            if (_modifiedData == null) return DirtyFlag.NONE;
+
+            DirtyFlag flag = DirtyFlag.NONE;
+            if (_loadedData.HasDifferentFeatureData(_modifiedData))
+                flag = DirtyFlag.FEATURE_DATA;
+            if (_loadedData.HasDifferentTags(_modifiedData))
+                flag |= DirtyFlag.TAGS;
+            return flag;
         }
 
-        public bool RemoveTag(in TagKey tagKey)
+        public TagKey[] GetTags(in TagDatabase.TagDatabase.TagFlag flag)
+            => GetProjectData().GetTags(flag);
+
+        public void SetRenderer(in Renderer renderer)
         {
-            if (tagKey.IsSoftware) return _softwareTags.Remove(tagKey);
-            return _projectTags.Remove(tagKey);
+            _modifiedData ??= _loadedData.Copy();
+            _modifiedData.renderer = renderer;
         }
 
-        public bool HasTag(in TagKey tagKey)
+        public void SetVersion(in Version version)
         {
-            if (tagKey.IsSoftware) return _softwareTags.Contains(tagKey);
-            return _projectTags.Contains(tagKey);
+            _modifiedData ??= _loadedData.Copy();
+            _modifiedData.version = version;
         }
 
-        public TagKey[] GetTags(in TagDatabase.TagDatabase.TagFlag tagFlag)
+        private ProjectConfigData GetProjectData()
         {
-            if (TagCount == 0) return [];
-
-            switch (tagFlag)
-            {
-                case TagDatabase.TagDatabase.TagFlag.PROJECT:
-                    return [.. _projectTags];
-
-                case TagDatabase.TagDatabase.TagFlag.SOFTWARE:
-                    return [.. _softwareTags];
-
-                case TagDatabase.TagDatabase.TagFlag.ANY:
-                    List<TagKey> results = [];
-                    results.AddRange(_projectTags);
-                    results.AddRange(_softwareTags);
-                    return [.. results];
-
-                default:
-                    return [];
-            }
-        }
-
-        public ProjectData Copy()
-        {
-            ProjectData copy = new(PathData, version, renderer, usesDotNet);
-            foreach (TagKey key in _projectTags)
-                copy.AddTag(key);
-            foreach (TagKey key in _softwareTags)
-                copy.AddTag(key);
-            return copy;
-        }
-
-        public bool HasDifferentTags(in ProjectData other)
-        {
-            if (TagCount != other.TagCount) return true;
-            foreach (TagKey tagKey in _projectTags)
-                if (!other._projectTags.Contains(tagKey)) return true;
-            foreach (TagKey tagKey in _softwareTags)
-                if (!other._softwareTags.Contains(tagKey)) return true;
-            return false;
-        }
-
-        public bool HasDifferentFeatureData(in ProjectData other)
-        {
-            if (other.usesDotNet != usesDotNet) return true;
-            if (other.renderer != renderer) return true;
-            if (other.version != version) return true;
-
-            return false;
+            if (_modifiedData != null) return _modifiedData;
+            return _loadedData;
         }
     }
 }
