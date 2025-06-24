@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
+using Godot;
 
 namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 {
@@ -17,7 +18,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             // TODO: Create new project
             // ProjectStats project = new(
             //     in data.Name,
-            //     ---- IconData.default ----,
+            //     new(),
             //     new(data.Version),
             //     new(path, "", ""),
             //     (Renderer)data.Renderer,
@@ -28,7 +29,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 
             // TODO: Add project
 
-            IsDirty = true;
+            // IsDirty = true;
         }
 
         public void DeleteProject(in string projectKey)
@@ -79,6 +80,13 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         #endregion
 
         #region Getters
+        public Texture2D GetIcon(in string projectKey)
+        {
+            ProjectStats project = GetProject(projectKey);
+            if (project == null) return null;
+            return project.IconData.Icon;
+        }
+
         public Renderer? GetRenderer(in string projectKey)
         {
             ProjectStats project = GetProject(projectKey);

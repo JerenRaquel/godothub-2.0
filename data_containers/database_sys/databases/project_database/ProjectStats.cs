@@ -9,7 +9,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         private ProjectData _modifiedData = null;
 
         public string ProjectName { get; private set; }
-        public ProjectIconData IconData { get; private set; }
+        public IconData IconData { get; private set; }
         public System.DateTime LastEdited { get; private set; }
 
         public Version VersionData => GetProjectData().version;
@@ -25,7 +25,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 
         private ProjectStats() { }
 
-        public ProjectStats(in string projectName, in ProjectIconData iconData,
+        public ProjectStats(in string projectName, in IconData iconData,
             in Version version, in ProjectPathData pathData, in Renderer renderer,
             in BuildType buildType, in bool isDotNet, in TagKey[] tagKeys)
         {

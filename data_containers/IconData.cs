@@ -1,0 +1,93 @@
+using System.IO;
+using Godot;
+
+namespace DataContainer
+{
+    public class IconData
+    {
+        #region GodotIcon Singleton
+        private const string _ICON_SVG = @"<svg height=""128"" width=""128"" xmlns=""http://www.w3.org/2000/svg""><rect x=""2"" y=""2""
+width=""124"" height=""124"" rx=""14"" fill=""#363d52"" stroke=""#212532"" stroke-width=""4""/><g
+transform=""scale(.101) translate(122 122)""><g fill=""#fff""><path d=""M105 673v33q407 354 814 0v-33z""/>
+<path d=""m105 673 152 14q12 1 15 14l4 67 132 10 8-61q2-11 15-15h162q13 4 15 15l8 61 132-10 4-67q3-13
+15-14l152-14V427q30-39 56-81-35-59-83-108-43 20-82 47-40-37-88-64 7-51 8-102-59-28-123-42-26 43-46
+89-49-7-98 0-20-46-46-89-64 14-123 42 1 51 8 102-48 27-88 64-39-27-82-47-48 49-83 108 26 42 56 81zm0
+33v39c0 276 813 276 814 0v-39l-134 12-5 69q-2 10-14 13l-162 11q-12 0-16-11l-10-65H446l-10 65q-4
+11-16 11l-162-11q-12-3-14-13l-5-69z"" fill=""#478cbf""/><path d=""M483 600c0 34 58 34 58
+0v-86c0-34-58-34-58 0z""/><circle cx=""725"" cy=""526"" r=""90""/><circle cx=""299"" cy=""526"" r=""90""/></g><g
+fill=""#414042""><circle cx=""307"" cy=""532"" r=""60""/><circle cx=""717"" cy=""532"" r=""60""/></g></g></svg>";
+        private const string _GODOT_ICON_DEFAULT_PATH = "res://icon.svg";
+        private static Texture2D _GODOT_ICON = null;
+
+        private static Texture2D GetGodotIcon()
+        {
+            if (_GODOT_ICON != null) return _GODOT_ICON;
+
+            // TODO: Fetch Asset Directory instead of doing this.
+            string userDirectory = ProjectSettings.GlobalizePath("user://");
+            string path = userDirectory + "template_assets/icon.svg";
+
+            Texture2D icon = LoadIcon(path);
+            if (icon == null) GenerateGodotIcon(path);
+
+            // Try again after generating
+            icon = LoadIcon(path);
+            _GODOT_ICON = icon;
+            return _GODOT_ICON;
+        }
+        #endregion
+
+        public Texture2D Icon { get; private set; }
+        public string Path { get; private set; }
+
+        public IconData() => SetDefaultTexture();
+
+        public IconData(in string path)
+        {
+            if (path != null && path.Length > 0)
+            {
+                Texture2D texture = LoadIcon(in path);
+                if (texture != null)
+                {
+                    Icon = texture;
+                    Path = path;
+                    return;
+                }
+            }
+            SetDefaultTexture();
+        }
+
+        private void SetDefaultTexture()
+        {
+            Icon = GetGodotIcon();
+            Path = _GODOT_ICON_DEFAULT_PATH;
+        }
+
+        private static Texture2D LoadIcon(in string path)
+        {
+            if (path.Length == 0 || path == null) return _GODOT_ICON;
+            if (path == "res://icon.svg") return _GODOT_ICON;
+
+            // Clean up the path if gotten from a Config file
+            string santizedPath = path.Replace("res:/", path);
+            if (!File.Exists(santizedPath)) return _GODOT_ICON;
+
+            // Found Icon at the path, so load it
+            Image image = Image.LoadFromFile(santizedPath);
+            if (image == null) return _GODOT_ICON;
+
+            // Convert from image to texture (RAM -> VRAM)
+            ImageTexture imageTexture = ImageTexture.CreateFromImage(image);
+            if (imageTexture == null) return _GODOT_ICON;
+            return imageTexture;
+        }
+
+        private static void GenerateGodotIcon(in string path)
+        {
+            // Generate Icon
+            StreamWriter file = new(path);
+            file.WriteLine(_ICON_SVG);
+            file.Close();
+        }
+    }
+}
