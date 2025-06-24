@@ -16,8 +16,8 @@ transform=""scale(.101) translate(122 122)""><g fill=""#fff""><path d=""M105 673
 11-16 11l-162-11q-12-3-14-13l-5-69z"" fill=""#478cbf""/><path d=""M483 600c0 34 58 34 58
 0v-86c0-34-58-34-58 0z""/><circle cx=""725"" cy=""526"" r=""90""/><circle cx=""299"" cy=""526"" r=""90""/></g><g
 fill=""#414042""><circle cx=""307"" cy=""532"" r=""60""/><circle cx=""717"" cy=""532"" r=""60""/></g></g></svg>";
-        private const string _GODOT_ICON_DEFAULT_PATH = "res://icon.svg";
         private static Texture2D _GODOT_ICON = null;
+        public const string GODOT_ICON_DEFAULT_PATH = "res://icon.svg";
 
         private static Texture2D GetGodotIcon()
         {
@@ -60,7 +60,7 @@ fill=""#414042""><circle cx=""307"" cy=""532"" r=""60""/><circle cx=""717"" cy="
         private void SetDefaultTexture()
         {
             Icon = GetGodotIcon();
-            Path = _GODOT_ICON_DEFAULT_PATH;
+            Path = GODOT_ICON_DEFAULT_PATH;
         }
 
         private static Texture2D LoadIcon(in string path)

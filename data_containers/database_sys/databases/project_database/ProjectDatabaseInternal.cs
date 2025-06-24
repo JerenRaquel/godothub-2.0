@@ -1,14 +1,17 @@
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
-using Newtonsoft.Json;
 
 namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 {
     public partial class ProjectDatabase : Database<string, ProjectData>
     {
+        private static readonly int[] VALID_PROJECT_CONFIG_VERSIONS = [5];
+
         #region Singleton Instance
         private static ProjectDatabase _instance;
 
@@ -62,6 +65,79 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             return true;
         }
 
+        public void ScanProjects(in string[] paths)
+        {
+            //* Cached projects that were favorited or a build was set
+            List<string> cachedProjects = [];
+            foreach (KeyValuePair<string, ProjectData> entry in _data)
+                if (entry.Value.BuildType.Type != BuildType.FlagType.UNKNOWN ||
+                    entry.Value.IsFavorited)
+                    cachedProjects.Add(entry.Key);
+
+            //* Begin scanning
+            Dictionary<string, ProjectData> newProjects = [];
+            foreach (string path in paths)
+            {
+                //* Check if path to folder is valid
+                if (!Directory.Exists(path)) continue;
+
+                //* Grab the path to each folder in this directory
+                IEnumerable<string> nestedFolderPaths = Directory.EnumerateDirectories(path);
+                foreach (string folderPath in nestedFolderPaths)
+                {
+                    string sanitizedPath = OSAPI.SanitizePath(folderPath);
+                    CreateProjectFromConfig(in sanitizedPath, out ProjectData project);
+                    if (project == null)
+                        continue;   //! Failed to read Config
+
+                    //* Skip Dupes
+                    if (newProjects.ContainsKey(project.ProjectName)) continue;
+
+                    //* Check if project was cached
+                    if (cachedProjects.Contains(project.ProjectName))
+                    {
+                        ProjectData oldProject = _data[project.ProjectName];
+                        if (oldProject.VersionData == project.VersionData &&
+                            oldProject.Renderer == project.Renderer)
+                        {
+                            project.BuildType = oldProject.BuildType;
+                            project.IsFavorited = oldProject.IsFavorited;
+                        }
+                    }
+
+                    //* Add the project
+                    newProjects.Add(project.ProjectName, project);
+                }
+            }
+            //* Transfer the Data
+            _data.Clear();
+            foreach (KeyValuePair<string, ProjectData> entry in newProjects)
+                _data.Add(entry.Key, entry.Value);
+        }
+
+        /// <summary>
+        /// Used by the import window.
+        /// </summary>
+        /// <param name="path">Will contain either `.gdhub` or `project.godot`</param>
+        /// <returns>ImportError Flag</returns>
+        public ImportError ImportProject(string path)
+        {
+            string santizedPath = StripToRootDirectory(path);
+            //* Read project config
+            CreateProjectFromConfig(in santizedPath, out ProjectData project);
+            if (project == null)
+                //! Project Config couldn't be read.
+                return ImportError.INVALID_CONFIG_VERSION;
+
+            //* Skip dupes
+            if (_data.ContainsKey(project.ProjectName))
+                return ImportError.DUPLICATE_ENTRY;
+
+            //* Import Project
+            _data.Add(project.ProjectName, project);
+            return ImportError.OK;
+        }
+
         private void CreateProjectFromFileEntry(in string rawEntryStr)
         {
             StringReader sr = new(rawEntryStr);
@@ -113,13 +189,129 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 projectName,
                 new(iconPath),
                 new(versionStr),
-                new(rootPath, pathAdditions, ""),   //? Does the last param need to be saved?
+                new(rootPath, pathAdditions),
                 (Renderer)renderer,
                 (BuildType)buildStr,
                 usingDotNet,
                 tags
             );
             _data.Add(projectName, project);
+        }
+
+        private static void CreateProjectFromConfig(in string path, out ProjectData project)
+        {
+            System.Tuple<ConfigFile, ProjectPathData> loadData = LocateProjectConfig(in path);
+
+            //* Check if invalid load
+            if (loadData == null)
+            {
+                project = null;
+                return;
+            }
+
+            //* Check if valid config version
+            int configVersion = (int)loadData.Item1.GetValue("", "config_version", -1);
+            if (!VALID_PROJECT_CONFIG_VERSIONS.Contains(configVersion))
+            {
+                //! Invalid Config Version
+                project = null;
+                return;
+            }
+
+            LoadFromConfig(loadData.Item1, loadData.Item2, out ProjectData createdProject);
+            project = createdProject;
+        }
+
+        private static void LoadFromConfig(in ConfigFile configFile,
+            in ProjectPathData pathData, out ProjectData project)
+        {
+            //* Fetch Project Name
+            string projectName = configFile.GetValue(
+                "application", "config/name", ""
+            ).AsString();
+            if (projectName.Length == 0)
+            {
+                //! Failed to get project name
+                project = null;
+                return;
+            }
+
+            //* Fetch Icon Data
+            string iconPath = configFile.GetValue(
+                "application", "config/icon", IconData.GODOT_ICON_DEFAULT_PATH
+            ).AsString();
+
+            //* Fetch Feature Data
+            string[] features = configFile.GetValue(
+                "application", "config/tags", System.Array.Empty<string>()
+            ).AsStringArray();
+            string versionStr = "Unknown";
+            string renderer = "Unkwown";
+            bool usingDotNet = false;
+            if (features.Length == 2)
+            {
+                versionStr = features[0];
+                renderer = features[1];
+            }
+            else if (features.Length == 3)
+            {
+                versionStr = features[0];
+                renderer = features[2];
+                usingDotNet = features[1] == "C#";
+            }
+
+            //* Fetch Project Tags
+            string[] projectTags = configFile.GetValue(
+                "application", "config/tags", System.Array.Empty<string>()
+            ).AsStringArray();
+            TagKey[] tagKeys = new TagKey[projectTags.Length];
+            for (int i = 0; i < projectTags.Length; i++)
+                tagKeys[i] = new(projectTags[i], false);
+
+            project = new(
+                in projectName,
+                new(iconPath),
+                new(versionStr),
+                in pathData,
+                (Renderer)renderer,
+                new(BuildType.FlagType.UNKNOWN),
+                in usingDotNet,
+                tagKeys
+            );
+        }
+
+        private static System.Tuple<ConfigFile, ProjectPathData> LocateProjectConfig(
+            in string folderPath)
+        {
+            ConfigFile config = new();
+            string projectPath = folderPath + "/project.godot";
+
+            //* Attempt One -- project.godot is in the root directory
+            if (config.Load(projectPath) == Error.Ok)
+                return new(config, new(folderPath, ""));
+
+            //* Attempt Two -- Look for GDExt compat/.gdhub meta file
+            projectPath = folderPath + ".gdhub";
+            if (!File.Exists(projectPath))
+                return null; //! Fail to find, no other solutions
+
+            // Check the relative path located in the meta file
+            StreamReader sr = new(projectPath);
+            string relativeProjectPath = sr.ReadLine();
+            sr.Close();
+            if (relativeProjectPath == null || relativeProjectPath.Length == 0)
+                return null;    //! Invalid meta file -- Missing location to `project.godot`
+
+            // Use the relative path to find `project.godot`
+            projectPath = folderPath + "/" + relativeProjectPath + "/project.godot";
+            if (File.Exists(projectPath))
+                // Check if it can be loaded
+                if (config.Load(projectPath) == Error.Ok)
+                    return new(config, new(folderPath, relativeProjectPath));
+
+            // TODO: Log Error
+            System.Console.WriteLine($"Couldn't locate project.godot using path: {projectPath}");
+            return null;
         }
 
         // TODO: Uncomment code once integration tests are done -- Not updating config rn
@@ -253,5 +445,9 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 tags.Add(tagKey.TagName);
         }
 
+        private static string StripToRootDirectory(string rawPath)
+            => OSAPI.SanitizePath(rawPath)
+                .Replace("/.gdhub", "")
+                .Replace("/project.godot", "");
     }
 }

@@ -135,4 +135,10 @@ public static partial class OSAPI
         }
         return true;
     }
+
+    public static string SanitizePath(in string rawPath)
+    {
+        //? Might want to come back to this to make it less naive
+        return rawPath.Replace("\\", "/");
+    }
 }

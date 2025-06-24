@@ -9,7 +9,17 @@ namespace DataContainer.DatabaseSys
     // C for container type; ie. project, settings, tags, etc.
     public abstract partial class Database<K, C>(string userDirectory, string saveFolder)
     {
-        public enum ImportError { OK, OK_EMPTY_FILE, READ_FAIL, INVALID_CONFIG_VERSION }
+        public enum ImportError
+        {
+            //* Valid Flag -- Not counted as an error
+            OK,                     //* No Issues
+            OK_EMPTY_FILE,          //* No Issues, File is empty on Read
+
+            //! Error Flags
+            READ_FAIL,              //! Could not open or read file
+            INVALID_CONFIG_VERSION, //! File not a valid version or missing version flag
+            DUPLICATE_ENTRY         //! Entry is already contained in the database
+        }
 
         protected readonly struct FileData(ImportError error, StreamReader file)
         {

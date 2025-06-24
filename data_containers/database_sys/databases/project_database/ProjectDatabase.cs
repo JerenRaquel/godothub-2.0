@@ -21,7 +21,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 in data.Name,
                 new(),
                 new(data.Version),
-                new(path, "", ""),
+                new(path, ""),
                 (Renderer)data.Renderer,
                 buildType,
                 data.IsCSharp,
