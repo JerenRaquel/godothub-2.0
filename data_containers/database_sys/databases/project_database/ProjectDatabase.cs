@@ -9,27 +9,29 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
     public partial class ProjectDatabase : Database<string, ProjectStats>
     {
         #region Manipulation
-        public void AddProject(in ProjectCreator.ProjectCreationData data,
+        // TODO: Refactor `ProjectCreator.ProjectCreationData`
+        public string AddProject(in ProjectCreator.ProjectCreationData data,
             in string path, in string templateKey, in BuildType buildType)
         {
-            throw new System.NotImplementedException();
-            // TODO: Fetch Template
+            // TODO: Replace with new fetch method -- Need Tag List
+            //. TemplateStructure template = TemplateCache.Instance.GetTemplate(templateKey);
 
-            // TODO: Create new project
-            // ProjectStats project = new(
-            //     in data.Name,
-            //     new(),
-            //     new(data.Version),
-            //     new(path, "", ""),
-            //     (Renderer)data.Renderer,
-            //     buildType,
-            //     data.IsCSharp,
-            //     []
-            // );
+            //* Create new project
+            ProjectStats project = new(
+                in data.Name,
+                new(),
+                new(data.Version),
+                new(path, "", ""),
+                (Renderer)data.Renderer,
+                buildType,
+                data.IsCSharp,
+                []  // TODO: Replace with something like `template.GetTags()`
+            );
 
-            // TODO: Add project
-
-            // IsDirty = true;
+            //* Add project entry and return the name as the key
+            _data.Add(data.Name, project);
+            IsDirty = true;
+            return data.Name;
         }
 
         public void DeleteProject(in string projectKey)
