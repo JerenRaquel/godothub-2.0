@@ -7,14 +7,15 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
     public class ProjectData
     {
         //* These are the 
-        private List<TagKey> _tags = [];
+        private HashSet<TagKey> _projectTags = [];
+        private HashSet<TagKey> _softwareTags = [];
         public Version version;
         public Renderer renderer;
         public bool usesDotNet;
 
         public ProjectPathData PathData { get; private set; }
 
-        public long TagCount => _tags.Count;
+        public long TagCount => _projectTags.Count + _softwareTags.Count;
         public bool UsesGDExt
             => PathData.ProjectGodotFile != null && PathData.ProjectGodotFile.Length > 0;
 
@@ -29,82 +30,66 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             this.usesDotNet = usesDotNet;
         }
 
-        public TagKey[] GetSoftwareTags()
+        public void AddTag(in TagKey tagKey)
         {
-            if (_tags.Count == 0) return [];
-
-            List<TagKey> keys = [];
-            foreach (TagKey key in _tags)
-                if (key.IsSoftware) keys.Add(key);
-            return [.. keys];
+            if (tagKey.IsSoftware)
+                _softwareTags.Add(tagKey);
+            else
+                _projectTags.Add(tagKey);
         }
 
-        public TagKey[] GetProjectTags()
+        public bool RemoveTag(in TagKey tagKey)
         {
-            if (_tags.Count == 0) return [];
-
-            List<TagKey> keys = [];
-            foreach (TagKey key in _tags)
-                if (!key.IsSoftware) keys.Add(key);
-            return [.. keys];
+            if (tagKey.IsSoftware) return _softwareTags.Remove(tagKey);
+            return _projectTags.Remove(tagKey);
         }
 
-        public void AddTag(in TagKey key)
+        public bool HasTag(in TagKey tagKey)
         {
-            if (_tags.Contains(key)) return;
-            _tags.Add(key);
-        }
-
-        public bool RemoveTag(in TagKey key)
-        {
-            if (!_tags.Contains(key)) return false;
-            _tags.Remove(key);
-            return true;
+            if (tagKey.IsSoftware) return _softwareTags.Contains(tagKey);
+            return _projectTags.Contains(tagKey);
         }
 
         public TagKey[] GetTags(in TagDatabase.TagDatabase.TagFlag tagFlag)
         {
-            if (_tags.Count == 0) return [];
+            if (TagCount == 0) return [];
 
-            List<TagKey> results = [];
-            foreach (TagKey key in _tags)
+            switch (tagFlag)
             {
-                switch (tagFlag)
-                {
-                    case TagDatabase.TagDatabase.TagFlag.PROJECT:
-                        if (key.IsSoftware) continue;
-                        results.Add(key);
-                        break;
+                case TagDatabase.TagDatabase.TagFlag.PROJECT:
+                    return [.. _projectTags];
 
-                    case TagDatabase.TagDatabase.TagFlag.SOFTWARE:
-                        if (!key.IsSoftware) continue;
-                        results.Add(key);
-                        break;
+                case TagDatabase.TagDatabase.TagFlag.SOFTWARE:
+                    return [.. _softwareTags];
 
-                    case TagDatabase.TagDatabase.TagFlag.ANY:
-                        results.Add(key);
-                        break;
+                case TagDatabase.TagDatabase.TagFlag.ANY:
+                    List<TagKey> results = [];
+                    results.AddRange(_projectTags);
+                    results.AddRange(_softwareTags);
+                    return [.. results];
 
-                    default:
-                        continue;
-                }
+                default:
+                    return [];
             }
-            return [.. results];
         }
 
         public ProjectData Copy()
         {
             ProjectData copy = new(PathData, version, renderer, usesDotNet);
-            foreach (TagKey key in _tags)
+            foreach (TagKey key in _projectTags)
+                copy.AddTag(key);
+            foreach (TagKey key in _softwareTags)
                 copy.AddTag(key);
             return copy;
         }
 
         public bool HasDifferentTags(in ProjectData other)
         {
-            if (_tags.Count != other._tags.Count) return true;
-            foreach (TagKey tagKey in _tags)
-                if (!other._tags.Contains(tagKey)) return true;
+            if (TagCount != other.TagCount) return true;
+            foreach (TagKey tagKey in _projectTags)
+                if (!other._projectTags.Contains(tagKey)) return true;
+            foreach (TagKey tagKey in _softwareTags)
+                if (!other._softwareTags.Contains(tagKey)) return true;
             return false;
         }
 

@@ -23,8 +23,6 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 
         public Version VersionData => GetProjectData().version;
         public Renderer Renderer => GetProjectData().renderer;
-        public TagKey[] SoftwareTagKeys => GetProjectData().GetSoftwareTags();
-        public TagKey[] ProjectTagKeys => GetProjectData().GetProjectTags();
         public bool HasTags => GetProjectData().TagCount > 0;
         public bool UsesDotNet => GetProjectData().usesDotNet;
         public bool UsesGDExt => GetProjectData().UsesGDExt;
@@ -45,6 +43,8 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         }
 
         public void UpdateTimeAccessed() => LastEdited = System.DateTime.Now;
+
+        public bool HasTag(in TagKey tagKey) => GetProjectData().HasTag(tagKey);
 
         public DirtyFlag GetConfigDirtyFlag()
         {

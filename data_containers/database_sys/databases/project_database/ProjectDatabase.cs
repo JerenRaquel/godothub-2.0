@@ -72,6 +72,13 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             return project.HasTags;
         }
 
+        public bool HasTag(in string projectKey, in TagKey tagKey)
+        {
+            ProjectStats project = GetProject(projectKey);
+            if (project == null) return false;
+            return project.HasTag(tagKey);
+        }
+
         public bool IsFavorited(in string projectKey)
         {
             ProjectStats project = GetProject(projectKey);
