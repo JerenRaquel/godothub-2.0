@@ -278,6 +278,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 in usingDotNet,
                 tagKeys
             );
+            project.UpdateTimeBaseOnConfig();
         }
 
         private static System.Tuple<ConfigFile, ProjectPathData> LocateProjectConfig(
@@ -375,7 +376,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             // Root Path
             WriteEntry(writer, "RootPath", project.PathData.RootFolder);
             // project.godot folder path additions
-            WriteEntry(writer, "ProjectPathAdditions", project.PathData.ProjectGodotFile);
+            WriteEntry(writer, "ProjectPathAdditions", project.PathData.ProjectGodotFileRelative);
             // [Project Tags]
             StripTags(
                 project.GetTags(TagDatabase.TagDatabase.TagFlag.PROJECT),

@@ -1,3 +1,4 @@
+using System.IO;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 
@@ -27,7 +28,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         public bool HasTags => GetProjectData().TagCount > 0;
         public bool UsesDotNet => GetProjectData().usesDotNet;
         public bool UsesGDExt
-            => PathData.ProjectGodotFile != null && PathData.ProjectGodotFile.Length > 0;
+            => PathData.ProjectGodotFileRelative != null && PathData.ProjectGodotFileRelative.Length > 0;
 
         private ProjectData() { }
 
@@ -45,6 +46,9 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         }
 
         public void UpdateTimeAccessed() => LastEdited = System.DateTime.Now;
+
+        public void UpdateTimeBaseOnConfig()
+            => LastEdited = File.GetLastWriteTime(PathData.ProjectGodotFile);
 
         public bool HasTag(in TagKey tagKey) => GetProjectData().HasTag(tagKey);
 
