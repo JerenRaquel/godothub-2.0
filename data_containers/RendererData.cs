@@ -35,7 +35,7 @@ namespace DataContainer
             {
                 "Compatibility" => FlagType.COMPAT,
                 "Mobile" => FlagType.MOBILE,
-                "Forwards+" => FlagType.FORWARD,
+                "Forward+" => FlagType.FORWARD,
                 _ => FlagType.INVALID
             };
             return new(type);

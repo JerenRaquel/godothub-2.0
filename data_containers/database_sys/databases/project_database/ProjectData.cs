@@ -6,32 +6,27 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 {
     public class ProjectData
     {
+        //* These are the 
         private List<TagKey> _tags = [];
-
         public Version version;
         public Renderer renderer;
         public bool usesDotNet;
-        public bool isFavorited;
-        public BuildType buildType;
 
         public ProjectPathData PathData { get; private set; }
 
         public long TagCount => _tags.Count;
         public bool UsesGDExt
-            => PathData.GDHubMetaFile != null && PathData.GDHubMetaFile.Length > 0;
+            => PathData.ProjectGodotFile != null && PathData.ProjectGodotFile.Length > 0;
 
         private ProjectData() { }
 
         public ProjectData(in ProjectPathData pathData, in Version version,
-            in BuildType buildType, in Renderer renderer, in bool usesDotNet,
-            in bool isFavorited)
+            in Renderer renderer, in bool usesDotNet)
         {
             PathData = pathData;
             this.version = version;
-            this.buildType = buildType;
             this.renderer = renderer;
             this.usesDotNet = usesDotNet;
-            this.isFavorited = isFavorited;
         }
 
         public TagKey[] GetSoftwareTags()
@@ -99,11 +94,27 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 
         public ProjectData Copy()
         {
-            ProjectData copy
-                = new(PathData, version, buildType, renderer, usesDotNet, isFavorited);
+            ProjectData copy = new(PathData, version, renderer, usesDotNet);
             foreach (TagKey key in _tags)
                 copy.AddTag(key);
             return copy;
+        }
+
+        public bool HasDifferentTags(in ProjectData other)
+        {
+            if (_tags.Count != other._tags.Count) return true;
+            foreach (TagKey tagKey in _tags)
+                if (!other._tags.Contains(tagKey)) return true;
+            return false;
+        }
+
+        public bool HasDifferentFeatureData(in ProjectData other)
+        {
+            if (other.usesDotNet != usesDotNet) return true;
+            if (other.renderer != renderer) return true;
+            if (other.version != version) return true;
+
+            return false;
         }
     }
 }
