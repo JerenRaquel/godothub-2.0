@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using Godot;
 
 public static partial class ProjectCreator
@@ -111,12 +112,10 @@ public static partial class ProjectCreator
 
     private static bool CreateProjectGodot(string path, ProjectCreationData data, string templateTag)
     {
-        ConfigFile file = new();
-        file.SetValue("application", "config/name", data.Name);
-
         string[] projectTags = TemplateCache.Instance.GetTemplate(templateTag).ProjectTags;
-        ProjectDataState.UpdateConfig(file, data.Version, data.IsCSharp, data.Renderer, projectTags);
-        return file.Save($"{path}/project.godot") == Error.Ok;
+        return ProjectDatabase.CreateNewProjectGodotConfig(
+            in projectTags, in data, $"{path}/project.godot"
+        );
     }
 
     private static bool CreateGitIgnore(string path)

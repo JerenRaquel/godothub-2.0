@@ -200,6 +200,22 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             _data.Add(projectName, project);
         }
 
+        public static bool CreateNewProjectGodotConfig(in string[] tagNames,
+                    in ProjectCreator.ProjectCreationData data, in string path)
+        {
+            ConfigFile config = new();
+            config.SetValue("application", "config/name", data.Name);
+
+            SetConfigFeatureData(
+                in config,
+                new(data.Version),
+                in data.IsCSharp,
+                (Renderer)data.Renderer
+            );
+            SetConfigTags(in config, in tagNames);
+            return config.Save(path) == Error.Ok;
+        }
+
         private static void CreateProjectFromConfig(in string path, out ProjectData project)
         {
             System.Tuple<ConfigFile, ProjectPathData> loadData = LocateProjectConfig(in path);
@@ -326,31 +342,35 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             // if (configFile.Load(project.PathData.ProjectGodotFile) != Error.Ok) return false;
 
             //* Update Features
-            if ((flag & ProjectData.DirtyFlag.FEATURE_DATA) > 0)
-            {
-                System.Console.WriteLine("--- Updating Feature Data ---");
-                // List<string> featureData = [];
-                // featureData.Add(project.VersionData.ToString());
-                // if (project.UsesDotNet) featureData.Add("C#");
-                // featureData.Add(project.Renderer.ToString());
-                // configFile.SetValue("application", "config/features", featureData.ToArray());
-            }
+            // if ((flag & ProjectData.DirtyFlag.FEATURE_DATA) > 0)
+            // SetConfigFeatureData();
 
             //* Set Tags
-            if ((flag & ProjectData.DirtyFlag.TAGS) > 0)
-            {
-                System.Console.WriteLine("--- Updating Tags ---");
-                // TagKey[] tagKeys = project.GetTags(TagDatabase.TagDatabase.TagFlag.PROJECT);
-                // if (tagKeys.Length > 0)
-                // {
-                //     StripTags(in tagKeys, out List<string> strippedTags);
-                //     configFile.SetValue("application", "config/tags", strippedTags.ToArray());
-                // }
-                // else if (configFile.HasSectionKey("application", "config/tags"))
-                //     configFile.EraseSectionKey("application", "config/tags");
-            }
-
+            // if ((flag & ProjectData.DirtyFlag.TAGS) > 0)
+            //     SetConfigTags();
             return true;
+        }
+
+        private static void SetConfigFeatureData(in ConfigFile config,
+            in Version version, in bool usesDotNet, in Renderer renderer)
+        {
+            System.Console.WriteLine("--- Updating Feature Data ---");
+            List<string> featureData = [];
+            featureData.Add(version.ToString());
+            if (usesDotNet) featureData.Add("C#");
+            featureData.Add(renderer.ToString());
+            config.SetValue("application", "config/features", featureData.ToArray());
+        }
+
+        private static void SetConfigTags(in ConfigFile config, in string[] projectTags)
+        {
+            System.Console.WriteLine("--- Updating Tags ---");
+            if (projectTags.Length > 0)
+            {
+                config.SetValue("application", "config/tags", projectTags);
+            }
+            else if (config.HasSectionKey("application", "config/tags"))
+                config.EraseSectionKey("application", "config/tags");
         }
 
         private static string WriteProjectToJSON(in ProjectData project)
