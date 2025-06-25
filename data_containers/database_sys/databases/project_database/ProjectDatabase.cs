@@ -8,6 +8,9 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 {
     public partial class ProjectDatabase : Database<string, ProjectData>
     {
+        public string[] ProjectNames => [.. _data.Keys];
+        public long Count => _data.Count;
+
         #region Manipulation
         // TODO: Refactor `ProjectCreator.ProjectCreationData`
         public string AddProject(in ProjectCreator.ProjectCreationData data,
@@ -34,12 +37,12 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             return data.Name;
         }
 
-        public void DeleteProject(in string projectKey)
+        public bool DeleteProject(in string projectKey)
         {
-            if (!_data.ContainsKey(projectKey)) return;
+            if (!_data.ContainsKey(projectKey)) return false;
 
-            _data.Remove(projectKey);
             IsDirty = true;
+            return _data.Remove(projectKey);
         }
 
         public bool UpdateProjectData(in string projectKey, BuildType buildType,
@@ -86,6 +89,13 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             return project.IsFavorited;
         }
 
+        public bool IsProjectBuildUnknown(in string projectKey)
+        {
+            ProjectData project = GetProject(projectKey);
+            if (project == null) return true;
+            return project.BuildType.Type == BuildType.FlagType.UNKNOWN;
+        }
+
         #endregion
 
         #region Getters
@@ -94,6 +104,20 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             ProjectData project = GetProject(projectKey);
             if (project == null) return null;
             return project.IconData.Icon;
+        }
+
+        public long GetRawTime(in string projectKey)
+        {
+            ProjectData project = GetProject(projectKey);
+            if (project == null) return 0;
+            return project.LastEdited.Ticks;
+        }
+
+        public string GetLocalTime(in string projectKey)
+        {
+            ProjectData project = GetProject(in projectKey);
+            if (project == null) return "Unknown";
+            return project.LastEdited.ToLocalTime().ToString();
         }
 
         public Renderer? GetRenderer(in string projectKey)
@@ -125,6 +149,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             return project.PathData;
         }
 
+        //? Should this be in here or OSAPI?
         public string GetProjectUserDirectory(in string projectKey)
         {
             ProjectData project = GetProject(projectKey);
@@ -157,10 +182,13 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             SetFavorite(in project, in state);
         }
 
-        public void SetBuild(in string projectKey, BuildType buildType)
+        public bool SetBuild(in string projectKey, BuildType buildType)
         {
             ProjectData project = GetProject(projectKey);
+            if (project == null) return false;
+
             SetBuild(in project, in buildType);
+            return true;
         }
 
         #endregion
@@ -174,7 +202,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 + $" [ v{project.VersionData} | ".BBCodeColor(ColorTheme.BaseBlue)
                 + ((string)project.BuildType).BBCodeColor(project.BuildType.HTMLColor)
                 + " ] ".BBCodeColor(ColorTheme.BaseBlue)
-                + $"{project.Renderer}".BBCodeColor(project.Renderer.HTMLColor);
+                + $"[{project.Renderer}]".BBCodeColor(project.Renderer.HTMLColor);
 
             if (project.UsesGDExt)
                 metaStr += " [Uses GDExtension]".BBCodeColor(ColorTheme.HighlightBlue);

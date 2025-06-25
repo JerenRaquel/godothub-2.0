@@ -154,7 +154,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             string buildStr = ReadEntry(reader, "Unknown");
             // Renderer
             string renderer = ReadEntry(reader, "Unknown");
-            renderer = renderer.Replace(" Plus", "+");
+            renderer = renderer.Replace(" Plus", "+").Replace("GL ", "");
             // Project Name
             string projectName = ReadEntry(reader, "Unknown");
             // Icon Path
@@ -195,6 +195,8 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
                 usingDotNet,
                 tags
             );
+            project.UpdateTimeBaseOnConfig();
+            project.IsFavorited = favorited;
             _data.Add(projectName, project);
         }
 
@@ -367,7 +369,10 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             WriteEntry(writer, "Build", project.BuildType.ToString());
             // Renderer
             string renderStr = project.Renderer;
-            renderStr = renderStr.Replace("+", " Plus");
+            if (project.Renderer.Type == Renderer.FlagType.COMPAT)
+                renderStr = "GL " + renderStr;
+            else
+                renderStr = renderStr.Replace("+", " Plus");
             WriteEntry(writer, "Renderer", renderStr);
             // Project Name
             WriteEntry(writer, "Name", project.ProjectName);
@@ -376,7 +381,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
             // Root Path
             WriteEntry(writer, "RootPath", project.PathData.RootFolder);
             // project.godot folder path additions
-            WriteEntry(writer, "ProjectPathAdditions", project.PathData.ProjectGodotFileRelative);
+            WriteEntry(writer, "ProjectPathAdditions", project.PathData.ProjectGodotFileRelativePath);
             // [Project Tags]
             StripTags(
                 project.GetTags(TagDatabase.TagDatabase.TagFlag.PROJECT),

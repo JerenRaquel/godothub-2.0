@@ -28,7 +28,7 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
         public bool HasTags => GetProjectData().TagCount > 0;
         public bool UsesDotNet => GetProjectData().usesDotNet;
         public bool UsesGDExt
-            => PathData.ProjectGodotFileRelative != null && PathData.ProjectGodotFileRelative.Length > 0;
+            => PathData.ProjectGodotFileRelativePath != null && PathData.ProjectGodotFileRelativePath.Length > 0;
 
         private ProjectData() { }
 

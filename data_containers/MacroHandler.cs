@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 
 namespace DataContainer
@@ -27,9 +28,13 @@ namespace DataContainer
 
             if (projectName != null)
             {
-                userDirectory = ProjectCache.Instance.GetProjectSaveFolder(projectName);
-                projectDirectory = ProjectCache.Instance.GetProjectPath(projectName);
-                rootDirectory = ProjectCache.Instance.GetProjectFolder(projectName);
+                userDirectory = ProjectDatabase.Instance.GetProjectUserDirectory(in projectName);
+                ProjectPathData? pathData = ProjectDatabase.Instance.GetPathData(in projectName);
+                if (pathData.HasValue)
+                {
+                    projectDirectory = pathData.Value.ProjectGodotFileLocation;
+                    rootDirectory = pathData.Value.RootFolder;
+                }
             }
 
             string[] parts = commandData.Args;

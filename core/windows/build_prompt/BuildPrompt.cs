@@ -1,7 +1,7 @@
 using DataContainer;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
-using System;
 
 public partial class BuildPrompt : WindowBase
 {
@@ -40,13 +40,13 @@ public partial class BuildPrompt : WindowBase
     public void Open(string projectName)
     {
         _projectName = projectName;
-        _projectLabel.Text = ProjectCache.Instance.GenerateProjectMetadataString(projectName, true);
-        string partialKey = ProjectCache.Instance.ProjectNameToPartialKey(projectName);
-        if (VersionDatabase.Instance.HasPartialKey(partialKey))
+        _projectLabel.Text = ProjectDatabase.Instance.GenerateProjectMetadataString(in projectName, true);
+        VersionKey versionKey = ProjectDatabase.Instance.GetVersionKey(in projectName);
+        if (VersionDatabase.Instance.HasPartialKey(versionKey.PartialKey))
         {
             _mainContainer.Show();
             _errorLabel.Hide();
-            BuildType[] types = VersionDatabase.Instance.GetAvaliableBuilds(partialKey);
+            BuildType[] types = VersionDatabase.Instance.GetAvaliableBuilds(versionKey.PartialKey);
             foreach (BuildType type in types)
                 _buildOptionButton.AddItem(type.ToString());
             _buildOptionButton.Select(0);
@@ -87,7 +87,7 @@ public partial class BuildPrompt : WindowBase
         {
             BuildType build
                 = (BuildType)_buildOptionButton.GetItemText(_buildOptionButton.Selected);
-            buildSet = ProjectCache.Instance.SetBuild(_projectName, build);
+            buildSet = ProjectDatabase.Instance.SetBuild(in _projectName, build);
         }
 
         string projectName = _projectName;

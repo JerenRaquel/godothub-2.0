@@ -1,4 +1,5 @@
 using DataContainer;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
@@ -89,7 +90,7 @@ public partial class Projects : TabBase
         _deletePrompt = GetNode<DeletePrompt>("%DeletePrompt");
         _deletePrompt.ProjectDeletedSuccessfully += OnProjectDeletedSuccessfully;
 
-        string[] versions = ProjectCache.Instance.GetVersions();
+        string[] versions = ProjectDatabase.Instance.GetAllUsedVersionsAsStr();
         Array.Sort(versions, VersionDatabase.reverseComparer);
         foreach (string version in versions)
             _versionOptionButton.AddItem(version);
@@ -133,8 +134,8 @@ public partial class Projects : TabBase
         }
 
         ToggleToolBar(true);
-        List<string> projectNames = ProjectCache.Instance.ProjectNames;
-        if (projectNames.Count == 0)
+        string[] projectNames = ProjectDatabase.Instance.ProjectNames;
+        if (projectNames.Length == 0)
         {
             _labelContainer.Show();
             _noGodotVersionLabel.Hide();
@@ -143,7 +144,7 @@ public partial class Projects : TabBase
         }
 
         _labelContainer.Hide();
-        projectNames.Sort(CompareFunc);
+        Array.Sort(projectNames, CompareFunc);
         foreach (string projectName in projectNames)
         {
             ProjectEntry entryInstance = _projectEntryPackedScene.Instantiate<ProjectEntry>();
@@ -154,7 +155,7 @@ public partial class Projects : TabBase
             entryInstance.DoubleClickButton.StateToggled += (bool state) => OnToggled(projectName, state);
             entryInstance.EntryFavoriteToggled += FillProjectContainer;
         }
-        Name = $"Projects [{ProjectCache.Instance.ProjectCount}]";
+        Name = $"Projects [{ProjectDatabase.Instance.Count}]";
     }
 
     public void UpdateQuickTools() => _sidePanel.UpdateQuickTools();
@@ -186,17 +187,17 @@ public partial class Projects : TabBase
     private int CompareFunc(string lhs, string rhs)
     {
         int result;
-        if (ProjectCache.Instance.IsFavorited(lhs) && !ProjectCache.Instance.IsFavorited(rhs))
+        if (ProjectDatabase.Instance.IsFavorited(lhs) && !ProjectDatabase.Instance.IsFavorited(rhs))
             result = 1;
-        else if (!ProjectCache.Instance.IsFavorited(lhs) && ProjectCache.Instance.IsFavorited(rhs))
+        else if (!ProjectDatabase.Instance.IsFavorited(lhs) && ProjectDatabase.Instance.IsFavorited(rhs))
             result = -1;
         else
         {
             if (_sortOptionButton.Selected == 0)  // Last Edited
             {
-                if (ProjectCache.Instance.GetRawTime(lhs) < ProjectCache.Instance.GetRawTime(rhs))
+                if (ProjectDatabase.Instance.GetRawTime(lhs) < ProjectDatabase.Instance.GetRawTime(rhs))
                     result = -1;
-                else if (ProjectCache.Instance.GetRawTime(lhs) > ProjectCache.Instance.GetRawTime(rhs))
+                else if (ProjectDatabase.Instance.GetRawTime(lhs) > ProjectDatabase.Instance.GetRawTime(rhs))
                     result = 1;
                 else
                     result = lhs.CompareTo(rhs) * -1;
@@ -212,7 +213,7 @@ public partial class Projects : TabBase
     private void OnScanButtonPressed()
     {
         string[] paths = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_PATH_TAG_KEY);
-        ProjectCache.Instance.ScanProjects(paths);
+        ProjectDatabase.Instance.ScanProjects(paths);
         FillProjectContainer();
     }
 
@@ -242,7 +243,7 @@ public partial class Projects : TabBase
 
     private void OnLaunchRequested(string projectName)
     {
-        if (ProjectCache.Instance.GetBuild(projectName).Type == BuildType.FlagType.UNKNOWN)
+        if (ProjectDatabase.Instance.IsProjectBuildUnknown(in projectName))
         {
             _buildPrompt.Open(projectName);
             return;
@@ -269,20 +270,21 @@ public partial class Projects : TabBase
 
     private void OnImportFileLocated(string path)
     {
-        switch (ProjectCache.Instance.ImportProject(path))
+        switch (ProjectDatabase.Instance.ImportProject(path))
         {
-            case ProjectCache.ImportError.OK:
+            case ProjectDatabase.ImportError.OK:
                 FillProjectContainer();
                 NotifcationManager.Instance.NotifyValid("Project imported!");
                 break;
-            case ProjectCache.ImportError.PROJECT_DUPLICATE:
+            case ProjectDatabase.ImportError.DUPLICATE_ENTRY:
                 NotifcationManager.Instance.NotifyError("Project is already imported.");
                 break;
-            case ProjectCache.ImportError.PROJECT_READ_FAIL:
+            case ProjectDatabase.ImportError.INVALID_CONFIG_VERSION:
+                NotifcationManager.Instance.NotifyError("Project has an invalid project.godot config.");
+                break;
             default:
                 NotifcationManager.Instance.NotifyError("Unable to import project.");
                 break;
-
         }
         FileDialogManager.Instance.DataCompiled -= OnImportFileLocated;
     }

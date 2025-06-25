@@ -1,7 +1,7 @@
 using DataContainer;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
-using System;
 
 public partial class EditProjectWindow : WindowBase
 {
@@ -39,7 +39,7 @@ public partial class EditProjectWindow : WindowBase
     public void Open(string projectName)
     {
         _cachedProjectName = projectName;
-        _cachedRenderTypeStr = ProjectCache.Instance.GetRenderer(projectName);
+        _cachedRenderTypeStr = ProjectDatabase.Instance.GetRenderer(in projectName);
         GD.Print(_cachedRenderTypeStr);
         switch (_cachedRenderTypeStr)
         {
@@ -57,19 +57,20 @@ public partial class EditProjectWindow : WindowBase
 
         RefreshVersionOptions();
 
-        if (ProjectCache.Instance.GetBuild(projectName).Type == BuildType.FlagType.UNKNOWN)
+        if (ProjectDatabase.Instance.IsProjectBuildUnknown(in projectName))
         {
             _cachedVersionBuildIndex = -1;
             _versionOptionButton.Select(0);
         }
         else
         {
-            string versionBuild = ProjectCache.Instance.GetProjectVersionBuild(projectName);
-            if (versionBuild == null) return;
+            string simplifiedMetaString
+                = ProjectDatabase.Instance.GenerateSimpleProjectMetadataString(in projectName);
+            if (simplifiedMetaString == null) return;
 
             for (int i = 0; i < _versionOptionButton.ItemCount; i++)
             {
-                if (_versionOptionButton.GetItemText(i) == versionBuild)
+                if (_versionOptionButton.GetItemText(i) == simplifiedMetaString)
                 {
                     _cachedVersionBuildIndex = i;
                     _versionOptionButton.Select(i);
@@ -79,7 +80,6 @@ public partial class EditProjectWindow : WindowBase
         }
 
         Validate();
-
         Show();
     }
 
@@ -109,19 +109,19 @@ public partial class EditProjectWindow : WindowBase
         {
             string selectedVersionMetaString = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
             BuildType build = BuildType.ParseBuildString(selectedVersionMetaString);
-            ProjectData.Renderer renderer = ProjectData.Renderer.INVALID;
+            Renderer renderer = Renderer.FlagType.INVALID;
             if (_compatCheckBox.ButtonPressed)
-                renderer = ProjectData.Renderer.COMPAT;
+                renderer = Renderer.FlagType.COMPAT;
             else if (_mobileCheckBox.ButtonPressed)
-                renderer = ProjectData.Renderer.MOBILE;
+                renderer = Renderer.FlagType.MOBILE;
             else if (_forwardCheckBox.ButtonPressed)
-                renderer = ProjectData.Renderer.FORWARD;
+                renderer = Renderer.FlagType.FORWARD;
 
-            bool state = ProjectCache.Instance.UpdateProjectData(
-                _cachedProjectName,
+            bool state = ProjectDatabase.Instance.UpdateProjectData(
+                in _cachedProjectName,
                 build,
                 renderer,
-                DataContainer.DatabaseSys.Databases.VersionDatabase.Version.ParseVersionStr(selectedVersionMetaString)
+                Version.ParseVersionStr(in selectedVersionMetaString)
             );
             if (state)
                 NotifcationManager.Instance.NotifyValid("Project Updated.");

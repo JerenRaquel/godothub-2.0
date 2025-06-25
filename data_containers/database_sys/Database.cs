@@ -42,6 +42,7 @@ namespace DataContainer.DatabaseSys
         public void WriteData()
         {
             if (!IsDirty) return;
+            Console.WriteLine($"Writing to {SAVE_LOCATION}");
             ForceWrite();
         }
 

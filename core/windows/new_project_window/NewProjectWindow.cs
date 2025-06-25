@@ -1,8 +1,8 @@
 using DataContainer;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
-using System;
 using System.IO;
 
 public partial class NewProjectWindow : WindowBase
@@ -152,7 +152,7 @@ public partial class NewProjectWindow : WindowBase
 
         string godotVersionStrData = _versionOptionButton.GetItemText(_versionOptionButton.Selected);
         bool isCSharp = godotVersionStrData.Contains("[.Net]");
-        string versionStr = DataContainer.DatabaseSys.Databases.VersionDatabase.Version.ParseVersionStr(godotVersionStrData);
+        string versionStr = Version.ParseVersionStr(godotVersionStrData);
         if (versionStr == null)
         {
             NotifcationManager.Instance.NotifyError("Could not determine version...");
@@ -168,7 +168,7 @@ public partial class NewProjectWindow : WindowBase
             return;
         }
 
-        string projectName = FormatFolderName(_nameLineEdit.Text.StripEdges());
+        string projectName = OSAPI.FormatFolderName(_nameLineEdit.Text.StripEdges());
         if (rendererStr == null)
         {
             NotifcationManager.Instance.NotifyError("Project name not valid. Some how this got past the validation step...");
@@ -190,22 +190,23 @@ public partial class NewProjectWindow : WindowBase
         // Cache Project Data
         if (successState)
         {
-            ProjectCache.Instance.AddProject(data, projectPath, templateName, buildType);
+            ProjectDatabase.Instance.AddProject(in data, in projectPath, in templateName, in buildType);
             EmitSignal(SignalName.ProjectCreated);
         }
 
         Hide();
     }
 
+    //? Should this be a function?
     private string GetRendererString()
     {
         //* This is done this way so ensure a single spot where the string conversion is made.
         if (_forwardCheckBox.ButtonPressed)
-            return ProjectCache.RenderEnumToString(ProjectData.Renderer.FORWARD);
+            return new Renderer(Renderer.FlagType.FORWARD);
         else if (_mobileCheckBox.ButtonPressed)
-            return ProjectCache.RenderEnumToString(ProjectData.Renderer.MOBILE);
+            return new Renderer(Renderer.FlagType.MOBILE);
         else if (_compatCheckBox.ButtonPressed)
-            return ProjectCache.RenderEnumToString(ProjectData.Renderer.COMPAT);
+            return new Renderer(Renderer.FlagType.COMPAT);
         else
             return null;
     }
@@ -245,7 +246,7 @@ public partial class NewProjectWindow : WindowBase
         _pathLineEdit.Text = _pathOptionButton.GetItemText(_pathOptionButton.Selected);
         if (text.Length > 0)
         {
-            string name = FormatFolderName(text);
+            string name = OSAPI.FormatFolderName(text);
             if (name == null)
             {
                 DisplayError("Invalid Folder Name");
@@ -256,23 +257,6 @@ public partial class NewProjectWindow : WindowBase
         }
 
         Validate();
-    }
-
-    //? Should this be in OSAPI?
-    private static string FormatFolderName(string name)
-    {
-        int idx = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_NAMING);
-        string folderName = idx switch
-        {
-            0 => name.Replace("-", " ").Replace("_", " ").ToPascalCase(),  // PascalCase
-            1 => name.Replace("-", " ").ToSnakeCase(),  // snake_case
-            2 => name.ToSnakeCase().Replace("_", "-"),  // kebab-case
-            3 => name.Replace("-", " ").Replace("_", " ").ToCamelCase(),    // camelCase
-            _ => name
-        };
-
-        if (OSAPI.IsValidFolderName(folderName)) return folderName;
-        return null;
     }
 
 }

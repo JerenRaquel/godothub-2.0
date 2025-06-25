@@ -16,7 +16,6 @@ public partial class Master : Node
         SettingsDatabase.Initialize(userDirectory);
         VersionDatabase.Initialize(userDirectory);
         TagDatabase.Initialize(userDirectory);
-        ProjectCache.Initialize(userDirectory); // TODO: Remove once ProjectDatabase is integrated
         ProjectDatabase.Initialize(userDirectory);
         TemplateCache.Initialize(userDirectory);
     }
@@ -24,7 +23,6 @@ public partial class Master : Node
     // TEMP: Replace with Normal Write once Done
     public override void _ExitTree()
     {
-        ProjectCache.Instance.ForceWrite(); // TODO: Remove once ProjectDatabase is integrated
         ProjectDatabase.Instance.WriteData();
         SettingsDatabase.Instance.WriteData();
         TagDatabase.Instance.WriteData();

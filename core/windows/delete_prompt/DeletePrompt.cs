@@ -1,3 +1,4 @@
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using Godot;
 using System;
 
@@ -20,7 +21,7 @@ public partial class DeletePrompt : WindowBase
     public void Open(string projectName)
     {
         _cachedProjectName = projectName;
-        _projectLabel.Text = ProjectCache.Instance.GenerateProjectMetadataString(projectName, true);
+        _projectLabel.Text = ProjectDatabase.Instance.GenerateProjectMetadataString(in projectName, true);
         Validate();
         Show();
     }
@@ -33,38 +34,52 @@ public partial class DeletePrompt : WindowBase
 
     protected override void OnConfirmPressed()
     {
-        Tuple<bool, bool> deleteStates = OSAPI.DeleteProject(_cachedProjectName, _deleteSaveCheckButton.ButtonPressed);
-        bool projectDeletedState = deleteStates.Item1;
-        bool projectSaveDeletedState = deleteStates.Item2;
+        OSAPI.DeleteFlag deleteFlag = OSAPI.DeleteProject(
+            _cachedProjectName,
+            _deleteSaveCheckButton.ButtonPressed
+        );
 
-        // Main Project Folder
-        if (projectDeletedState)
-            NotifcationManager.Instance.NotifyValid($"Project: {_cachedProjectName} deleted successfully.");
+        //* Validate Project Deletion
+        if ((deleteFlag & OSAPI.DeleteFlag.ERROR_PROJECT_NO_EXISTS) > 0)
+            NotifcationManager.Instance.NotifyError(
+                $"{_cachedProjectName} root folder could not be found."
+            );
+        if ((deleteFlag & OSAPI.DeleteFlag.ERROR_PROJECT_FAILED_DB_REMOVAL) > 0)
+            NotifcationManager.Instance.NotifyError(
+                $"{_cachedProjectName} could not be found in database."
+            );
+        if ((deleteFlag & OSAPI.DeleteFlag.ERROR_PROJECT_FAILED_TRASH) > 0)
+            NotifcationManager.Instance.NotifyError(
+                $"Unable to delete {_cachedProjectName}"
+            );
         else
-            NotifcationManager.Instance.NotifyError($"Unable to delete project: {_cachedProjectName}");
+            NotifcationManager.Instance.NotifyValid(
+                $"{_cachedProjectName} deleted successfully."
+            );
 
-        // Project's Save Folder
+        //* Validate Save Folder
         if (_deleteSaveCheckButton.ButtonPressed)
         {
-            if (projectSaveDeletedState)
-                NotifcationManager.Instance.NotifyValid($"Project: {_cachedProjectName} save data deleted successfully.");
+            if ((deleteFlag & OSAPI.DeleteFlag.ERROR_SAVE_NO_EXISTS) > 0)
+                NotifcationManager.Instance.NotifyError(
+                    $"{_cachedProjectName} save data could not be found."
+                );
+            if ((deleteFlag & OSAPI.DeleteFlag.ERROR_SAVE_FAILED_TRASH) > 0)
+                NotifcationManager.Instance.NotifyError(
+                    $"Unable to delete {_cachedProjectName} save data."
+                );
             else
-                NotifcationManager.Instance.NotifyError($"Unable to delete project's save data.: {_cachedProjectName}");
+                NotifcationManager.Instance.NotifyValid(
+                    $"{_cachedProjectName} save data deleted successfully."
+                );
         }
 
         Hide();
 
-        // Failed -- Couldn't delete project
-        if (!projectDeletedState) return;
+        //! Failed -- Couldn't delete project
+        if ((deleteFlag & OSAPI.DeleteFlag.ERROR_PROJECT_ANY) > 0) return;
 
-        // Success -- Don't delete save folder
-        if (!_deleteSaveCheckButton.ButtonPressed)
-        {
-            EmitSignal(SignalName.ProjectDeletedSuccessfully);
-            return;
-        }
-
-        // Success -- Both project and save folder deleted
+        //* Success -- Both project and save folder deleted
         EmitSignal(SignalName.ProjectDeletedSuccessfully);
     }
 }

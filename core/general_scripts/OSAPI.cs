@@ -1,15 +1,35 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
+using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
 
 public static partial class OSAPI
 {
+    public enum DeleteFlag
+    {
+        OK = 0,
+
+        ERROR_PROJECT_NO_EXISTS = 0b001,
+        ERROR_PROJECT_FAILED_DB_REMOVAL = 0b010,
+        ERROR_PROJECT_FAILED_TRASH = 0b100,
+        ERROR_PROJECT_ANY = ERROR_PROJECT_NO_EXISTS
+            | ERROR_PROJECT_FAILED_DB_REMOVAL
+            | ERROR_PROJECT_FAILED_TRASH,
+
+        ERROR_SAVE_NO_EXISTS = 0b01_000,
+        ERROR_SAVE_FAILED_TRASH = 0b10_000
+
+    }
+
     public static string OS_USER_DATA_ROOT { get; private set; } = null;
     public static string DEFAULT_GODOT_USER_ROOT { get; private set; } = null;
 
-    private static Regex _regex = new(@"[^A-Za-z0-9-_ ]");
+    [GeneratedRegex(@"[^A-Za-z0-9-_ ]")]
+    private static partial Regex MyRegex();
+    private static Regex _regex = MyRegex();
 
     public static void Initialize()
     {
@@ -42,7 +62,10 @@ public static partial class OSAPI
 
     public static long OpenGodotProject(string godotPath, string projectName, bool withVerbose = false)
     {
-        string projectPath = ProjectCache.Instance.GetProjectPath(projectName);
+        ProjectPathData? projectPathData = ProjectDatabase.Instance.GetPathData(in projectName);
+        if (!projectPathData.HasValue) return -1; // Failed
+
+        string projectPath = projectPathData.Value.ProjectGodotFileLocation;
         if (projectPath.Length == 0) return -1; // Failed
 
         long processID;
@@ -52,7 +75,7 @@ public static partial class OSAPI
             processID = OS.CreateProcess(godotPath, ["--path", projectPath, "-e"]);
         if (processID == -1) return -1; // Failed
 
-        ProjectCache.Instance.UpdateTimeAccessed(projectName);
+        ProjectDatabase.Instance.UpdateTimeAccessed(projectName);
         return processID;
     }
 
@@ -70,7 +93,10 @@ public static partial class OSAPI
 
     public static long RunGodotProject(string godotPath, string projectName)
     {
-        string projectPath = ProjectCache.Instance.GetProjectPath(projectName);
+        ProjectPathData? projectPathData = ProjectDatabase.Instance.GetPathData(in projectName);
+        if (!projectPathData.HasValue) return -1; // Failed
+
+        string projectPath = projectPathData.Value.ProjectGodotFileLocation;
         if (projectPath.Length == 0) return -1; // Failed
 
         long processID;
@@ -101,29 +127,44 @@ public static partial class OSAPI
         return _regex.Count(folderName) == 0;
     }
 
-    public static Tuple<bool, bool> DeleteProject(string projectName, bool deleteSave)
+    public static DeleteFlag DeleteProject(string projectName, bool deleteSave)
     {
-        string projectFolder = ProjectCache.Instance.GetProjectFolder(projectName);
-        if (projectFolder == null) return new(false, false);
+        //* Fetch the path data
+        ProjectPathData? projectPathData = ProjectDatabase.Instance.GetPathData(in projectName);
+        if (!projectPathData.HasValue) return DeleteFlag.ERROR_PROJECT_NO_EXISTS;
 
-        bool state = OS.MoveToTrash(projectFolder) == Error.Ok;
-        if (!state) return new(false, false);
+        //* Check if the directory exists...
+        string rootFolder = projectPathData.Value.RootFolder;
+        if (rootFolder == null || rootFolder.Length == 0)
+            return DeleteFlag.ERROR_PROJECT_NO_EXISTS;
+        if (!Directory.Exists(rootFolder))
+            return DeleteFlag.ERROR_PROJECT_NO_EXISTS;
 
+        //* Get saved path, if needed
+        string projectUserFolder = null;
         if (deleteSave)
-        {
-            string projectSaveFolder = ProjectCache.Instance.GetProjectSaveFolder(projectName);
-            if (projectSaveFolder == null)
-            {
-                ProjectCache.Instance.DeleteProject(projectName);
-                return new(true, false);
-            }
+            projectUserFolder = ProjectDatabase.Instance.GetProjectUserDirectory(in projectName);
 
-            bool saveState = OS.MoveToTrash(projectSaveFolder) == Error.Ok;
-            ProjectCache.Instance.DeleteProject(projectName);
-            return new(true, saveState);
-        }
-        ProjectCache.Instance.DeleteProject(projectName);
-        return new(true, true);
+        //* Attempt to remove project from Database
+        if (!ProjectDatabase.Instance.DeleteProject(in projectName))
+            return DeleteFlag.ERROR_PROJECT_FAILED_DB_REMOVAL;
+
+        //* Attempt to Trash Project Directory
+        if (OS.MoveToTrash(rootFolder) != Error.Ok)
+            return DeleteFlag.ERROR_PROJECT_FAILED_TRASH;
+
+        //* If not deleting the save folder, stop here
+        if (!deleteSave) return DeleteFlag.OK;
+
+        //* Check if the save folder exists
+        if (!Directory.Exists(projectUserFolder))
+            return DeleteFlag.ERROR_SAVE_NO_EXISTS;
+
+        //* Attempt to delete save folder
+        if (OS.MoveToTrash(projectUserFolder) != Error.Ok)
+            return DeleteFlag.ERROR_SAVE_FAILED_TRASH;
+
+        return DeleteFlag.OK;
     }
 
     public static bool CreateDirectoryIfNotExists(string path)
@@ -136,9 +177,25 @@ public static partial class OSAPI
         return true;
     }
 
+    public static string FormatFolderName(string rawName)
+    {
+        int idx = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_NAMING);
+        string folderName = idx switch
+        {
+            0 => rawName.Replace("-", " ").Replace("_", " ").ToPascalCase(),    // PascalCase
+            1 => rawName.Replace("-", " ").ToSnakeCase(),                       // snake_case
+            2 => rawName.ToSnakeCase().Replace("_", "-"),                       // kebab-case
+            3 => rawName.Replace("-", " ").Replace("_", " ").ToCamelCase(),     // camelCase
+            _ => rawName
+        };
+
+        if (IsValidFolderName(folderName)) return folderName;
+        return null;
+    }
+
+    //? Might want to come back to this to make it less naive
     public static string SanitizePath(in string rawPath)
     {
-        //? Might want to come back to this to make it less naive
         return rawPath.Replace("\\", "/");
     }
 }

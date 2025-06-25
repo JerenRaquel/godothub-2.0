@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
@@ -90,22 +91,27 @@ public partial class ProjectSidePanel : MarginContainer
     private void OnRunPressed() => RunProject(SelectedProject);
 
     private void OnFolderOpenPressed()
-        => OSAPI.OpenFolder(ProjectCache.Instance.GetProjectFolder(SelectedProject));
+    {
+        ProjectPathData? pathData = ProjectDatabase.Instance.GetPathData(SelectedProject);
+        if (!pathData.HasValue) return; //! Failed
+
+        OSAPI.OpenFolder(pathData.Value.RootFolder);
+    }
 
     private void OnSaveFolderOpenPressed() => OSAPI.OpenUserFolder(SelectedProject);
 
     public static void RunProject(string projectName)
     {
-        string key = ProjectCache.Instance.ProjectNameToKey(projectName);
-        if (key == null)
+        VersionKey versionKey = ProjectDatabase.Instance.GetVersionKey(in projectName);
+        if (versionKey == null)
         {
             // Failed
             NotifcationManager.Instance.NotifyError("Failed to launch project.");
             return;
         }
 
-        string godotExe = VersionDatabase.Instance.GetPath(new(key));
-        if (godotExe.Length == 0)
+        string godotExe = VersionDatabase.Instance.GetPath(versionKey);
+        if (godotExe == null || godotExe.Length == 0)
         {
             // Failed
             NotifcationManager.Instance.NotifyError("Failed to launch project.");
@@ -123,16 +129,16 @@ public partial class ProjectSidePanel : MarginContainer
 
     public static bool OpenProject(string projectName, bool withTools)
     {
-        string key = ProjectCache.Instance.ProjectNameToKey(projectName);
-        if (key == null)
+        VersionKey versionKey = ProjectDatabase.Instance.GetVersionKey(in projectName);
+        if (versionKey == null)
         {
             // Failed
             NotifcationManager.Instance.NotifyError("Failed to launch project.");
             return false;
         }
 
-        string godotExe = VersionDatabase.Instance.GetPath(new(key));
-        if (godotExe.Length == 0)
+        string godotExe = VersionDatabase.Instance.GetPath(versionKey);
+        if (godotExe == null || godotExe.Length == 0)
         {
             // Failed
             NotifcationManager.Instance.NotifyError("Failed to launch project.");
@@ -146,9 +152,12 @@ public partial class ProjectSidePanel : MarginContainer
             if (withTools)
             {
                 NotifcationManager.Instance.NotifyValid("Software Launching");
-                // TODO: Replace with TagKey
-                foreach (string toolName in ProjectCache.Instance.GetSoftwareTags(projectName))
-                    OSAPI.RunTool(new(toolName, true), projectName);
+                TagKey[] tagKeys = ProjectDatabase.Instance.GetTagKeys(
+                    in projectName,
+                    TagDatabase.TagFlag.SOFTWARE
+                );
+                foreach (TagKey toolKey in tagKeys)
+                    OSAPI.RunTool(toolKey, projectName);
             }
             return true;
         }

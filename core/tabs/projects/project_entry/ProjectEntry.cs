@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using Godot;
@@ -20,8 +21,7 @@ public partial class ProjectEntry : PanelContainer
 
     private string _projectName;
     private string _cachedProjectMETAText;
-    private Dictionary<string, Tag> _projectTags = [];
-    private Dictionary<string, Tag> _softwareTags = [];
+    private Dictionary<TagKey, Tag> _tagInstances = [];
 
     public DoubleClickButton DoubleClickButton { get; private set; }
 
@@ -45,33 +45,29 @@ public partial class ProjectEntry : PanelContainer
         _projectName = projectName;
         UpdateProjectLabel();
         UpdatePath();
-        _dateTimeLabel.Text = ProjectCache.Instance.GetLocalTime(_projectName);
-        Texture2D texture = ProjectCache.Instance.GetIcon(_projectName);
+        _dateTimeLabel.Text = ProjectDatabase.Instance.GetLocalTime(in _projectName);
+        Texture2D texture = ProjectDatabase.Instance.GetIcon(in _projectName);
         if (texture != null) _projectIcon.Texture = texture;
-        if (ProjectCache.Instance.IsFavorited(_projectName)) _favoriteButton.SetPressedNoSignal(true);
+        if (ProjectDatabase.Instance.IsFavorited(_projectName)) _favoriteButton.SetPressedNoSignal(true);
 
-        if (!ProjectCache.Instance.HasTags(projectName)) return;
+        if (!ProjectDatabase.Instance.HasTags(projectName)) return;
 
-        foreach (string tag in ProjectCache.Instance.GetProjectTags(projectName))
+        foreach (TagKey tagKey in ProjectDatabase.Instance.GetTagKeys(in projectName, TagDatabase.TagFlag.ANY))
         {
-            // TODO: Replace with tagKey
-            string htmlColor = TagDatabase.Instance.GetHTMLColor(new(tag, false));
-            Tag tagInstance = SpawnTag(tag, htmlColor);
-            _projectTags.Add(tag, tagInstance);
-        }
+            string htmlColor = TagDatabase.Instance.GetHTMLColor(tagKey);
+            Tag tagInstance = SpawnTag(tagKey.TagName, htmlColor);
+            if (_tagInstances.ContainsKey(tagKey)) continue;
 
-        foreach (string tag in ProjectCache.Instance.GetSoftwareTags(projectName))
-        {
-            // TODO: Replace with tagKey
-            string htmlColor = TagDatabase.Instance.GetHTMLColor(new(tag, true));
-            Tag tagInstance = SpawnTag(tag, htmlColor);
-            _softwareTags.Add(tag, tagInstance);
+            _tagInstances.Add(tagKey, tagInstance);
         }
     }
 
     public void UpdatePath()
     {
-        string projectPath = ProjectCache.Instance.GetProjectPath(_projectName, true);
+        ProjectPathData? pathData = ProjectDatabase.Instance.GetPathData(in _projectName);
+        if (!pathData.HasValue) return; //? What happens on fail? Is there a fail?
+
+        string projectPath = pathData.Value.ProjectGodotFileLocationPretty;
         if (SettingsDatabase.Instance.GetData(SettingsDatabase.APPLICATION_ABS_PROJ_PATH))
         {
             string[] paths = SettingsDatabase.Instance.GetData(SettingsDatabase.PROJECT_PATH_TAG_KEY);
@@ -90,25 +86,25 @@ public partial class ProjectEntry : PanelContainer
     public bool Contains(string filter)
     {
         string sanitizedFilter = filter.ToLower();
-
         if (_cachedProjectMETAText.Contains(sanitizedFilter)) return true;
 
-        foreach (KeyValuePair<string, Tag> tagEntry in _projectTags)
-            if (tagEntry.Key.ToLower().Contains(sanitizedFilter)) return true;
-
-        foreach (KeyValuePair<string, Tag> tagEntry in _softwareTags)
-            if (tagEntry.Key.ToLower().Contains(sanitizedFilter)) return true;
-
+        foreach (KeyValuePair<TagKey, Tag> tagEntry in _tagInstances)
+        {
+            string tagName = tagEntry.Key.TagName;
+            if (tagName.Contains(sanitizedFilter, System.StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
         return false;
     }
 
     public void UpdateProjectLabel()
     {
-        string mainTextMETA = ProjectCache.Instance.GenerateProjectMetadataString(_projectName);
+        string mainTextMETA
+            = ProjectDatabase.Instance.GenerateProjectMetadataString(_projectName);
         _projectLabel.Text = mainTextMETA;
         _cachedProjectMETAText = mainTextMETA.ToLower();
 
-        if (ProjectCache.Instance.HasTags(_projectName))
+        if (ProjectDatabase.Instance.HasTags(_projectName))
             _tagButton.Show();
         else
             _tagButton.Hide();
@@ -124,16 +120,13 @@ public partial class ProjectEntry : PanelContainer
 
     private void OnFavoriteToggled(bool state)
     {
-        ProjectCache.Instance.ToggleFavorite(_projectName, state);
+        ProjectDatabase.Instance.SetFavorite(in _projectName, state);
         EmitSignal(SignalName.EntryFavoriteToggled);
     }
 
     private void OnTagButtonToggled(bool state)
     {
-        foreach (KeyValuePair<string, Tag> entry in _projectTags)
-            entry.Value.Displayed = state;
-
-        foreach (KeyValuePair<string, Tag> entry in _softwareTags)
+        foreach (KeyValuePair<TagKey, Tag> entry in _tagInstances)
             entry.Value.Displayed = state;
 
         if (state) _tagButton.Text = "v";

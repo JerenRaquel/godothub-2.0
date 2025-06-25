@@ -84,5 +84,16 @@ namespace DataContainer.DatabaseSys.Databases.VersionDatabase
 
             return parts[0].Replace("v", "");
         }
+
+        public static Version ParseVersionStr(in string rawDataStr)
+        {
+            // "v{key.version}" : "{key.buildType}]"
+            string[] parts = rawDataStr.Split(" [", StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0) return new();
+
+            // Major.Minor
+            string rawVersion = parts[0].Replace("v", "");
+            return new(rawVersion);
+        }
     }
 }
