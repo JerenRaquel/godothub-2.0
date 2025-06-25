@@ -343,11 +343,21 @@ namespace DataContainer.DatabaseSys.Databases.ProjectDatabase
 
             //* Update Features
             // if ((flag & ProjectData.DirtyFlag.FEATURE_DATA) > 0)
-            // SetConfigFeatureData();
+            //     SetConfigFeatureData(
+            //         in configFile,
+            //         project.VersionData,
+            //         project.UsesDotNet,
+            //         project.Renderer
+            //     );
 
             //* Set Tags
-            // if ((flag & ProjectData.DirtyFlag.TAGS) > 0)
-            //     SetConfigTags();
+            if ((flag & ProjectData.DirtyFlag.TAGS) > 0)
+            {
+                TagKey[] tagKeys
+                    = project.GetTags(TagDatabase.TagDatabase.TagFlag.PROJECT);
+                StripTags(in tagKeys, out List<string> tags);
+                // SetConfigTags(in configFile, [.. tags]);
+            }
             return true;
         }
 
