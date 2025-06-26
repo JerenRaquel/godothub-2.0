@@ -1,6 +1,7 @@
 using DataContainer.DatabaseSys.Databases.ProjectDatabase;
 using DataContainer.DatabaseSys.Databases.SettingDatabase;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
+using DataContainer.DatabaseSys.Databases.TemplateDatabase;
 using DataContainer.DatabaseSys.Databases.VersionDatabase;
 using Godot;
 
@@ -18,6 +19,7 @@ public partial class Master : Node
         TagDatabase.Initialize(userDirectory);
         ProjectDatabase.Initialize(userDirectory);
         TemplateCache.Initialize(userDirectory);
+        TemplateDatabase.Initialize(userDirectory);
     }
 
     // TEMP: Replace with Normal Write once Done
@@ -28,6 +30,7 @@ public partial class Master : Node
         TagDatabase.Instance.WriteData();
         VersionDatabase.Instance.WriteData();
         TemplateCache.Instance.ForceWrite();
+        // TemplateDatabase.Instance.WriteData();
     }
 
     public override void _Ready()

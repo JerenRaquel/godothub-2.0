@@ -193,6 +193,14 @@ public static partial class OSAPI
         return null;
     }
 
+    public static string ParseFileName(in string path)
+    {
+        string[] parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        string file = parts[^1];
+        string[] segments = file.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        return segments[0];
+    }
+
     //? Might want to come back to this to make it less naive
     public static string SanitizePath(in string rawPath)
     {
