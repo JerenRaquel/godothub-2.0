@@ -7,6 +7,7 @@ namespace XMLSystem
         private Dictionary<string, string> _attributes = [];
 
         public string ElementName { get; private set; }
+        public string[] AttributeNames => [.. _attributes.Keys];
 
         private XMLElement() { }
 

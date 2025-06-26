@@ -121,11 +121,6 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                 LogError("More than <Tags/> and <Structure/> is included.");
                 return null;
             }
-            if (!rootNode.HasSubNode("Tags") || !rootNode.HasSubNode("Structure"))
-            {
-                LogError("Missing <Tags/> and/or <Structure/>");
-                return null;
-            }
 
             //* Set the tags
             XMLNode tagsNode = rootNode.GetNode("Tags");

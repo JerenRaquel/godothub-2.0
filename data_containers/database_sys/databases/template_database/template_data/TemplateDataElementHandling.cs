@@ -14,6 +14,11 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
     ///         .// When <GitFiles/> are included,
     ///         .// auto create .tmp files in empty folders
     ///         <Folder name="project">
+    ///             .// Marks project as GDExt compat
+    ///             .// Any attribute names listed will be created OS folders
+    ///             .// in a bin folder.
+    ///             <GDExtension ...=""/>
+    /// 
     ///             .// ref needs to point to a relative path in `template_assets`
     ///             <File name="[REQUIRED]" ref="[REQUIRED]">
     /// 
@@ -26,7 +31,7 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
     ///         .// When included, must be child of <Structure/>
     ///         <GitFiles/> 
     /// 
-    ///         .// Only needed with GDExt projects; will mark as GDExt used
+    ///         .// Allows non-root placement of <GodotFiles/>
     ///         .// If included, <GodotFiles> must not be on the same level
     ///         .// Will auto set path to <GodotFiles/>
     ///         <GDHubMeta/>  
@@ -66,7 +71,7 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
         {
             if (tagsNode == null)
             {
-                LogError($"Node is not <Structure/>. Found {tagsNode}");
+                LogError($"Node is not <Tags/>. Found {tagsNode}");
                 return false;
             }
 
@@ -189,15 +194,9 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                 return state;
             }
 
-            //* Create empty folder
-            if (createGDIgnore)
-                template._buildInstructions.Add(new(
-                    [.. currentPath, folderName, ".temp"], ""
-                ));
-            else
-                template._buildInstructions.Add(new(
-                    [.. currentPath, folderName], null
-                ));
+            string[] folderPath = [.. currentPath, folderName];
+            CreateEmptyFolder(in template, in folderPath, in createGDIgnore);
+
             godotFilesPath = [];
             return true;
         }
@@ -222,15 +221,7 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                             return false;
                         }
                         if (foundGodotFilesPath.Length > 0)
-                        {
-                            if (foundGodotFiles.Length > 0)
-                            {
-                                LogError("There are more than one <GodotFiles/>");
-                                godotFilesPath = [];
-                                return false;
-                            }
                             foundGodotFiles = foundGodotFilesPath;
-                        }
                         break;
 
                     case "File":
@@ -246,6 +237,10 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                         HandleGodotFilesElement(in template, in currentPath);
                         break;
 
+                    case "GDExtension":
+                        HandleGDExt(in template, in node, in currentPath, in createGDIgnore);
+                        break;
+
                     default:
                         LogError($"Invalid Element Found: {node}");
                         godotFilesPath = [];
@@ -257,11 +252,9 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
         }
 
         private static bool HandleStructureSubElements(in TemplateData template,
-            in XMLNode structureNode, in bool createGDIgnore, in bool isGDExt)
+            in XMLNode structureNode, in bool createGDIgnore, in bool usingGDHubMetaFile)
         {
             string[] foundGodotFilesPath = [];
-            bool gitFilesFound = false;
-            bool gdhubFound = false;
             foreach (XMLNode subNode in structureNode.GetChildNodes())
             {
                 switch (subNode.ElementName)
@@ -278,14 +271,7 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                         if (!state) return false;
 
                         if (godotFilesPath.Length > 0)
-                        {
-                            if (foundGodotFilesPath.Length > 0)
-                            {
-                                LogError("There are more than one <GodotFiles/>");
-                                return false;
-                            }
                             foundGodotFilesPath = godotFilesPath;
-                        }
                         break;
 
                     case "File":
@@ -293,31 +279,13 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                             return false;
                         break;
 
-                    //* Already handled
                     case "GodotFiles":
-                        if (isGDExt)
-                        {
-                            LogError("<Structure/> must have either a <GodotFiles/> or <GDHubMeta> child element.");
-                            return false;
-                        }
                         HandleGodotFilesElement(in template, []);
                         break;
 
+                    //* Already handled/Handled later
                     case "GitFiles":
-                        if (gitFilesFound)
-                        {
-                            LogError($"Duplicate {subNode} found.");
-                            return false;
-                        }
-                        gitFilesFound = true;
-                        break;
                     case "GDHubMeta":
-                        if (gdhubFound)
-                        {
-                            LogError($"Duplicate {subNode} found.");
-                            return false;
-                        }
-                        gdhubFound = true;
                         break;
 
                     default:
@@ -326,25 +294,14 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                 }
             }
 
-            if (isGDExt)
+            if (usingGDHubMetaFile)
             {
-                if (foundGodotFilesPath.Length == 0)
-                {
-                    LogError("<GDHubMeta/> used with no <GodotFiles/> included");
-                    return false;
-                }
-
                 FileData fileData = new([".gdhub"], "");
                 fileData.metadata.Add(
                     "godotProjectRelativePath",
                     string.Join('/', foundGodotFilesPath)
                 );
                 template._buildInstructions.Add(fileData);
-            }
-            else if (foundGodotFilesPath.Length > 0)
-            {
-                LogError("Found more than 1 <GodotFiles/> elements.");
-                return false;
             }
 
             return true;
@@ -372,6 +329,57 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                 refPath
             ));
             return true;
+        }
+
+        private static bool HandleGDExt(in TemplateData template,
+            in XMLNode gdextNode, in string[] currentPath, in bool createGDIgnore)
+        {
+            if (gdextNode == null)
+            {
+                LogError($"Node is not <GDExtension/>. Found {gdextNode}");
+                return false;
+            }
+
+            if (!gdextNode.HasSiblingNode("GodotFiles"))
+            {
+                LogError($"{gdextNode} must be siblings with <GodotFiles/>");
+                return false;
+            }
+
+            //* Create the bin folder
+            string[] folderPath = [.. currentPath, "bin"];
+            CreateEmptyFolder(
+                in template,
+                in folderPath,
+                createGDIgnore && gdextNode.AttributeNames.Length == 0
+            );
+
+            //* Add .gdextension to the bin folder
+            string[] gdextFile = [.. currentPath, "bin", ".gdextension"];
+            template._buildInstructions.Add(new(in gdextFile, ""));
+
+            //* Create OS based folders in bin based on attribute name
+            foreach (string attributeName in gdextNode.AttributeNames)
+            {
+                string[] osBinFolder = [.. currentPath, "bin", attributeName];
+                CreateEmptyFolder(
+                    in template,
+                    in osBinFolder,
+                    createGDIgnore
+                );
+            }
+            return true;
+        }
+
+        private static void CreateEmptyFolder(in TemplateData template,
+            in string[] currentPath, in bool createGDIgnore)
+        {
+            if (createGDIgnore)
+                template._buildInstructions.Add(new(
+                    [.. currentPath, ".placeholder"], ""
+                ));
+            else
+                template._buildInstructions.Add(new(currentPath, null));
         }
 
         private static string GenerateTagError(string tagName, string tagType,

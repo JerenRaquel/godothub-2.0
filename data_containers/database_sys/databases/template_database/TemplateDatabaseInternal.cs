@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using XMLSystem;
 
@@ -78,12 +79,42 @@ namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
                 return null;
             }
 
+            string invalidElementName = ValidateUniqueElementCounts(in results.parsedElements);
+            if (invalidElementName != null)
+            {
+                Console.WriteLine($"{fileName} has an invalid amount of {invalidElementName}");
+                return null;
+            }
+
             TemplateData template
                 = TemplateData.CreateFromXMLNode(results.root, in fileName);
             if (template == null) return null;
 
             _data.Add(template.Name, template);
             return template;
+        }
+
+        private static string ValidateUniqueElementCounts(
+            in Dictionary<string, ulong> elementCounts)
+        {
+            foreach (KeyValuePair<string, ulong> entry in elementCounts)
+            {
+                switch (entry.Key)
+                {
+                    case "Template":
+                    case "GodotFiles":
+                    case "Tags":
+                        if (entry.Value != 1) return entry.Key;
+                        break;
+
+                    case "GitFiles":
+                    case "GDHubMeta":
+                    case "GDExtension":
+                        if (entry.Value > 1) return entry.Key;
+                        break;
+                }
+            }
+            return null;
         }
     }
 }

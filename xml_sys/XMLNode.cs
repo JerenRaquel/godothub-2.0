@@ -9,6 +9,7 @@ namespace XMLSystem
 
         public string ElementName => _baseElement.ElementName;
         public XMLNode Parent { get; set; } = null;
+        public string[] AttributeNames => _baseElement.AttributeNames;
         public long ChildCount => _subNodes.Count;
 
         private XMLNode() { }
@@ -20,6 +21,12 @@ namespace XMLSystem
             foreach (XMLNode node in _subNodes)
                 if (node.ElementName == elementName) return true;
             return false;
+        }
+
+        public bool HasSiblingNode(in string elementName)
+        {
+            if (Parent == null) return false;
+            return Parent.HasSiblingNode(elementName);
         }
 
         public void AddNode(in XMLNode node)
