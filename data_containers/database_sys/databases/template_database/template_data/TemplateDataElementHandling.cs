@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using DataContainer.DatabaseSys.Databases.TagDatabase;
 using XMLSystem;
 
 namespace DataContainer.DatabaseSys.Databases.TemplateDatabase
 {
-    #region Template Legend
+    #region Legend
     /// <Template version="[REQUIRED]" name="[OPTIONAL]">
     ///     <Tags>  //  Must have <Tag/> only as children 
     ///         <Tag name="[REQUIRED]" type="[Project | Software]" />
